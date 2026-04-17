@@ -980,7 +980,7 @@ Pour toute autre question, réponds en français naturellement.`;
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:[...aiHistory,{role:'user',content:userContent}]})
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1500,system:sys,messages:[...aiHistory,{role:'user',content:userContent}]})
     });
     const data=await res.json();
     if(data.error){loading.textContent='Erreur : '+data.error.message;loading.classList.remove('loading');pendingImg=null;return}
