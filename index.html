@@ -14,7 +14,6 @@
     :root{--bg:#0a0a0a;--surface:#141414;--surface2:#1c1c1c;--border:#2a2a2a;--orange:#f97316;--orange-dim:#7c3910;--orange-glow:rgba(249,115,22,0.15);--text:#f0ede8;--muted:#6b6b6b}
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
     body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100dvh;overflow-x:hidden}
-
     /* LOGIN */
     #login-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;z-index:100;padding:2rem}
     .login-logo{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;letter-spacing:-1px}
@@ -27,16 +26,12 @@
     .pin-btn{aspect-ratio:1;background:var(--surface2);border:1px solid var(--border);border-radius:16px;color:var(--text);font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:600;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center}
     .pin-btn:active{background:var(--orange-dim);transform:scale(.93)}
     .pin-error{color:#ef4444;font-size:.85rem;min-height:1.2em;text-align:center}
-
     /* APP */
     #app{display:none;flex-direction:column;min-height:100dvh}
     #app.visible{display:flex}
-
-    /* VIEWS */
     .view{display:none;flex-direction:column;flex:1;animation:fadeUp .3s ease}
     .view.active{display:flex}
     @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-
     /* HEADER */
     .app-header{padding:3.2rem 1.5rem .8rem;background:linear-gradient(180deg,#111 0%,transparent 100%);position:sticky;top:0;z-index:10;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
     .header-row{display:flex;justify-content:space-between;align-items:center}
@@ -44,7 +39,6 @@
     .header-title span{color:var(--orange)}
     .date-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:.35rem .8rem;font-size:.75rem;color:var(--muted);white-space:nowrap}
     .back-btn{display:flex;align-items:center;gap:.4rem;background:none;border:none;color:var(--orange);font-family:'DM Sans',sans-serif;font-size:.9rem;cursor:pointer;padding:0}
-
     /* HOME */
     .quick-strip{display:flex;gap:.75rem;padding:.5rem 1.5rem .75rem;overflow-x:auto;scrollbar-width:none}
     .quick-strip::-webkit-scrollbar{display:none}
@@ -62,26 +56,23 @@
     .tile-soon{position:absolute;top:.8rem;right:.8rem;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:.6rem;border-radius:20px;padding:.15rem .45rem}
     .tile-active{position:absolute;top:.8rem;right:.8rem;background:var(--orange);color:#000;font-size:.6rem;font-weight:700;border-radius:20px;padding:.15rem .45rem}
     .tile:nth-child(1){animation-delay:.05s}.tile:nth-child(2){animation-delay:.10s}.tile:nth-child(3){animation-delay:.15s}.tile:nth-child(4){animation-delay:.20s}.tile:nth-child(5){animation-delay:.25s}.tile:nth-child(6){animation-delay:.30s}.tile:nth-child(7){animation-delay:.35s}.tile:nth-child(8){animation-delay:.40s}.tile:nth-child(9){animation-delay:.45s}
-
-    /* BOTTOM NAV */
+    /* NAV */
     .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(14,14,14,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:.6rem 0 1.2rem;z-index:20}
     .nav-btn{display:flex;flex-direction:column;align-items:center;gap:.2rem;color:var(--muted);font-size:.65rem;cursor:pointer;transition:.2s;background:none;border:none;padding:.3rem .8rem}
     .nav-btn.active{color:var(--orange)}
     .nav-btn svg{width:22px;height:22px}
-
-    /* AGENDA LAYOUT */
+    /* AGENDA */
     .agenda-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;padding-bottom:5rem}
     .view-switcher{display:flex;gap:.5rem;padding:.75rem 1.5rem;flex-shrink:0}
     .vsw-btn{flex:1;padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.8rem;cursor:pointer;transition:.2s;text-align:center}
     .vsw-btn.active{background:var(--orange);border-color:var(--orange);color:#000;font-weight:600}
     .period-nav{display:flex;align-items:center;justify-content:space-between;padding:.25rem 1.5rem .5rem;flex-shrink:0}
     .period-label{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700}
-    .arr-btn{background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);width:32px;height:32px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:.2s}
+    .arr-btn{background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);width:32px;height:32px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center}
     .arr-btn:active{background:var(--orange-dim)}
     .today-btn{background:none;border:1px solid var(--orange);border-radius:10px;color:var(--orange);font-size:.72rem;padding:.3rem .7rem;cursor:pointer;font-family:'DM Sans',sans-serif}
     .agenda-pane{flex:1;overflow:hidden;display:none;flex-direction:column}
     .agenda-pane.active{display:flex}
-
     /* MONTH */
     .month-grid-wrap{padding:0 1rem;overflow-y:auto;flex:1}
     .weekday-headers{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:.3rem}
@@ -90,48 +81,36 @@
     .mday{min-height:52px;background:var(--surface);border-radius:10px;padding:.3rem .2rem;cursor:pointer;transition:.15s}
     .mday:hover{background:var(--surface2)}
     .mday.other-month .mday-num{color:var(--muted);opacity:.4}
-    .mday.today{background:var(--surface2);outline:1.5px solid var(--orange)}
+    .mday.is-today{background:var(--surface2);outline:1.5px solid var(--orange)}
     .mday-num{font-size:.75rem;font-weight:600;text-align:center;margin-bottom:.15rem}
-    .mday.today .mday-num{color:var(--orange)}
+    .mday.is-today .mday-num{color:var(--orange)}
     .mday-dots{display:flex;flex-wrap:wrap;gap:2px;justify-content:center}
     .mday-dot{width:5px;height:5px;border-radius:50%}
-
     /* WEEK/DAY */
     .week-scroll,.day-scroll{overflow-y:auto;flex:1;padding:0 1rem 1rem}
     .week-day-block{margin-bottom:.75rem}
     .week-day-label{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:.4rem .2rem .2rem;display:flex;align-items:center;gap:.5rem}
-    .week-day-label.is-today{color:var(--orange)}
+    .week-day-label.is-today-lbl{color:var(--orange)}
     .today-pill{background:var(--orange);color:#000;font-size:.6rem;border-radius:20px;padding:.1rem .4rem}
     .week-no-events{color:var(--muted);font-size:.78rem;padding:.4rem;font-style:italic}
     .day-header-big{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;padding:.5rem .5rem .75rem}
     .day-header-big span{color:var(--orange)}
-
     /* EVENT CARD */
-    .event-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.75rem 1rem;margin-bottom:.5rem;display:flex;align-items:flex-start;gap:.75rem;cursor:pointer;transition:.15s;position:relative;overflow:hidden}
+    .event-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.75rem 1rem;margin-bottom:.5rem;display:flex;align-items:flex-start;gap:.75rem;cursor:pointer;transition:.15s}
     .event-card:active{transform:scale(.97)}
-    .event-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px}
-    .ev-time{font-size:.72rem;color:var(--muted);min-width:44px;text-align:right;padding-top:.1rem;line-height:1.5}
+    .ev-time{font-size:.72rem;color:var(--muted);min-width:48px;text-align:right;padding-top:.1rem;line-height:1.5;flex-shrink:0}
     .ev-body{flex:1}
     .ev-title{font-size:.9rem;font-weight:600}
     .ev-sub{font-size:.72rem;color:var(--muted);margin-top:.1rem}
     .ev-reminder-tag{font-size:.65rem;color:var(--orange);margin-top:.25rem}
-
-    /* NOTIF BANNER */
-    .notif-banner{background:var(--surface2);border:1px solid var(--orange);border-radius:14px;padding:.85rem 1rem;margin:.25rem 1.2rem .5rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;flex-shrink:0}
-    .notif-banner p{font-size:.82rem;line-height:1.4}
-    .notif-banner strong{color:var(--orange);display:block;margin-bottom:.1rem}
-
-    /* AI CHAT BUTTON */
-    .ai-chat-btn{background:var(--surface2);border:1px solid var(--orange);border-radius:14px;padding:.75rem 1rem;margin:.25rem 1.2rem .25rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;flex-shrink:0;transition:.2s}
+    .ev-allday{font-size:.65rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.1rem .4rem;color:var(--muted);margin-top:.2rem;display:inline-block}
+    /* AI SHORTCUT */
+    .ai-chat-btn{background:var(--surface2);border:1px solid var(--orange);border-radius:14px;padding:.75rem 1rem;margin:.25rem 1.2rem .25rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;transition:.2s;flex-shrink:0}
     .ai-chat-btn:active{transform:scale(.98)}
-    .ai-chat-btn p{font-size:.82rem;line-height:1.4}
-    .ai-chat-btn strong{color:var(--orange);display:block;margin-bottom:.1rem}
-
     /* FAB */
     .fab{position:fixed;bottom:5.5rem;right:1.2rem;width:52px;height:52px;border-radius:50%;background:var(--orange);border:none;color:#000;font-size:1.6rem;cursor:pointer;z-index:15;box-shadow:0 4px 20px var(--orange-glow);transition:.2s;display:none;align-items:center;justify-content:center}
     .fab.show{display:flex}
     .fab:active{transform:scale(.9)}
-
     /* MODAL */
     .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:50;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
     .modal-overlay.open{opacity:1;pointer-events:all}
@@ -145,34 +124,61 @@
     .form-input:focus{border-color:var(--orange)}
     select.form-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;padding-right:2.5rem}
     select.form-input option{background:#1c1c1c;color:#f0ede8}
-    .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;max-height:180px;overflow-y:auto}
-    .cat-btn{padding:.5rem .25rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--muted);font-size:.68rem;cursor:pointer;text-align:center;transition:.2s;line-height:1.4;display:flex;flex-direction:column;align-items:center;gap:.2rem}
-    .cat-btn.selected{border-color:var(--orange);color:var(--text);background:var(--orange-dim)}
+    /* TOGGLE */
+    .toggle-row{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:.75rem 1rem}
+    .toggle-label{font-size:.9rem}
+    .toggle{width:44px;height:26px;background:var(--border);border-radius:20px;position:relative;cursor:pointer;transition:.2s;border:none;flex-shrink:0}
+    .toggle.on{background:var(--orange)}
+    .toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+    .toggle.on::after{left:21px}
+    /* CAT GRID */
+    .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;max-height:200px;overflow-y:auto}
+    .cat-btn{padding:.5rem .25rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--muted);font-size:.68rem;cursor:pointer;text-align:center;transition:.2s;line-height:1.4;display:flex;flex-direction:column;align-items:center;gap:.2rem;position:relative}
+    .cat-btn.selected{color:var(--text);background:var(--surface)}
+    .cat-del{position:absolute;top:2px;right:3px;font-size:.6rem;color:#ef4444;background:none;border:none;cursor:pointer;line-height:1;padding:1px}
     .btn-row{display:flex;gap:.75rem;margin-top:1.2rem}
     .btn-primary{flex:1;background:var(--orange);border:none;border-radius:14px;color:#000;font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;padding:.85rem;cursor:pointer;transition:.2s}
     .btn-primary:active{opacity:.8}
     .btn-secondary{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.95rem;padding:.85rem;cursor:pointer}
     .btn-danger{background:#ef4444;border:none;border-radius:14px;color:#fff;font-family:'DM Sans',sans-serif;font-size:.9rem;padding:.85rem 1rem;cursor:pointer}
-    .add-cat-row{display:flex;gap:.5rem;margin-top:.5rem}
-    .add-cat-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.6rem .85rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none}
+    /* ADD CAT */
+    .add-cat-section{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-top:.5rem}
+    .add-cat-title{font-size:.75rem;color:var(--orange);font-weight:600;margin-bottom:.75rem;letter-spacing:.05em;text-transform:uppercase}
+    .emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:.3rem;margin-bottom:.75rem}
+    .emoji-opt{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.35rem;text-align:center;cursor:pointer;font-size:1rem;transition:.15s}
+    .emoji-opt.sel{border-color:var(--orange);background:var(--orange-dim)}
+    .color-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:.3rem;margin-bottom:.75rem}
+    .color-opt{width:100%;aspect-ratio:1;border-radius:8px;border:2px solid transparent;cursor:pointer;transition:.15s}
+    .color-opt.sel{border-color:#fff;transform:scale(1.15)}
+    .add-cat-row{display:flex;gap:.5rem}
+    .add-cat-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.6rem .85rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none}
     .add-cat-input:focus{border-color:var(--orange)}
-    .add-cat-btn{background:var(--orange);border:none;border-radius:10px;color:#000;font-size:.85rem;padding:.6rem 1rem;cursor:pointer;white-space:nowrap}
-
-    /* AI CHAT MODAL */
-    #ai-modal .modal-sheet{display:flex;flex-direction:column;height:85dvh;padding:1.5rem 0 0}
-    .ai-header{padding:0 1.5rem 1rem;border-bottom:1px solid var(--border);flex-shrink:0}
+    .add-cat-btn{background:var(--orange);border:none;border-radius:10px;color:#000;font-size:.85rem;font-weight:600;padding:.6rem 1rem;cursor:pointer;white-space:nowrap}
+    /* AI MODAL */
+    #ai-modal .modal-sheet{display:flex;flex-direction:column;height:88dvh;padding:0}
+    .ai-header{padding:1.5rem 1.5rem .75rem;border-bottom:1px solid var(--border);flex-shrink:0}
     .ai-messages{flex:1;overflow-y:auto;padding:1rem 1.5rem;display:flex;flex-direction:column;gap:.75rem}
-    .ai-msg{max-width:85%;padding:.75rem 1rem;border-radius:16px;font-size:.88rem;line-height:1.5;animation:fadeUp .2s ease}
+    .ai-msg{max-width:85%;padding:.75rem 1rem;border-radius:16px;font-size:.88rem;line-height:1.5;animation:fadeUp .2s ease;white-space:pre-wrap}
     .ai-msg.user{background:var(--orange);color:#000;align-self:flex-end;border-bottom-right-radius:4px}
     .ai-msg.ai{background:var(--surface2);border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px}
-    .ai-msg.ai.loading{color:var(--muted);font-style:italic}
+    .ai-msg.loading{color:var(--muted);font-style:italic}
     .ai-input-row{display:flex;gap:.5rem;padding:1rem 1.5rem 2rem;border-top:1px solid var(--border);flex-shrink:0;background:var(--surface)}
     .ai-text-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:.7rem 1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;resize:none;max-height:100px}
     .ai-text-input:focus{border-color:var(--orange)}
     .ai-send-btn{background:var(--orange);border:none;border-radius:12px;color:#000;width:42px;height:42px;cursor:pointer;font-size:1.1rem;flex-shrink:0;display:flex;align-items:center;justify-content:center}
     .ai-img-btn{background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--muted);width:42px;height:42px;cursor:pointer;font-size:1.1rem;flex-shrink:0;display:flex;align-items:center;justify-content:center}
     #ai-file-input{display:none}
-
+    /* SETTINGS */
+    .settings-section{padding:1rem 1.5rem}
+    .settings-title{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;color:var(--orange);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem}
+    .settings-row{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:1rem 1.2rem;margin-bottom:.6rem;display:flex;align-items:center;gap:.75rem;cursor:pointer}
+    .settings-row-content{flex:1}
+    .settings-row-title{font-size:.9rem;font-weight:500}
+    .settings-row-sub{font-size:.75rem;color:var(--muted);margin-top:.1rem}
+    .settings-row-arrow{color:var(--muted);font-size:.9rem}
+    .api-status{font-size:.7rem;padding:.2rem .5rem;border-radius:20px;font-weight:600}
+    .api-status.connected{background:rgba(34,197,94,.15);color:#22c55e}
+    .api-status.disconnected{background:rgba(239,68,68,.15);color:#ef4444}
     /* COMING SOON */
     .coming-soon-box{background:var(--surface);border:1px dashed var(--border);border-radius:20px;padding:2.5rem 1.5rem;text-align:center;color:var(--muted);margin:1rem 1.5rem}
     .coming-soon-box .big-icon{font-size:3rem;margin-bottom:1rem}
@@ -185,8 +191,7 @@
 <div id="login-screen">
   <div><div class="login-logo">Mon<span>Assistant</span></div><div class="login-sub">Ton assistant personnel</div></div>
   <div class="pin-dots" id="pin-dots">
-    <div class="pin-dot" id="d0"></div><div class="pin-dot" id="d1"></div>
-    <div class="pin-dot" id="d2"></div><div class="pin-dot" id="d3"></div>
+    <div class="pin-dot" id="d0"></div><div class="pin-dot" id="d1"></div><div class="pin-dot" id="d2"></div><div class="pin-dot" id="d3"></div>
   </div>
   <div class="pin-error" id="pin-error"></div>
   <div class="pin-pad">
@@ -208,15 +213,14 @@
       <div style="color:var(--muted);font-size:.85rem;margin-top:.2rem">Bonjour Éric, voici ta journée !</div>
     </div>
     <div class="quick-strip">
-      <div class="q-chip" onclick="openAgenda()"><span class="dot"></span>Agenda aujourd'hui</div>
-      <div class="q-chip"><span class="dot"></span>Budget du mois</div>
-      <div class="q-chip"><span class="dot"></span>Objectifs</div>
+      <div class="q-chip" onclick="openAgenda()"><span class="dot"></span>Agenda</div>
+      <div class="q-chip" onclick="openAIChat()"><span class="dot"></span>Assistant IA</div>
+      <div class="q-chip" onclick="showView('settings')"><span class="dot"></span>Paramètres</div>
     </div>
     <div class="section-label">Modules</div>
     <div class="tiles-grid">
       <div class="tile" onclick="openAgenda()">
-        <div class="tile-icon">🗓</div><div><div class="tile-name">Agenda</div><div class="tile-sub">Travail & famille</div></div>
-        <div class="tile-active">Actif</div>
+        <div class="tile-icon">🗓</div><div><div class="tile-name">Agenda</div><div class="tile-sub">Travail & famille</div></div><div class="tile-active">Actif</div>
       </div>
       <div class="tile" onclick="showSoon('👨‍👩‍👧‍👧 Famille','Tâches, repas et activités.')">
         <div class="tile-icon">👨‍👩‍👧‍👧</div><div><div class="tile-name">Famille</div><div class="tile-sub">Tâches & repas</div></div><div class="tile-soon">Bientôt</div>
@@ -224,10 +228,10 @@
       <div class="tile" onclick="showSoon('💰 Budget','Finances & placements.')">
         <div class="tile-icon">💰</div><div><div class="tile-name">Budget</div><div class="tile-sub">Finances & placements</div></div><div class="tile-soon">Bientôt</div>
       </div>
-      <div class="tile" onclick="showSoon('📰 Nouvelles','Actualités filtrées pour toi.')">
+      <div class="tile" onclick="showSoon('📰 Nouvelles','Actualités filtrées.')">
         <div class="tile-icon">📰</div><div><div class="tile-name">Nouvelles</div><div class="tile-sub">Filtrées pour toi</div></div><div class="tile-soon">Bientôt</div>
       </div>
-      <div class="tile" onclick="showSoon('🎯 Objectifs','Remise en forme et objectifs.')">
+      <div class="tile" onclick="showSoon('🎯 Objectifs','Remise en forme.')">
         <div class="tile-icon">🎯</div><div><div class="tile-name">Objectifs</div><div class="tile-sub">Remise en forme</div></div><div class="tile-soon">Bientôt</div>
       </div>
       <div class="tile" onclick="showSoon('📧 Emails','Priorisation IA.')">
@@ -242,7 +246,7 @@
       <div class="tile" onclick="openAIChat()" style="grid-column:span 2;min-height:100px">
         <div style="display:flex;align-items:center;gap:1rem">
           <div class="tile-icon" style="font-size:2.2rem">🤖</div>
-          <div><div class="tile-name" style="font-size:1.1rem">Assistant IA</div><div class="tile-sub">Ajoute des événements par photo ou conversation</div></div>
+          <div><div class="tile-name" style="font-size:1.1rem">Assistant IA</div><div class="tile-sub">Photo d'horaire, ajout d'événements par conversation</div></div>
         </div><div class="tile-active">Actif</div>
       </div>
     </div>
@@ -254,23 +258,11 @@
       <div class="header-row"><button class="back-btn" onclick="showView('home')">← Accueil</button><div class="date-chip" id="agenda-date"></div></div>
       <div style="margin-top:.4rem;font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800">🗓 <span style="color:var(--orange)">Agenda</span></div>
     </div>
-
-    <!-- Notif banner -->
-    <div id="notif-prompt" style="display:none">
-      <div class="notif-banner" onclick="requestNotif()">
-        <span style="font-size:1.5rem">🔔</span>
-        <div><p><strong>Activer les notifications</strong>Rappels avant tes événements sur iPhone</p></div>
-        <span style="color:var(--orange);font-size:1.2rem;margin-left:auto">›</span>
-      </div>
-    </div>
-
-    <!-- AI chat shortcut -->
     <div class="ai-chat-btn" onclick="openAIChat()">
       <span style="font-size:1.3rem">🤖</span>
-      <div><p><strong>Assistant IA</strong>Envoie une photo d'horaire ou demande d'ajouter des événements</p></div>
-      <span style="color:var(--orange);font-size:1.2rem;margin-left:auto">›</span>
+      <div style="flex:1"><p style="font-size:.82rem;line-height:1.4"><strong style="color:var(--orange);display:block;margin-bottom:.1rem">Assistant IA</strong>Photo d'horaire ou demande d'ajout d'événements</p></div>
+      <span style="color:var(--orange);font-size:1.2rem">›</span>
     </div>
-
     <div class="agenda-wrap">
       <div class="view-switcher">
         <button class="vsw-btn" id="vsw-mois" onclick="setView('mois')">Mois</button>
@@ -287,10 +279,7 @@
       </div>
       <div id="pane-mois" class="agenda-pane">
         <div class="month-grid-wrap">
-          <div class="weekday-headers">
-            <div class="wd-hdr">Dim</div><div class="wd-hdr">Lun</div><div class="wd-hdr">Mar</div>
-            <div class="wd-hdr">Mer</div><div class="wd-hdr">Jeu</div><div class="wd-hdr">Ven</div><div class="wd-hdr">Sam</div>
-          </div>
+          <div class="weekday-headers"><div class="wd-hdr">Dim</div><div class="wd-hdr">Lun</div><div class="wd-hdr">Mar</div><div class="wd-hdr">Mer</div><div class="wd-hdr">Jeu</div><div class="wd-hdr">Ven</div><div class="wd-hdr">Sam</div></div>
           <div class="month-grid" id="month-grid"></div>
         </div>
       </div>
@@ -299,12 +288,77 @@
     </div>
   </div>
 
+  <!-- SETTINGS -->
+  <div id="view-settings" class="view">
+    <div class="app-header">
+      <div class="header-row"><button class="back-btn" onclick="showView('home')">← Accueil</button></div>
+      <div style="margin-top:.4rem;font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800">⚙️ <span style="color:var(--orange)">Paramètres</span></div>
+    </div>
+    <div style="overflow-y:auto;flex:1;padding-bottom:5rem">
+      <!-- Claude API -->
+      <div class="settings-section">
+        <div class="settings-title">🤖 Intelligence artificielle</div>
+        <div class="settings-row" onclick="openAPISettings()">
+          <span style="font-size:1.4rem">🔑</span>
+          <div class="settings-row-content">
+            <div class="settings-row-title">Clé API Claude</div>
+            <div class="settings-row-sub" id="api-status-text">Non configurée</div>
+          </div>
+          <span id="api-status-badge" class="api-status disconnected">Non connecté</span>
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-top:.5rem">
+          <p style="font-size:.78rem;color:var(--muted);line-height:1.6">
+            Pour obtenir ta clé API :<br>
+            1. Va sur <strong style="color:var(--orange)">console.anthropic.com</strong><br>
+            2. Crée un compte ou connecte-toi<br>
+            3. Va dans <strong style="color:var(--text)">API Keys</strong> → <strong style="color:var(--text)">Create Key</strong><br>
+            4. Copie la clé et colle-la ici
+          </p>
+        </div>
+      </div>
+      <!-- Email reminders -->
+      <div class="settings-section">
+        <div class="settings-title">📧 Rappels par email</div>
+        <div class="settings-row" onclick="openEmailSettings()">
+          <span style="font-size:1.4rem">✉️</span>
+          <div class="settings-row-content">
+            <div class="settings-row-title">Email de rappel</div>
+            <div class="settings-row-sub" id="email-status-text">e.pilon12@gmail.com</div>
+          </div>
+          <span style="color:var(--orange)" class="settings-row-arrow">›</span>
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-top:.5rem">
+          <p style="font-size:.78rem;color:var(--muted);line-height:1.6">Les rappels sont envoyés par email quand les notifications iPhone ne sont pas disponibles. Tu recevras un email à l'heure configurée.</p>
+        </div>
+      </div>
+      <!-- Security -->
+      <div class="settings-section">
+        <div class="settings-title">🔒 Sécurité</div>
+        <div class="settings-row" onclick="openPINSettings()">
+          <span style="font-size:1.4rem">🔢</span>
+          <div class="settings-row-content">
+            <div class="settings-row-title">Changer le NIP</div>
+            <div class="settings-row-sub">NIP actuel : ****</div>
+          </div>
+          <span style="color:var(--orange)" class="settings-row-arrow">›</span>
+        </div>
+      </div>
+      <!-- App info -->
+      <div class="settings-section">
+        <div class="settings-title">ℹ️ Application</div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:1rem 1.2rem">
+          <div style="display:flex;justify-content:space-between;margin-bottom:.5rem"><span style="font-size:.85rem;color:var(--muted)">Version</span><span style="font-size:.85rem">1.2.0</span></div>
+          <div style="display:flex;justify-content:space-between"><span style="font-size:.85rem;color:var(--muted)">Développé avec</span><span style="font-size:.85rem">Claude + Éric 🟠</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- SOON -->
   <div id="view-soon" class="view">
     <div class="app-header"><div class="header-row"><button class="back-btn" onclick="showView('home')">← Accueil</button></div>
       <div style="margin-top:.4rem;font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800" id="soon-title"></div></div>
-    <div class="coming-soon-box"><div class="big-icon">🚧</div><p id="soon-desc"></p>
-      <p style="margin-top:.75rem;font-size:.8rem">En cours de développement — disponible dans une prochaine session.</p></div>
+    <div class="coming-soon-box"><div class="big-icon">🚧</div><p id="soon-desc"></p><p style="margin-top:.75rem;font-size:.8rem">En cours de développement.</p></div>
   </div>
 
   <!-- BOTTOM NAV -->
@@ -316,10 +370,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Agenda
     </button>
     <button class="nav-btn" id="nav-ia" onclick="openAIChat()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 12h8M12 8v8"/></svg>IA
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>IA
     </button>
-    <button class="nav-btn" id="nav-profil">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil
+    <button class="nav-btn" id="nav-settings" onclick="showView('settings')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Réglages
     </button>
   </nav>
 </div>
@@ -334,16 +388,34 @@
     <div class="modal-title" id="modal-title">Nouvel événement</div>
     <div class="form-group"><label class="form-label">Titre *</label><input class="form-input" id="ev-title" type="text" placeholder="Ex: Quart de nuit, Gym Sofia..."/></div>
     <div class="form-group"><label class="form-label">Date *</label><input class="form-input" id="ev-date" type="date"/></div>
-    <div style="display:flex;gap:.75rem" class="form-group">
+    <!-- All day toggle -->
+    <div class="form-group">
+      <div class="toggle-row">
+        <span class="toggle-label">📅 Journée entière</span>
+        <button class="toggle" id="allday-toggle" onclick="toggleAllDay()"></button>
+      </div>
+    </div>
+    <!-- Time fields -->
+    <div id="time-fields" style="display:flex;gap:.75rem" class="form-group">
       <div style="flex:1"><label class="form-label">Heure début</label><input class="form-input" id="ev-start" type="time"/></div>
       <div style="flex:1"><label class="form-label">Heure fin</label><input class="form-input" id="ev-end" type="time"/></div>
     </div>
     <div class="form-group">
       <label class="form-label">Catégorie *</label>
       <div class="cat-grid" id="cat-grid"></div>
-      <div class="add-cat-row">
-        <input class="add-cat-input" id="new-cat-name" type="text" placeholder="Nouvelle catégorie..."/>
-        <button class="add-cat-btn" onclick="addCustomCat()">+ Ajouter</button>
+      <!-- Add custom category -->
+      <div class="add-cat-section">
+        <div class="add-cat-title">+ Nouvelle catégorie</div>
+        <div style="margin-bottom:.5rem"><label class="form-label" style="font-size:.7rem">Symbole</label>
+          <div class="emoji-grid" id="emoji-grid"></div>
+        </div>
+        <div style="margin-bottom:.5rem"><label class="form-label" style="font-size:.7rem">Couleur</label>
+          <div class="color-grid" id="color-grid"></div>
+        </div>
+        <div class="add-cat-row">
+          <input class="add-cat-input" id="new-cat-name" type="text" placeholder="Nom de la catégorie..."/>
+          <button class="add-cat-btn" onclick="addCustomCat()">Créer</button>
+        </div>
       </div>
     </div>
     <div class="form-group">
@@ -351,6 +423,7 @@
       <select class="form-input" id="ev-reminder">
         <option value="">Aucun rappel</option>
         <option value="0">À l'heure de l'événement</option>
+        <option value="allday9">Journée entière — rappel à 9h00</option>
         <option value="15">15 minutes avant</option>
         <option value="30">30 minutes avant</option>
         <option value="60">1 heure avant</option>
@@ -367,6 +440,59 @@
   </div>
 </div>
 
+<!-- API SETTINGS MODAL -->
+<div class="modal-overlay" id="api-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🔑 Clé API Claude</div>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.6">Entre ta clé API Anthropic pour activer l'assistant IA. Va sur <strong style="color:var(--orange)">console.anthropic.com</strong> → API Keys → Create Key.</p>
+    <div class="form-group">
+      <label class="form-label">Clé API (commence par sk-ant-...)</label>
+      <input class="form-input" id="api-key-input" type="password" placeholder="sk-ant-api03-..."/>
+    </div>
+    <div style="background:rgba(249,115,22,.08);border:1px solid var(--orange);border-radius:12px;padding:.85rem;margin-bottom:1rem">
+      <p style="font-size:.75rem;color:var(--orange);line-height:1.6">🔒 Ta clé est sauvegardée uniquement sur ton appareil, jamais partagée.</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="closeModal('api-modal')">Annuler</button>
+      <button class="btn-primary" onclick="saveAPIKey()">✓ Connecter</button>
+    </div>
+  </div>
+</div>
+
+<!-- EMAIL SETTINGS MODAL -->
+<div class="modal-overlay" id="email-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">✉️ Email de rappel</div>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.6">Tu recevras un email de rappel pour chaque événement avec un rappel configuré.</p>
+    <div class="form-group">
+      <label class="form-label">Adresse email</label>
+      <input class="form-input" id="email-input" type="email" placeholder="ton@email.com"/>
+    </div>
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="closeModal('email-modal')">Annuler</button>
+      <button class="btn-primary" onclick="saveEmail()">✓ Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<!-- PIN CHANGE MODAL -->
+<div class="modal-overlay" id="pin-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🔢 Changer le NIP</div>
+    <div class="form-group"><label class="form-label">NIP actuel</label><input class="form-input" id="pin-old" type="password" maxlength="4" placeholder="****"/></div>
+    <div class="form-group"><label class="form-label">Nouveau NIP (4 chiffres)</label><input class="form-input" id="pin-new" type="password" maxlength="4" placeholder="****"/></div>
+    <div class="form-group"><label class="form-label">Confirmer nouveau NIP</label><input class="form-input" id="pin-confirm" type="password" maxlength="4" placeholder="****"/></div>
+    <p id="pin-change-error" style="color:#ef4444;font-size:.82rem;min-height:1em;margin-bottom:.5rem"></p>
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="closeModal('pin-modal')">Annuler</button>
+      <button class="btn-primary" onclick="changePIN()">✓ Changer</button>
+    </div>
+  </div>
+</div>
+
 <!-- AI CHAT MODAL -->
 <div class="modal-overlay" id="ai-modal">
   <div class="modal-sheet">
@@ -376,56 +502,80 @@
         <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700">🤖 Assistant <span style="color:var(--orange)">IA</span></div>
         <button onclick="closeModal('ai-modal')" style="background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer">✕</button>
       </div>
-      <div style="font-size:.75rem;color:var(--muted);margin-top:.2rem">Envoie une photo d'horaire ou demande d'ajouter des événements</div>
+      <div id="ai-api-warning" style="display:none;margin-top:.5rem;background:rgba(239,68,68,.1);border:1px solid #ef4444;border-radius:8px;padding:.6rem .8rem;font-size:.75rem;color:#ef4444">
+        ⚠️ Clé API non configurée. Va dans <span style="cursor:pointer;text-decoration:underline" onclick="closeModal('ai-modal');showView('settings');openAPISettings()">Paramètres → Clé API</span> pour activer l'IA.
+      </div>
     </div>
     <div class="ai-messages" id="ai-messages"></div>
     <div class="ai-input-row">
-      <button class="ai-img-btn" onclick="document.getElementById('ai-file-input').click()">📷</button>
-      <input type="file" id="ai-file-input" accept="image/*" capture="environment" onchange="handleImageUpload(event)"/>
-      <textarea class="ai-text-input" id="ai-input" placeholder="Ex: Ajoute mon quart lundi 7h-15h, analyse cet horaire..." rows="1" onkeydown="aiKeyDown(event)"></textarea>
+      <button class="ai-img-btn" onclick="document.getElementById('ai-file-input').click()" title="Photo depuis galerie ou caméra">📷</button>
+      <input type="file" id="ai-file-input" accept="image/*" onchange="handleImageUpload(event)"/>
+      <textarea class="ai-text-input" id="ai-input" placeholder="Ex: Ajoute mon quart lundi 7h-15h..." rows="1" onkeydown="aiKeyDown(event)"></textarea>
       <button class="ai-send-btn" onclick="sendAIMessage()">↑</button>
     </div>
   </div>
 </div>
 
 <script>
-// ═══ CATEGORIES ═══
-const DEFAULT_CATS=[
-  {id:'travail',label:'Travail',emoji:'🟠',color:'#f97316'},
-  {id:'francine',label:'Francine',emoji:'💙',color:'#3b82f6'},
-  {id:'francia',label:'Francia',emoji:'💜',color:'#a855f7'},
-  {id:'medical',label:'Médical',emoji:'🏥',color:'#22c55e'},
-  {id:'famille',label:'Famille',emoji:'👨‍👩‍👧‍👧',color:'#ec4899'},
-  {id:'perso',label:'Personnel',emoji:'⭐',color:'#f59e0b'},
-  {id:'sport',label:'Sport',emoji:'🏋️',color:'#eab308'},
-  {id:'rdv',label:'Rendez-vous',emoji:'📅',color:'#06b6d4'},
-];
-const CAT_KEY='ma_cats';
-let cats=[];
-try{cats=JSON.parse(localStorage.getItem(CAT_KEY))||DEFAULT_CATS}catch(e){cats=DEFAULT_CATS}
-if(!cats.length)cats=DEFAULT_CATS;
-function saveCats(){localStorage.setItem(CAT_KEY,JSON.stringify(cats))}
-function getCat(id){return cats.find(c=>c.id===id)||{label:id,emoji:'📌',color:'#6b6b6b'}}
+// ══════════════════════════════════════
+//  STORAGE KEYS
+// ══════════════════════════════════════
+const SK_EV='ma_ev5', SK_CATS='ma_cats2', SK_CFG='ma_config';
 
-// ═══ EVENTS ═══
-const SK='ma_ev4';
+// ══════════════════════════════════════
+//  CONFIG (API key, email, PIN)
+// ══════════════════════════════════════
+let cfg={pin:'1234',apiKey:'',email:'e.pilon12@gmail.com'};
+try{Object.assign(cfg,JSON.parse(localStorage.getItem(SK_CFG)||'{}'))}catch(e){}
+const saveCfg=()=>localStorage.setItem(SK_CFG,JSON.stringify(cfg));
+
+// ══════════════════════════════════════
+//  CATEGORIES
+// ══════════════════════════════════════
+const DEFAULT_CATS=[
+  {id:'travail',label:'Travail',emoji:'🟠',color:'#f97316',custom:false},
+  {id:'francine',label:'Francine',emoji:'💙',color:'#3b82f6',custom:false},
+  {id:'francia',label:'Francia',emoji:'💜',color:'#a855f7',custom:false},
+  {id:'medical',label:'Médical',emoji:'🏥',color:'#22c55e',custom:false},
+  {id:'famille',label:'Famille',emoji:'❤️',color:'#ec4899',custom:false},
+  {id:'perso',label:'Personnel',emoji:'⭐',color:'#f59e0b',custom:false},
+  {id:'sport',label:'Sport',emoji:'🏋️',color:'#eab308',custom:false},
+  {id:'rdv',label:'Rendez-vous',emoji:'📅',color:'#06b6d4',custom:false},
+];
+let cats=DEFAULT_CATS;
+try{const s=JSON.parse(localStorage.getItem(SK_CATS));if(s&&s.length)cats=s}catch(e){}
+const saveCats=()=>localStorage.setItem(SK_CATS,JSON.stringify(cats));
+const getCat=id=>cats.find(c=>c.id===id)||{label:id,emoji:'📌',color:'#6b6b6b'};
+
+const EMOJI_OPTS=['🏃','🍎','🎵','📚','✈️','🎮','🌿','💊','🔧','🐾','🌙','☀️','🎯','💡','🏠','🚗','🎂','🌊','⚽','🎸'];
+const COLOR_OPTS=['#f97316','#3b82f6','#a855f7','#22c55e','#ec4899','#f59e0b','#06b6d4','#ef4444','#8b5cf6','#10b981','#f43f5e','#64748b','#84cc16','#0891b2','#d946ef','#fb923c'];
+
+let selNewEmoji=EMOJI_OPTS[0], selNewColor=COLOR_OPTS[0];
+
+// ══════════════════════════════════════
+//  EVENTS
+// ══════════════════════════════════════
 let events=[];
-try{events=JSON.parse(localStorage.getItem(SK)||'[]')}catch(e){events=[]}
-let editId=null,selCat='travail';
-const save=()=>localStorage.setItem(SK,JSON.stringify(events));
+try{events=JSON.parse(localStorage.getItem(SK_EV)||'[]')}catch(e){events=[]}
+let editId=null, selCat='travail', isAllDay=false;
+const save=()=>localStorage.setItem(SK_EV,JSON.stringify(events));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
 
-// ═══ PIN ═══
-const CORRECT='1234';let pin='';
+// ══════════════════════════════════════
+//  PIN
+// ══════════════════════════════════════
+let pin='';
 function pinPress(n){if(pin.length>=4)return;pin+=n;dots();if(pin.length===4)checkPin()}
 function pinDel(){pin=pin.slice(0,-1);dots();document.getElementById('pin-error').textContent=''}
 function dots(){for(let i=0;i<4;i++)document.getElementById('d'+i).classList.toggle('filled',i<pin.length)}
 function checkPin(){
-  if(pin===CORRECT){document.getElementById('login-screen').style.display='none';document.getElementById('app').classList.add('visible');boot()}
+  if(pin===cfg.pin){document.getElementById('login-screen').style.display='none';document.getElementById('app').classList.add('visible');boot()}
   else{document.getElementById('pin-error').textContent='NIP incorrect, réessaie.';pin='';dots()}
 }
 
-// ═══ BOOT ═══
+// ══════════════════════════════════════
+//  BOOT
+// ══════════════════════════════════════
 const DAYS=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
 const MON=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 const MS=['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
@@ -435,32 +585,84 @@ function boot(){
   const chip=DAYS[now.getDay()]+' '+now.getDate()+' '+MS[now.getMonth()];
   document.getElementById('home-date').textContent=chip;
   document.getElementById('agenda-date').textContent=chip;
-  if('Notification' in window&&Notification.permission==='default')document.getElementById('notif-prompt').style.display='block';
-  setInterval(checkReminders,60000);checkReminders();
-  addAIMessage('ai','Bonjour Éric ! 👋 Je peux t\'aider à gérer ton agenda. Envoie-moi une photo de ton horaire de travail ou demande-moi d\'ajouter des événements. Ex: "Ajoute mon quart mardi 7h à 15h30" ou "Ajoute la gym de Francine vendredi 18h"');
+  updateSettingsUI();
+  setInterval(checkEmailReminders,60000);
+  checkEmailReminders();
+  buildEmojiGrid();
+  buildColorGrid();
+  addAIMsg('ai','Bonjour Éric ! 👋\n\nJe peux t\'aider à gérer ton agenda :\n• Envoie une 📷 photo de ton horaire de travail\n• Demande d\'ajouter des événements : "Ajoute mon quart lundi 7h à 15h30"\n• Consulte ton agenda : "Qu\'est-ce que j\'ai cette semaine ?"');
 }
 
-// ═══ VIEWS ═══
+// ══════════════════════════════════════
+//  VIEWS
+// ══════════════════════════════════════
 function showView(id){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+id).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  const nm={home:'nav-home',agenda:'nav-agenda'};
+  const nm={home:'nav-home',agenda:'nav-agenda',settings:'nav-settings'};
   if(nm[id])document.getElementById(nm[id]).classList.add('active');
   document.getElementById('fab').classList.toggle('show',id==='agenda');
+  if(id==='settings')updateSettingsUI();
 }
 function openAgenda(){showView('agenda');renderAll()}
 function showSoon(t,d){document.getElementById('soon-title').textContent=t;document.getElementById('soon-desc').textContent=d;showView('soon')}
 function openAIChat(){
   document.getElementById('ai-modal').classList.add('open');
   document.getElementById('nav-ia').classList.add('active');
+  document.getElementById('ai-api-warning').style.display=cfg.apiKey?'none':'block';
 }
 function closeModal(id){document.getElementById(id).classList.remove('open')}
-document.getElementById('event-modal').addEventListener('click',function(e){if(e.target===this)closeModal('event-modal')});
-document.getElementById('ai-modal').addEventListener('click',function(e){if(e.target===this)closeModal('ai-modal')});
+['event-modal','api-modal','email-modal','pin-modal','ai-modal'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',function(e){if(e.target===this)closeModal(id)});
+});
 
-// ═══ AGENDA ═══
-let aView='semaine',cursor=new Date();cursor.setHours(0,0,0,0);
+// ══════════════════════════════════════
+//  SETTINGS
+// ══════════════════════════════════════
+function updateSettingsUI(){
+  const has=!!cfg.apiKey;
+  document.getElementById('api-status-text').textContent=has?'Clé configurée ✓':'Non configurée';
+  document.getElementById('api-status-badge').textContent=has?'Connecté':'Non connecté';
+  document.getElementById('api-status-badge').className='api-status '+(has?'connected':'disconnected');
+  document.getElementById('email-status-text').textContent=cfg.email||'Non configuré';
+}
+function openAPISettings(){
+  document.getElementById('api-key-input').value=cfg.apiKey?'••••••••••••':'';
+  document.getElementById('api-modal').classList.add('open');
+}
+function saveAPIKey(){
+  const v=document.getElementById('api-key-input').value.trim();
+  if(!v){alert('Entre ta clé API.');return}
+  cfg.apiKey=v;saveCfg();updateSettingsUI();closeModal('api-modal');
+  alert('✅ Clé API sauvegardée ! L\'assistant IA est maintenant actif.');
+}
+function openEmailSettings(){
+  document.getElementById('email-input').value=cfg.email||'';
+  document.getElementById('email-modal').classList.add('open');
+}
+function saveEmail(){
+  const v=document.getElementById('email-input').value.trim();
+  if(!v||!v.includes('@')){alert('Entre une adresse email valide.');return}
+  cfg.email=v;saveCfg();updateSettingsUI();closeModal('email-modal');
+  alert('✅ Email sauvegardé ! Tu recevras tes rappels à '+v);
+}
+function openPINSettings(){document.getElementById('pin-modal').classList.add('open')}
+function changePIN(){
+  const old=document.getElementById('pin-old').value;
+  const nw=document.getElementById('pin-new').value;
+  const conf=document.getElementById('pin-confirm').value;
+  const err=document.getElementById('pin-change-error');
+  if(old!==cfg.pin){err.textContent='NIP actuel incorrect.';return}
+  if(nw.length!==4||!/^\d{4}$/.test(nw)){err.textContent='Le NIP doit être 4 chiffres.';return}
+  if(nw!==conf){err.textContent='Les NIP ne correspondent pas.';return}
+  cfg.pin=nw;saveCfg();closeModal('pin-modal');alert('✅ NIP changé avec succès !');
+}
+
+// ══════════════════════════════════════
+//  AGENDA STATE
+// ══════════════════════════════════════
+let aView='semaine', cursor=new Date();cursor.setHours(0,0,0,0);
 function setView(v){
   aView=v;
   ['mois','semaine','jour'].forEach(x=>{
@@ -484,6 +686,7 @@ function periodNext(){
 }
 function renderAll(){if(aView==='mois')renderMonth();else if(aView==='semaine')renderWeek();else renderDay()}
 
+// ── MONTH ──
 function renderMonth(){
   const y=cursor.getFullYear(),m=cursor.getMonth();
   document.getElementById('period-label').textContent=MON[m]+' '+y;
@@ -497,7 +700,7 @@ function renderMonth(){
 }
 function mday(date,other,today){
   const el=document.createElement('div');
-  el.className='mday'+(other?' other-month':'')+(date.getTime()===today.getTime()?' today':'');
+  el.className='mday'+(other?' other-month':'')+(date.getTime()===today.getTime()?' is-today':'');
   const n=document.createElement('div');n.className='mday-num';n.textContent=date.getDate();el.appendChild(n);
   const dots=document.createElement('div');dots.className='mday-dots';
   events.filter(e=>e.date===ds(date)).slice(0,3).forEach(e=>{
@@ -506,6 +709,8 @@ function mday(date,other,today){
   el.appendChild(dots);el.onclick=()=>{cursor=new Date(date);setView('jour')};
   return el;
 }
+
+// ── WEEK ──
 function renderWeek(){
   const dow=cursor.getDay(),mon=new Date(cursor);mon.setDate(cursor.getDate()-dow);
   const sun=new Date(mon);sun.setDate(mon.getDate()+6);
@@ -516,83 +721,119 @@ function renderWeek(){
     const d=new Date(mon);d.setDate(mon.getDate()+i);
     const isToday=d.getTime()===today.getTime();
     const blk=document.createElement('div');blk.className='week-day-block';
-    const lbl=document.createElement('div');lbl.className='week-day-label'+(isToday?' is-today':'');
+    const lbl=document.createElement('div');
+    lbl.className='week-day-label'+(isToday?' is-today-lbl':'');
+    // Fix: only show "Aujourd'hui" pill for actual today
     lbl.innerHTML=DAYS[d.getDay()]+' '+d.getDate()+' '+MS[d.getMonth()]+(isToday?' <span class="today-pill">Aujourd\'hui</span>':'');
     blk.appendChild(lbl);
-    const evs=events.filter(e=>e.date===ds(d)).sort((a,b)=>a.start.localeCompare(b.start));
+    const evs=events.filter(e=>e.date===ds(d)).sort((a,b)=>{
+      if(a.allDay&&!b.allDay)return-1;if(!a.allDay&&b.allDay)return 1;
+      return(a.start||'').localeCompare(b.start||'');
+    });
     if(!evs.length){const n=document.createElement('div');n.className='week-no-events';n.textContent='Aucun événement';blk.appendChild(n)}
     else evs.forEach(e=>blk.appendChild(card(e)));
     sc.appendChild(blk);
   }
 }
+
+// ── DAY ──
 function renderDay(){
-  document.getElementById('period-label').textContent=DAYS[cursor.getDay()]+' '+cursor.getDate()+' '+MON[cursor.getMonth()];
+  const today=new Date();today.setHours(0,0,0,0);
+  const isToday=cursor.getTime()===today.getTime();
+  document.getElementById('period-label').textContent=DAYS[cursor.getDay()]+' '+cursor.getDate()+' '+MON[cursor.getMonth()]+(isToday?' — Aujourd\'hui':'');
   const sc=document.getElementById('day-scroll');sc.innerHTML='';
   const big=document.createElement('div');big.className='day-header-big';
   big.innerHTML=DAYS[cursor.getDay()]+' <span>'+cursor.getDate()+' '+MON[cursor.getMonth()]+'</span>';
   sc.appendChild(big);
-  const evs=events.filter(e=>e.date===ds(cursor)).sort((a,b)=>a.start.localeCompare(b.start));
+  const evs=events.filter(e=>e.date===ds(cursor)).sort((a,b)=>{
+    if(a.allDay&&!b.allDay)return-1;if(!a.allDay&&b.allDay)return 1;
+    return(a.start||'').localeCompare(b.start||'');
+  });
   if(!evs.length){const n=document.createElement('div');n.className='week-no-events';n.style.padding='.5rem';n.textContent='Aucun événement — appuie sur + pour en ajouter !';sc.appendChild(n)}
   else evs.forEach(e=>sc.appendChild(card(e)));
 }
+
+// ── CARD ──
 function card(ev){
   const c=getCat(ev.cat);
   const el=document.createElement('div');
   el.className='event-card';
-  el.style.setProperty('--cat-color',c.color);
-  el.style.cssText+=';--cat-color:'+c.color;
-  el.querySelector ? null : null;
-  el.innerHTML=`<style>.event-card::before{background:${c.color}}</style>`.replace('<style>','').replace('</style>','');
-  el.setAttribute('data-cat',ev.cat);
   el.style.borderLeft='4px solid '+c.color;
-  el.style.borderRadius='14px';
   el.innerHTML=`
-    <div class="ev-time">${ev.start||'–'}<br><span style="font-size:.65rem">${ev.end||''}</span></div>
+    <div class="ev-time">${ev.allDay?'<span style="font-size:.65rem;color:var(--orange)">Jour entier</span>':(ev.start||'–')+'<br><span style="font-size:.65rem">'+(ev.end||'')+'</span>'}</div>
     <div class="ev-body">
       <div class="ev-title">${c.emoji} ${ev.title}</div>
       ${ev.note?'<div class="ev-sub">'+ev.note+'</div>':''}
-      ${ev.reminder!==undefined&&ev.reminder!==''?'<div class="ev-reminder-tag">🔔 '+rl(ev.reminder)+'</div>':''}
+      ${ev.reminder!==undefined&&ev.reminder!==''?'<div class="ev-reminder-tag">🔔 '+rl(ev.reminder,ev.allDay)+'</div>':''}
     </div>`;
   el.onclick=()=>openEdit(ev);
   return el;
 }
 
-// ═══ CAT GRID ═══
-function renderCatGrid(){
-  const g=document.getElementById('cat-grid');g.innerHTML='';
-  cats.forEach(c=>{
-    const btn=document.createElement('div');
-    btn.className='cat-btn'+(selCat===c.id?' selected':'');
-    btn.dataset.cat=c.id;
-    btn.innerHTML=`<span style="font-size:1.1rem">${c.emoji}</span><span>${c.label}</span>`;
-    btn.style.borderColor=selCat===c.id?c.color:'';
-    btn.onclick=()=>pickCat(btn,c.id);
+// ══════════════════════════════════════
+//  CAT GRID
+// ══════════════════════════════════════
+function buildEmojiGrid(){
+  const g=document.getElementById('emoji-grid');g.innerHTML='';
+  EMOJI_OPTS.forEach((e,i)=>{
+    const btn=document.createElement('div');btn.className='emoji-opt'+(i===0?' sel':'');
+    btn.textContent=e;btn.onclick=()=>{selNewEmoji=e;document.querySelectorAll('.emoji-opt').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel')};
     g.appendChild(btn);
   });
 }
-function pickCat(btn,id){
-  selCat=id;
-  document.querySelectorAll('.cat-btn').forEach(b=>{
-    const cid=b.dataset.cat;const c=getCat(cid);
-    b.classList.toggle('selected',b===btn);
-    b.style.borderColor=b===btn?c.color:'';
+function buildColorGrid(){
+  const g=document.getElementById('color-grid');g.innerHTML='';
+  COLOR_OPTS.forEach((c,i)=>{
+    const btn=document.createElement('div');btn.className='color-opt'+(i===0?' sel':'');
+    btn.style.background=c;btn.onclick=()=>{selNewColor=c;document.querySelectorAll('.color-opt').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel')};
+    g.appendChild(btn);
   });
 }
+function renderCatGrid(){
+  const g=document.getElementById('cat-grid');g.innerHTML='';
+  cats.forEach(c=>{
+    const btn=document.createElement('div');btn.className='cat-btn'+(selCat===c.id?' selected':'');
+    btn.dataset.cat=c.id;
+    if(selCat===c.id)btn.style.borderColor=c.color;
+    btn.innerHTML=`<span style="font-size:1.1rem">${c.emoji}</span><span>${c.label}</span>`;
+    if(c.custom){
+      const del=document.createElement('button');del.className='cat-del';del.textContent='✕';
+      del.onclick=e=>{e.stopPropagation();deleteCat(c.id)};btn.appendChild(del);
+    }
+    btn.onclick=()=>{selCat=c.id;document.querySelectorAll('.cat-btn').forEach(b=>{b.classList.toggle('selected',b===btn);b.style.borderColor=b===btn?getCat(b.dataset.cat).color:''})};
+    g.appendChild(btn);
+  });
+}
+function deleteCat(id){
+  if(!confirm('Supprimer cette catégorie ?'))return;
+  cats=cats.filter(c=>c.id!==id);saveCats();if(selCat===id)selCat='travail';renderCatGrid();
+}
 function addCustomCat(){
-  const inp=document.getElementById('new-cat-name');
-  const name=inp.value.trim();
-  if(!name)return;
-  const EMOJIS=['🔵','🟢','🟣','🔴','🟡','🟤','⚫','🔶','🔷'];
-  const COLORS=['#6366f1','#10b981','#8b5cf6','#ef4444','#f59e0b','#78716c','#374151','#f97316','#0ea5e9'];
-  const idx=cats.length%EMOJIS.length;
-  const newCat={id:'custom_'+uid(),label:name,emoji:EMOJIS[idx],color:COLORS[idx]};
-  cats.push(newCat);saveCats();
-  inp.value='';selCat=newCat.id;renderCatGrid();
+  const name=document.getElementById('new-cat-name').value.trim();
+  if(!name){alert('Entre un nom.');return}
+  const newCat={id:'c_'+uid(),label:name,emoji:selNewEmoji,color:selNewColor,custom:true};
+  cats.push(newCat);saveCats();selCat=newCat.id;
+  document.getElementById('new-cat-name').value='';renderCatGrid();
 }
 
-// ═══ ADD/EDIT ═══
+// ══════════════════════════════════════
+//  ALL DAY TOGGLE
+// ══════════════════════════════════════
+function toggleAllDay(){
+  isAllDay=!isAllDay;
+  document.getElementById('allday-toggle').classList.toggle('on',isAllDay);
+  document.getElementById('time-fields').style.display=isAllDay?'none':'flex';
+  // Update reminder options
+  const sel=document.getElementById('ev-reminder');
+  const alldayOpt=sel.querySelector('option[value="allday9"]');
+  if(alldayOpt)alldayOpt.style.display=isAllDay?'':'none';
+}
+
+// ══════════════════════════════════════
+//  ADD / EDIT / SAVE / DELETE
+// ══════════════════════════════════════
 function openAddEvent(){
-  editId=null;selCat='travail';
+  editId=null;selCat='travail';isAllDay=false;
   document.getElementById('modal-title').textContent='Nouvel événement';
   document.getElementById('ev-title').value='';
   document.getElementById('ev-date').value=ds(cursor);
@@ -601,11 +842,13 @@ function openAddEvent(){
   document.getElementById('ev-note').value='';
   document.getElementById('ev-reminder').value='';
   document.getElementById('btn-delete').style.display='none';
+  document.getElementById('allday-toggle').classList.remove('on');
+  document.getElementById('time-fields').style.display='flex';
   renderCatGrid();
   document.getElementById('event-modal').classList.add('open');
 }
 function openEdit(ev){
-  editId=ev.id;selCat=ev.cat;
+  editId=ev.id;selCat=ev.cat;isAllDay=!!ev.allDay;
   document.getElementById('modal-title').textContent='Modifier';
   document.getElementById('ev-title').value=ev.title;
   document.getElementById('ev-date').value=ev.date;
@@ -614,6 +857,8 @@ function openEdit(ev){
   document.getElementById('ev-note').value=ev.note||'';
   document.getElementById('ev-reminder').value=ev.reminder!==undefined?ev.reminder:'';
   document.getElementById('btn-delete').style.display='block';
+  document.getElementById('allday-toggle').classList.toggle('on',isAllDay);
+  document.getElementById('time-fields').style.display=isAllDay?'none':'flex';
   renderCatGrid();
   document.getElementById('event-modal').classList.add('open');
 }
@@ -622,49 +867,69 @@ function saveEvent(){
   const date=document.getElementById('ev-date').value;
   if(!title){alert('Ajoute un titre !');return}
   if(!date){alert('Choisis une date !');return}
-  const ev={id:editId||uid(),title,date,start:document.getElementById('ev-start').value,end:document.getElementById('ev-end').value,note:document.getElementById('ev-note').value.trim(),cat:selCat,reminder:document.getElementById('ev-reminder').value};
+  const ev={id:editId||uid(),title,date,allDay:isAllDay,start:isAllDay?'':document.getElementById('ev-start').value,end:isAllDay?'':document.getElementById('ev-end').value,note:document.getElementById('ev-note').value.trim(),cat:selCat,reminder:document.getElementById('ev-reminder').value};
   if(editId){const i=events.findIndex(e=>e.id===editId);if(i>=0)events[i]=ev;else events.push(ev)}
   else events.push(ev);
-  save();schedReminder(ev);closeModal('event-modal');renderAll();
+  save();schedEmailReminder(ev);closeModal('event-modal');renderAll();
 }
 function deleteEvent(){
   if(!editId||!confirm('Supprimer ?'))return;
   events=events.filter(e=>e.id!==editId);save();closeModal('event-modal');renderAll();
 }
 
-// ═══ NOTIFICATIONS ═══
-function requestNotif(){
-  if(!('Notification' in window)){alert('Notifications non supportées ici. Assure-toi que l\'app est installée via Safari → Ajouter à l\'écran d\'accueil.');return}
-  Notification.requestPermission().then(p=>{
-    document.getElementById('notif-prompt').style.display='none';
-    if(p==='granted'){new Notification('MonAssistant 🟠',{body:'Rappels activés ! Tu seras notifié avant tes événements.'});events.forEach(schedReminder)}
-    else alert('Pour activer les notifications : installe l\'app via Safari → icône Partager → Ajouter à l\'écran d\'accueil, puis réessaie.')
-  });
-}
-const scheduled=new Set();
-function schedReminder(ev){
-  if(ev.reminder===undefined||ev.reminder==='')return;
-  if(Notification.permission!=='granted')return;
-  if(!ev.start||!ev.date)return;
-  const key=ev.id+'-'+ev.reminder+'-'+ev.date;
-  if(scheduled.has(key))return;
-  const[h,m]=ev.start.split(':').map(Number);
-  const evT=new Date(ev.date);evT.setHours(h,m,0,0);
-  const notifT=new Date(evT.getTime()-Number(ev.reminder)*60000);
-  const delay=notifT-new Date();
+// ══════════════════════════════════════
+//  EMAIL REMINDERS (via mailto simulation + Web Share API)
+// ══════════════════════════════════════
+const emailScheduled=new Set();
+function schedEmailReminder(ev){
+  if(!ev.reminder&&ev.reminder!=='0')return;
+  if(!cfg.email)return;
+  const key=ev.id+'-'+ev.reminder;
+  if(emailScheduled.has(key))return;
+  let notifTime;
+  if(ev.allDay||ev.reminder==='allday9'){
+    // 9h00 the day of the event
+    notifTime=new Date(ev.date);notifTime.setHours(9,0,0,0);
+  } else if(ev.start){
+    const[h,m]=ev.start.split(':').map(Number);
+    const evT=new Date(ev.date);evT.setHours(h,m,0,0);
+    notifTime=new Date(evT.getTime()-Number(ev.reminder)*60000);
+  } else return;
+  const delay=notifTime-new Date();
   if(delay>0&&delay<7*86400000){
-    scheduled.add(key);
-    setTimeout(()=>{new Notification('🗓 '+ev.title,{body:rl(ev.reminder)+' — '+ev.start+(ev.note?' · '+ev.note:''),tag:ev.id})},delay);
+    emailScheduled.add(key);
+    setTimeout(()=>sendEmailReminder(ev),delay);
   }
 }
-function checkReminders(){events.forEach(schedReminder)}
-function rl(min){const m=+min;return m===0?'À l\'heure':m<60?m+' min avant':m===60?'1h avant':m===120?'2h avant':'1 jour avant'}
+function checkEmailReminders(){events.forEach(schedEmailReminder)}
 
-// ═══ AI CHAT ═══
-let aiHistory=[];
-let pendingImage=null;
+function sendEmailReminder(ev){
+  const c=getCat(ev.cat);
+  const subject=encodeURIComponent('🗓 Rappel MonAssistant : '+ev.title);
+  const body=encodeURIComponent(
+    'Rappel de ton agenda MonAssistant\n\n'+
+    '📅 Événement : '+ev.title+'\n'+
+    '📆 Date : '+ev.date+'\n'+
+    (ev.allDay?'🕘 Journée entière\n':('🕐 Heure : '+(ev.start||'')+(ev.end?' → '+ev.end:'')+'\n'))+
+    (ev.note?'📝 Note : '+ev.note+'\n':'')+
+    '🏷️ Catégorie : '+c.emoji+' '+c.label+'\n\n'+
+    '— MonAssistant'
+  );
+  // Try to open mail app
+  const link=document.createElement('a');
+  link.href='mailto:'+cfg.email+'?subject='+subject+'&body='+body;
+  link.style.display='none';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
 
-function addAIMessage(role,text){
+// ══════════════════════════════════════
+//  AI CHAT
+// ══════════════════════════════════════
+let aiHistory=[], pendingImg=null;
+
+function addAIMsg(role,text){
   const msgs=document.getElementById('ai-messages');
   const div=document.createElement('div');
   div.className='ai-msg '+role;
@@ -673,117 +938,95 @@ function addAIMessage(role,text){
   msgs.scrollTop=msgs.scrollHeight;
   return div;
 }
-
 function aiKeyDown(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAIMessage()}}
 
 async function sendAIMessage(){
+  if(!cfg.apiKey){alert('Configure ta clé API dans Paramètres → Clé API Claude.');return}
   const inp=document.getElementById('ai-input');
   const text=inp.value.trim();
-  if(!text&&!pendingImage)return;
+  if(!text&&!pendingImg)return;
   inp.value='';
 
-  const userText=pendingImage?'📷 '+text:''+text;
-  addAIMessage('user',userText||'📷 Photo envoyée');
+  addAIMsg('user',pendingImg?'📷 '+(text||'Photo envoyée'):text);
+  const loading=addAIMsg('ai','...');loading.classList.add('loading');
 
-  const loading=addAIMessage('ai','...');
-  loading.classList.add('loading');
-
-  // Build context about current events
   const today=new Date();
-  const upcomingEvs=events.filter(e=>new Date(e.date)>=today).slice(0,10).map(e=>{
+  const upcomingEvs=events.filter(e=>new Date(e.date)>=today).slice(0,15).map(e=>{
     const c=getCat(e.cat);
-    return `- ${e.date} ${e.start||''} ${e.title} (${c.label})`;
+    return `- ${e.date} ${e.allDay?'(journée entière)':e.start+'-'+e.end} ${e.title} [${c.label}]`;
   }).join('\n');
 
-  const systemPrompt=`Tu es l'assistant IA intégré dans l'agenda personnel d'Éric Pilon, infirmier au bloc opératoire à Joliette, qui habite à Sainte-Adèle QC. Il a deux filles: Francine et Francia. Sa femme s'appelle [femme vétérinaire].
+  const catList=cats.map(c=>c.id+'='+c.label).join(', ');
 
+  const sys=`Tu es l'assistant IA de l'agenda personnel d'Éric Pilon, infirmier au bloc opératoire à Joliette QC. Il a deux filles Francine et Francia. Il habite à Sainte-Adèle.
 Aujourd'hui: ${today.toLocaleDateString('fr-CA')}
+Événements à venir:\n${upcomingEvs||'(aucun)'}
+Catégories: ${catList}
 
-Événements à venir dans l'agenda:
-${upcomingEvs||'(Aucun événement)'}
+Quand l'utilisateur veut ajouter des événements, réponds UNIQUEMENT avec ce JSON (sans markdown, sans backticks):
+{"action":"add_events","events":[{"title":"...","date":"YYYY-MM-DD","start":"HH:MM","end":"HH:MM","cat":"id","note":"","allDay":false}],"message":"..."}
 
-Catégories disponibles: ${cats.map(c=>c.id+' ('+c.label+')').join(', ')}
-
-IMPORTANT: Quand l'utilisateur veut ajouter un ou plusieurs événements, réponds UNIQUEMENT en JSON pur (sans markdown, sans backticks) dans ce format exact:
-{"action":"add_events","events":[{"title":"...","date":"YYYY-MM-DD","start":"HH:MM","end":"HH:MM","cat":"id_categorie","note":"..."}],"message":"Message de confirmation"}
-
-Pour toute autre question ou conversation, réponds normalement en français.
-Si tu reçois une image d'horaire de travail, analyse-la et extrait tous les quarts de travail avec dates et heures, puis retourne le JSON avec tous les événements à ajouter.`;
+Pour journée entière: allDay=true, start="" end="".
+Si tu analyses une photo d'horaire: extrait TOUS les quarts avec dates exactes (utilise l'année ${today.getFullYear()}).
+Pour toute autre question, réponds en français naturellement.`;
 
   try{
-    const messages=[{role:'user',content:text||(pendingImage?'Analyse cet horaire de travail et ajoute tous les quarts':'?')}];
-
-    // Add image if present
     let userContent;
-    if(pendingImage){
-      userContent=[{type:'image',source:{type:'base64',media_type:pendingImage.type,data:pendingImage.data}},{type:'text',text:text||'Analyse cet horaire de travail et ajoute tous les quarts de travail dans mon agenda avec les bonnes dates et heures.'}];
+    if(pendingImg){
+      userContent=[{type:'image',source:{type:'base64',media_type:pendingImg.type,data:pendingImg.data}},{type:'text',text:text||'Analyse cet horaire et ajoute tous les quarts de travail dans mon agenda.'}];
     } else {
       userContent=text;
     }
-
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system:systemPrompt,
-        messages:[...aiHistory,{role:'user',content:userContent}]
-      })
+      headers:{'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,system:sys,messages:[...aiHistory,{role:'user',content:userContent}]})
     });
     const data=await res.json();
-    const reply=data.content?.find(b=>b.type==='text')?.text||'Désolé, erreur de connexion.';
-
-    // Try to parse JSON action
+    if(data.error){loading.textContent='Erreur : '+data.error.message;loading.classList.remove('loading');pendingImg=null;return}
+    const reply=data.content?.find(b=>b.type==='text')?.text||'Désolé, erreur.';
     let displayed=reply;
     try{
-      const json=JSON.parse(reply.trim());
+      const clean=reply.trim().replace(/^```json\n?/,'').replace(/\n?```$/,'');
+      const json=JSON.parse(clean);
       if(json.action==='add_events'&&json.events){
-        json.events.forEach(ev=>{
-          events.push({id:uid(),title:ev.title,date:ev.date,start:ev.start||'',end:ev.end||'',cat:ev.cat||'travail',note:ev.note||'',reminder:''});
-        });
+        json.events.forEach(ev=>events.push({id:uid(),title:ev.title,date:ev.date,start:ev.start||'',end:ev.end||'',cat:ev.cat||'travail',note:ev.note||'',allDay:!!ev.allDay,reminder:''}));
         save();renderAll();
-        displayed=json.message||`✅ ${json.events.length} événement(s) ajouté(s) à ton agenda !`;
+        displayed=(json.message||'✅ '+json.events.length+' événement(s) ajouté(s) !');
       }
-    }catch(e){/* not JSON, display as text */}
-
-    loading.textContent=displayed;
-    loading.classList.remove('loading');
-    aiHistory.push({role:'user',content:typeof userContent==='string'?userContent:'[image + texte]'});
+    }catch(e){}
+    loading.textContent=displayed;loading.classList.remove('loading');
+    aiHistory.push({role:'user',content:typeof userContent==='string'?userContent:'[image]'});
     aiHistory.push({role:'assistant',content:reply});
-    if(aiHistory.length>10)aiHistory=aiHistory.slice(-10);
-
+    if(aiHistory.length>12)aiHistory=aiHistory.slice(-12);
   }catch(err){
-    loading.textContent='Erreur de connexion. Vérifie ta connexion internet.';
+    loading.textContent='Erreur de connexion. Vérifie ta clé API et ta connexion.';
     loading.classList.remove('loading');
   }
-  pendingImage=null;
+  pendingImg=null;
 }
 
-async function handleImageUpload(e){
-  const file=e.target.files[0];
-  if(!file)return;
+function handleImageUpload(e){
+  const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
-  reader.onload=async(ev)=>{
-    const b64=ev.target.result.split(',')[1];
-    pendingImage={type:file.type,data:b64};
-    // Show preview message
-    const msgs=document.getElementById('ai-messages');
-    const prev=document.createElement('div');
-    prev.className='ai-msg user';
-    prev.innerHTML='📷 Photo reçue — analyse en cours...';
-    msgs.appendChild(prev);
-    msgs.scrollTop=msgs.scrollHeight;
-    // Auto-send
-    document.getElementById('ai-input').value='';
-    await sendAIMessage();
+  reader.onload=ev=>{
+    pendingImg={type:file.type,data:ev.target.result.split(',')[1]};
+    addAIMsg('user','📷 Photo chargée — envoi en cours...');
+    sendAIMessage();
   };
   reader.readAsDataURL(file);
   e.target.value='';
 }
 
-// ═══ HELPERS ═══
+// ══════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════
 function ds(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function rl(r,allDay){
+  if(r==='allday9'||allDay)return 'Rappel à 9h00';
+  const m=+r;
+  if(m===0)return 'À l\'heure';if(m<60)return m+' min avant';if(m===60)return '1h avant';if(m===120)return '2h avant';return '1 jour avant';
+}
 </script>
 </body>
 </html>
