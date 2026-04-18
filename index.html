@@ -371,7 +371,21 @@ select.form-input option{background:#1c1c1c;color:#f0ede8}
     <div id="fam-activite-list"></div>
   </div>
   <div id="fpane-repas" class="fam-pane">
-    <div class="fam-ai-btn" onclick="openFamAI('repas')"><span>&#129302;</span><span style="font-size:.82rem;color:var(--orange);font-weight:600">G&#233;n&#233;rer le menu de la semaine</span></div>
+    <div class="fam-ai-btn" onclick="openImportMenu()" style="border-color:#22c55e">
+      <span>&#128196;</span>
+      <div style="flex:1">
+        <div style="font-size:.82rem;color:#22c55e;font-weight:600">Importer un menu JSON</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:.1rem">Colle ton JSON genere depuis Claude.ai</div>
+      </div>
+      <span style="color:#22c55e;font-size:1.2rem">&#8250;</span>
+    </div>
+    <div class="fam-ai-btn" onclick="openFamAI('repas')">
+      <span>&#129302;</span>
+      <div style="flex:1">
+        <div style="font-size:.82rem;color:var(--orange);font-weight:600">Generer menu via API (payant)</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:.1rem">Utilise ta cle API Claude</div>
+      </div>
+    </div>
     <div class="section-hdr"><div class="section-hdr-title">Menu de la semaine</div><button class="add-btn" onclick="openAddRepas()">+ Ajouter</button></div>
     <div class="repas-grid" id="repas-grid"></div>
   </div>
@@ -1275,6 +1289,111 @@ function handleImageUpload(e) {
   reader.readAsDataURL(file);
   e.target.value='';
 }
+
+// ============================================================
+//  IMPORT MENU JSON
+// ============================================================
+function openImportMenu() {
+  document.getElementById('import-json-input').value = '';
+  document.getElementById('import-preview').style.display = 'none';
+  document.getElementById('import-error').style.display = 'none';
+  document.getElementById('import-modal').classList.add('open');
+  // Auto-validate on paste/type
+  document.getElementById('import-json-input').oninput = function() { validateImportJSON(); };
+}
+
+function validateImportJSON() {
+  var raw = document.getElementById('import-json-input').value.trim();
+  var preview = document.getElementById('import-preview');
+  var error = document.getElementById('import-error');
+  if(!raw) { preview.style.display='none'; error.style.display='none'; return null; }
+  try {
+    var s = raw.indexOf('{'), e = raw.lastIndexOf('}');
+    if(s===-1||e===-1) throw new Error('JSON invalide');
+    var json = JSON.parse(raw.slice(s,e+1));
+    // Accept both formats
+    var repasArr = json.repas || json.menu || json.semaine_repas || [];
+    if(!Array.isArray(repasArr) || repasArr.length===0) throw new Error('Aucun repas trouve dans le JSON');
+    // Build preview
+    var lines = repasArr.map(function(r) {
+      var ing = (r.ingredients||r.ingrediants||[]).length;
+      return '<div style="margin-bottom:.3rem"><strong style="color:var(--text)">'+r.jour+' '+r.date+'</strong> — '+r.nom+(ing?' <span style="color:#22c55e">('+ing+' ingr.)</span>':'')+'</div>';
+    });
+    document.getElementById('import-preview-content').innerHTML = lines.join('');
+    preview.style.display = 'block';
+    error.style.display = 'none';
+    return json;
+  } catch(err) {
+    preview.style.display = 'none';
+    error.style.display = 'block';
+    document.getElementById('import-error-msg').textContent = 'Erreur : ' + err.message;
+    return null;
+  }
+}
+
+function importMenuJSON() {
+  var json = validateImportJSON();
+  if(!json) { alert("Corrige le JSON avant d'importer."); return; }
+  var repasArr = json.repas || json.menu || json.semaine_repas || [];
+  var repasCount = 0, epicerieCount = 0;
+  repasArr.forEach(function(r) {
+    if(r.date && r.nom) {
+      repas[r.date] = r.nom;
+      repasCount++;
+    }
+    // Import ingredients into epicerie (avoid duplicates)
+    var ings = r.ingredients || r.ingrediants || [];
+    ings.forEach(function(ing) {
+      if(!ing.nom) return;
+      // Check if already in epicerie list
+      var exists = epicerie.find(function(x){ return x.nom.toLowerCase()===ing.nom.toLowerCase(); });
+      if(!exists) {
+        epicerie.push({id:uid(), nom:ing.nom, qte:ing.qte||'', rayon:ing.rayon||'Autre', checked:false});
+        epicerieCount++;
+      }
+    });
+  });
+  saveRepas(); saveEpicerie();
+  renderRepas(); renderEpicerie();
+  closeModal('import-modal');
+  alert("Importe avec succes ! " + repasCount + " repas et " + epicerieCount + " ingredients ajoutes.");
+}
+
+// Add click outside handler for import modal
+document.getElementById('import-modal').addEventListener('click', function(e){ if(e.target===this) closeModal('import-modal'); });
+
 </script>
+
+<!-- IMPORT MENU MODAL -->
+<div class="modal-overlay" id="import-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">&#128196; Importer un menu JSON</div>
+    <div style="background:var(--surface2);border:1px solid #22c55e;border-radius:12px;padding:1rem;margin-bottom:1rem">
+      <p style="font-size:.8rem;color:#22c55e;font-weight:600;margin-bottom:.5rem">Comment obtenir ton JSON gratuitement :</p>
+      <p style="font-size:.78rem;color:var(--muted);line-height:1.6">
+        1. Ouvre Claude.ai (ton abonnement existant)<br>
+        2. Dans le projet <strong style="color:var(--text)">MonAssistant - Menus</strong><br>
+        3. Demande : <em style="color:var(--orange)">"Genere le menu JSON MonAssistant pour la semaine du [date]"</em><br>
+        4. Copie le JSON et colle-le ci-dessous
+      </p>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Colle ton JSON ici</label>
+      <textarea class="form-input" id="import-json-input" rows="8" placeholder="Colle ici le JSON genere par Claude.ai..." style="resize:vertical;font-size:.78rem;font-family:monospace"></textarea>
+    </div>
+    <div id="import-preview" style="display:none;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:1rem">
+      <p style="font-size:.78rem;color:#22c55e;font-weight:600;margin-bottom:.5rem">&#10003; JSON valide detecte :</p>
+      <div id="import-preview-content" style="font-size:.78rem;color:var(--muted);line-height:1.6"></div>
+    </div>
+    <div id="import-error" style="display:none;background:rgba(239,68,68,.1);border:1px solid #ef4444;border-radius:12px;padding:.75rem;margin-bottom:1rem">
+      <p style="font-size:.78rem;color:#ef4444" id="import-error-msg"></p>
+    </div>
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="closeModal('import-modal')">Annuler</button>
+      <button class="btn-primary" style="background:#22c55e" onclick="importMenuJSON()">&#8593; Importer</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
