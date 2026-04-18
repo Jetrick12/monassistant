@@ -1101,7 +1101,7 @@ function rl(r,allDay){
 <!-- FAMILLE VIEW (injected into #app) -->
 <script>
 // Inject Famille view into DOM
-(function(){
+document.addEventListener('DOMContentLoaded',function(){
   const famHTML = `
   <div id="view-famille" class="view">
     <div class="app-header">
@@ -1164,7 +1164,7 @@ function rl(r,allDay){
   // Insert before bottom nav
   const nav = document.querySelector('.bottom-nav');
   nav.insertAdjacentHTML('beforebegin', famHTML);
-})();
+});
 
 // ══════════════════════════════════════
 //  FAMILLE DATA
