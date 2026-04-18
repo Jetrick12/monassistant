@@ -935,7 +935,7 @@ function saveEvent() {
   saveEvents();schedEmailReminder(ev);closeModal('event-modal');renderAll();
 }
 function deleteEvent() {
-  if(!editId||!confirm('Supprimer ?'))return;
+  if(!editId)return;
   events=events.filter(function(e){return e.id!==editId;});saveEvents();closeModal('event-modal');renderAll();
 }
 
@@ -1033,7 +1033,7 @@ function makeTacheCard(t) {
   return el;
 }
 function toggleTache(id,e){e.stopPropagation();var t=taches.find(function(x){return x.id===id;});if(t){t.done=!t.done;saveTaches();renderTaches();}}
-function deleteTache(id,e){e.stopPropagation();if(!confirm('Supprimer ?'))return;taches=taches.filter(function(t){return t.id!==id;});saveTaches();renderTaches();}
+function deleteTache(id,e){e.stopPropagation();/* skip confirm */taches=taches.filter(function(t){return t.id!==id;});saveTaches();renderTaches();}
 
 function renderActivites() {
   renderPersonFilter('activite-person-filter',activitePersonFilter,function(v){activitePersonFilter=v;},renderActivites);
@@ -1048,7 +1048,7 @@ function renderActivites() {
     list.appendChild(el);
   });
 }
-function deleteActivite(id,e){e.stopPropagation();if(!confirm('Supprimer ?'))return;activites=activites.filter(function(a){return a.id!==id;});saveActivites();renderActivites();}
+function deleteActivite(id,e){e.stopPropagation();/* skip confirm */activites=activites.filter(function(a){return a.id!==id;});saveActivites();renderActivites();}
 
 function renderRepas() {
   var g=document.getElementById('repas-grid');g.innerHTML='';
@@ -1083,8 +1083,16 @@ function renderEpicerie() {
 }
 function toggleEpicerie(id,e){e.stopPropagation();var item=epicerie.find(function(x){return x.id===id;});if(item){item.checked=!item.checked;saveEpicerie();renderEpicerie();}}
 function deleteEpicerie(id,e){e.stopPropagation();epicerie=epicerie.filter(function(x){return x.id!==id;});saveEpicerie();renderEpicerie();}
-function clearCheckedEpicerie(){if(!confirm('Effacer les items coches ?'))return;epicerie=epicerie.filter(function(x){return !x.checked;});saveEpicerie();renderEpicerie();}
-function clearAllEpicerie(){if(!confirm('Effacer TOUTE la liste ?'))return;epicerie=[];saveEpicerie();renderEpicerie();}
+function clearCheckedEpicerie(){
+  var checked = epicerie.filter(function(x){return x.checked;});
+  if(checked.length===0){alert('Aucun item coche !');return;}
+  epicerie=epicerie.filter(function(x){return !x.checked;});
+  saveEpicerie();renderEpicerie();
+}
+function clearAllEpicerie(){
+  if(epicerie.length===0){alert('Liste deja vide !');return;}
+  epicerie=[];saveEpicerie();renderEpicerie();
+}
 
 // ============================================================
 //  FAMILLE AI
