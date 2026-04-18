@@ -1,222 +1,135 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-  <meta name="apple-mobile-web-app-title" content="MonAssistant"/>
-  <meta name="theme-color" content="#0a0a0a"/>
-  <title>MonAssistant</title>
-  <link rel="manifest" href="manifest.json"/>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-  <style>
-    :root{--bg:#0a0a0a;--surface:#141414;--surface2:#1c1c1c;--border:#2a2a2a;--orange:#f97316;--orange-dim:#7c3910;--orange-glow:rgba(249,115,22,0.15);--text:#f0ede8;--muted:#6b6b6b}
-    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100dvh;overflow-x:hidden}
-    /* LOGIN */
-    #login-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;z-index:100;padding:2rem}
-    .login-logo{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;letter-spacing:-1px}
-    .login-logo span{color:var(--orange)}
-    .login-sub{color:var(--muted);font-size:.9rem;text-align:center;margin-top:-.5rem}
-    .pin-dots{display:flex;gap:1rem}
-    .pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);background:transparent;transition:.2s}
-    .pin-dot.filled{background:var(--orange);border-color:var(--orange)}
-    .pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;width:100%;max-width:280px}
-    .pin-btn{aspect-ratio:1;background:var(--surface2);border:1px solid var(--border);border-radius:16px;color:var(--text);font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:600;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center}
-    .pin-btn:active{background:var(--orange-dim);transform:scale(.93)}
-    .pin-error{color:#ef4444;font-size:.85rem;min-height:1.2em;text-align:center}
-    /* APP */
-    #app{display:none;flex-direction:column;min-height:100dvh}
-    #app.visible{display:flex}
-    .view{display:none;flex-direction:column;flex:1;animation:fadeUp .3s ease}
-    .view.active{display:flex}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-    /* HEADER */
-    .app-header{padding:3.2rem 1.5rem .8rem;background:linear-gradient(180deg,#111 0%,transparent 100%);position:sticky;top:0;z-index:10;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
-    .header-row{display:flex;justify-content:space-between;align-items:center}
-    .header-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800}
-    .header-title span{color:var(--orange)}
-    .date-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:.35rem .8rem;font-size:.75rem;color:var(--muted);white-space:nowrap}
-    .back-btn{display:flex;align-items:center;gap:.4rem;background:none;border:none;color:var(--orange);font-family:'DM Sans',sans-serif;font-size:.9rem;cursor:pointer;padding:0}
-    /* HOME */
-    .quick-strip{display:flex;gap:.75rem;padding:.5rem 1.5rem .75rem;overflow-x:auto;scrollbar-width:none}
-    .quick-strip::-webkit-scrollbar{display:none}
-    .q-chip{flex-shrink:0;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:.5rem 1rem;font-size:.8rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;cursor:pointer;transition:.2s}
-    .q-chip:hover{border-color:var(--orange);color:var(--text)}
-    .q-chip .dot{width:6px;height:6px;border-radius:50%;background:var(--orange)}
-    .section-label{padding:.25rem 1.5rem .5rem;font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-    .tiles-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.9rem;padding:0 1.2rem 6rem}
-    .tile{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1.2rem;cursor:pointer;position:relative;overflow:hidden;transition:.18s;min-height:130px;display:flex;flex-direction:column;justify-content:space-between;animation:fadeUp .4s ease both}
-    .tile:active{transform:scale(.95)}
-    .tile:hover{border-color:var(--orange);box-shadow:0 0 20px var(--orange-glow)}
-    .tile-icon{font-size:1.8rem;line-height:1;margin-bottom:.5rem}
-    .tile-name{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;line-height:1.2}
-    .tile-sub{font-size:.72rem;color:var(--muted);margin-top:.15rem}
-    .tile-soon{position:absolute;top:.8rem;right:.8rem;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:.6rem;border-radius:20px;padding:.15rem .45rem}
-    .tile-active{position:absolute;top:.8rem;right:.8rem;background:var(--orange);color:#000;font-size:.6rem;font-weight:700;border-radius:20px;padding:.15rem .45rem}
-    .tile:nth-child(1){animation-delay:.05s}.tile:nth-child(2){animation-delay:.10s}.tile:nth-child(3){animation-delay:.15s}.tile:nth-child(4){animation-delay:.20s}.tile:nth-child(5){animation-delay:.25s}.tile:nth-child(6){animation-delay:.30s}.tile:nth-child(7){animation-delay:.35s}.tile:nth-child(8){animation-delay:.40s}.tile:nth-child(9){animation-delay:.45s}
-    /* NAV */
-    .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(14,14,14,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:.6rem 0 1.2rem;z-index:20}
-    .nav-btn{display:flex;flex-direction:column;align-items:center;gap:.2rem;color:var(--muted);font-size:.65rem;cursor:pointer;transition:.2s;background:none;border:none;padding:.3rem .8rem}
-    .nav-btn.active{color:var(--orange)}
-    .nav-btn svg{width:22px;height:22px}
-    /* AGENDA */
-    .agenda-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;padding-bottom:5rem}
-    .view-switcher{display:flex;gap:.5rem;padding:.75rem 1.5rem;flex-shrink:0}
-    .vsw-btn{flex:1;padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.8rem;cursor:pointer;transition:.2s;text-align:center}
-    .vsw-btn.active{background:var(--orange);border-color:var(--orange);color:#000;font-weight:600}
-    .period-nav{display:flex;align-items:center;justify-content:space-between;padding:.25rem 1.5rem .5rem;flex-shrink:0}
-    .period-label{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700}
-    .arr-btn{background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);width:32px;height:32px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center}
-    .arr-btn:active{background:var(--orange-dim)}
-    .today-btn{background:none;border:1px solid var(--orange);border-radius:10px;color:var(--orange);font-size:.72rem;padding:.3rem .7rem;cursor:pointer;font-family:'DM Sans',sans-serif}
-    .agenda-pane{flex:1;overflow:hidden;display:none;flex-direction:column}
-    .agenda-pane.active{display:flex}
-    /* MONTH */
-    .month-grid-wrap{padding:0 1rem;overflow-y:auto;flex:1}
-    .weekday-headers{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:.3rem}
-    .wd-hdr{text-align:center;font-size:.65rem;color:var(--muted);padding:.3rem 0;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
-    .month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
-    .mday{min-height:52px;background:var(--surface);border-radius:10px;padding:.3rem .2rem;cursor:pointer;transition:.15s}
-    .mday:hover{background:var(--surface2)}
-    .mday.other-month .mday-num{color:var(--muted);opacity:.4}
-    .mday.is-today{background:var(--surface2);outline:1.5px solid var(--orange)}
-    .mday-num{font-size:.75rem;font-weight:600;text-align:center;margin-bottom:.15rem}
-    .mday.is-today .mday-num{color:var(--orange)}
-    .mday-dots{display:flex;flex-wrap:wrap;gap:2px;justify-content:center}
-    .mday-dot{width:5px;height:5px;border-radius:50%}
-    /* WEEK/DAY */
-    .week-scroll,.day-scroll{overflow-y:auto;flex:1;padding:0 1rem 1rem}
-    .week-day-block{margin-bottom:.75rem}
-    .week-day-label{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:.4rem .2rem .2rem;display:flex;align-items:center;gap:.5rem}
-    .week-day-label.is-today-lbl{color:var(--orange)}
-    .today-pill{background:var(--orange);color:#000;font-size:.6rem;border-radius:20px;padding:.1rem .4rem}
-    .week-no-events{color:var(--muted);font-size:.78rem;padding:.4rem;font-style:italic}
-    .day-header-big{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;padding:.5rem .5rem .75rem}
-    .day-header-big span{color:var(--orange)}
-    /* EVENT CARD */
-    .event-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.75rem 1rem;margin-bottom:.5rem;display:flex;align-items:flex-start;gap:.75rem;cursor:pointer;transition:.15s}
-    .event-card:active{transform:scale(.97)}
-    .ev-time{font-size:.72rem;color:var(--muted);min-width:48px;text-align:right;padding-top:.1rem;line-height:1.5;flex-shrink:0}
-    .ev-body{flex:1}
-    .ev-title{font-size:.9rem;font-weight:600}
-    .ev-sub{font-size:.72rem;color:var(--muted);margin-top:.1rem}
-    .ev-reminder-tag{font-size:.65rem;color:var(--orange);margin-top:.25rem}
-    .ev-allday{font-size:.65rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.1rem .4rem;color:var(--muted);margin-top:.2rem;display:inline-block}
-    /* AI SHORTCUT */
-    .ai-chat-btn{background:var(--surface2);border:1px solid var(--orange);border-radius:14px;padding:.75rem 1rem;margin:.25rem 1.2rem .25rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;transition:.2s;flex-shrink:0}
-    .ai-chat-btn:active{transform:scale(.98)}
-    /* FAB */
-    .fab{position:fixed;bottom:5.5rem;right:1.2rem;width:52px;height:52px;border-radius:50%;background:var(--orange);border:none;color:#000;font-size:1.6rem;cursor:pointer;z-index:15;box-shadow:0 4px 20px var(--orange-glow);transition:.2s;display:none;align-items:center;justify-content:center}
-    .fab.show{display:flex}
-    .fab:active{transform:scale(.9)}
-    /* MODAL */
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:50;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
-    .modal-overlay.open{opacity:1;pointer-events:all}
-    .modal-sheet{background:var(--surface);border-radius:24px 24px 0 0;padding:1.5rem 1.5rem 2.5rem;width:100%;max-height:92dvh;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
-    .modal-overlay.open .modal-sheet{transform:translateY(0)}
-    .modal-handle{width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 1.2rem}
-    .modal-title{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:1.2rem}
-    .form-group{margin-bottom:1rem}
-    .form-label{font-size:.78rem;color:var(--muted);margin-bottom:.35rem;display:block;font-weight:500;letter-spacing:.04em;text-transform:uppercase}
-    .form-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:.75rem 1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;transition:.2s;-webkit-appearance:none;appearance:none}
-    .form-input:focus{border-color:var(--orange)}
-    select.form-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;padding-right:2.5rem}
-    select.form-input option{background:#1c1c1c;color:#f0ede8}
-    /* TOGGLE */
-    .toggle-row{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:.75rem 1rem}
-    .toggle-label{font-size:.9rem}
-    .toggle{width:44px;height:26px;background:var(--border);border-radius:20px;position:relative;cursor:pointer;transition:.2s;border:none;flex-shrink:0}
-    .toggle.on{background:var(--orange)}
-    .toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
-    .toggle.on::after{left:21px}
-    /* CAT GRID */
-    .cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;max-height:200px;overflow-y:auto}
-    .cat-btn{padding:.5rem .25rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--muted);font-size:.68rem;cursor:pointer;text-align:center;transition:.2s;line-height:1.4;display:flex;flex-direction:column;align-items:center;gap:.2rem;position:relative}
-    .cat-btn.selected{color:var(--text);background:var(--surface)}
-    .cat-del{position:absolute;top:2px;right:3px;font-size:.6rem;color:#ef4444;background:none;border:none;cursor:pointer;line-height:1;padding:1px}
-    .btn-row{display:flex;gap:.75rem;margin-top:1.2rem}
-    .btn-primary{flex:1;background:var(--orange);border:none;border-radius:14px;color:#000;font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;padding:.85rem;cursor:pointer;transition:.2s}
-    .btn-primary:active{opacity:.8}
-    .btn-secondary{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.95rem;padding:.85rem;cursor:pointer}
-    .btn-danger{background:#ef4444;border:none;border-radius:14px;color:#fff;font-family:'DM Sans',sans-serif;font-size:.9rem;padding:.85rem 1rem;cursor:pointer}
-    /* ADD CAT */
-    .add-cat-section{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-top:.5rem}
-    .add-cat-title{font-size:.75rem;color:var(--orange);font-weight:600;margin-bottom:.75rem;letter-spacing:.05em;text-transform:uppercase}
-    .emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:.3rem;margin-bottom:.75rem}
-    .emoji-opt{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.35rem;text-align:center;cursor:pointer;font-size:1rem;transition:.15s}
-    .emoji-opt.sel{border-color:var(--orange);background:var(--orange-dim)}
-    .color-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:.3rem;margin-bottom:.75rem}
-    .color-opt{width:100%;aspect-ratio:1;border-radius:8px;border:2px solid transparent;cursor:pointer;transition:.15s}
-    .color-opt.sel{border-color:#fff;transform:scale(1.15)}
-    .add-cat-row{display:flex;gap:.5rem}
-    .add-cat-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.6rem .85rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none}
-    .add-cat-input:focus{border-color:var(--orange)}
-    .add-cat-btn{background:var(--orange);border:none;border-radius:10px;color:#000;font-size:.85rem;font-weight:600;padding:.6rem 1rem;cursor:pointer;white-space:nowrap}
-    /* AI MODAL */
-    #ai-modal .modal-sheet{display:flex;flex-direction:column;height:88dvh;padding:0}
-    .ai-header{padding:1.5rem 1.5rem .75rem;border-bottom:1px solid var(--border);flex-shrink:0}
-    .ai-messages{flex:1;overflow-y:auto;padding:1rem 1.5rem;display:flex;flex-direction:column;gap:.75rem}
-    .ai-msg{max-width:85%;padding:.75rem 1rem;border-radius:16px;font-size:.88rem;line-height:1.5;animation:fadeUp .2s ease;white-space:pre-wrap}
-    .ai-msg.user{background:var(--orange);color:#000;align-self:flex-end;border-bottom-right-radius:4px}
-    .ai-msg.ai{background:var(--surface2);border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px}
-    .ai-msg.loading{color:var(--muted);font-style:italic}
-    .ai-input-row{display:flex;gap:.5rem;padding:1rem 1.5rem 2rem;border-top:1px solid var(--border);flex-shrink:0;background:var(--surface)}
-    .ai-text-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:.7rem 1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;resize:none;max-height:100px}
-    .ai-text-input:focus{border-color:var(--orange)}
-    .ai-send-btn{background:var(--orange);border:none;border-radius:12px;color:#000;width:42px;height:42px;cursor:pointer;font-size:1.1rem;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-    .ai-img-btn{background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--muted);width:42px;height:42px;cursor:pointer;font-size:1.1rem;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-    #ai-file-input{display:none}
-    /* SETTINGS */
-    .settings-section{padding:1rem 1.5rem}
-    .settings-title{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;color:var(--orange);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem}
-    .settings-row{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:1rem 1.2rem;margin-bottom:.6rem;display:flex;align-items:center;gap:.75rem;cursor:pointer}
-    .settings-row-content{flex:1}
-    .settings-row-title{font-size:.9rem;font-weight:500}
-    .settings-row-sub{font-size:.75rem;color:var(--muted);margin-top:.1rem}
-    .settings-row-arrow{color:var(--muted);font-size:.9rem}
-    .api-status{font-size:.7rem;padding:.2rem .5rem;border-radius:20px;font-weight:600}
-    .api-status.connected{background:rgba(34,197,94,.15);color:#22c55e}
-    .api-status.disconnected{background:rgba(239,68,68,.15);color:#ef4444}
-    /* COMING SOON */
-    .coming-soon-box{background:var(--surface);border:1px dashed var(--border);border-radius:20px;padding:2.5rem 1.5rem;text-align:center;color:var(--muted);margin:1rem 1.5rem}
-    .coming-soon-box .big-icon{font-size:3rem;margin-bottom:1rem}
-    ::-webkit-scrollbar{width:0}
-  </style>
-
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="MonAssistant"/>
+<meta name="theme-color" content="#0a0a0a"/>
+<title>MonAssistant</title>
+<link rel="manifest" href="manifest.json"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
-/* FAMILLE TABS */
+:root{--bg:#0a0a0a;--surface:#141414;--surface2:#1c1c1c;--border:#2a2a2a;--orange:#f97316;--orange-dim:#7c3910;--orange-glow:rgba(249,115,22,0.15);--text:#f0ede8;--muted:#6b6b6b}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100dvh;overflow-x:hidden}
+
+/* LOGIN */
+#login-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;z-index:100;padding:2rem}
+.login-logo{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;letter-spacing:-1px}
+.login-logo span{color:var(--orange)}
+.login-sub{color:var(--muted);font-size:.9rem;text-align:center;margin-top:-.5rem}
+.pin-dots{display:flex;gap:1rem}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--border);background:transparent;transition:.2s}
+.pin-dot.filled{background:var(--orange);border-color:var(--orange)}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;width:100%;max-width:280px}
+.pin-btn{aspect-ratio:1;background:var(--surface2);border:1px solid var(--border);border-radius:16px;color:var(--text);font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:600;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center}
+.pin-btn:active{background:var(--orange-dim);transform:scale(.93)}
+.pin-error{color:#ef4444;font-size:.85rem;min-height:1.2em;text-align:center}
+
+/* APP */
+#app{display:none;flex-direction:column;min-height:100dvh}
+#app.visible{display:flex}
+.view{display:none;flex-direction:column;flex:1;animation:fadeUp .3s ease}
+.view.active{display:flex}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* HEADER */
+.app-header{padding:3.2rem 1.5rem .8rem;background:linear-gradient(180deg,#111 0%,transparent 100%);position:sticky;top:0;z-index:10;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.header-row{display:flex;justify-content:space-between;align-items:center}
+.header-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800}
+.header-title span{color:var(--orange)}
+.date-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:.35rem .8rem;font-size:.75rem;color:var(--muted);white-space:nowrap}
+.back-btn{display:flex;align-items:center;gap:.4rem;background:none;border:none;color:var(--orange);font-family:'DM Sans',sans-serif;font-size:.9rem;cursor:pointer;padding:0}
+
+/* HOME */
+.quick-strip{display:flex;gap:.75rem;padding:.5rem 1.5rem .75rem;overflow-x:auto;scrollbar-width:none}
+.quick-strip::-webkit-scrollbar{display:none}
+.q-chip{flex-shrink:0;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:.5rem 1rem;font-size:.8rem;color:var(--muted);display:flex;align-items:center;gap:.4rem;cursor:pointer;transition:.2s}
+.q-chip:hover{border-color:var(--orange);color:var(--text)}
+.q-chip .dot{width:6px;height:6px;border-radius:50%;background:var(--orange)}
+.section-label{padding:.25rem 1.5rem .5rem;font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.tiles-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.9rem;padding:0 1.2rem 6rem}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1.2rem;cursor:pointer;position:relative;overflow:hidden;transition:.18s;min-height:130px;display:flex;flex-direction:column;justify-content:space-between;animation:fadeUp .4s ease both}
+.tile:active{transform:scale(.95)}
+.tile:hover{border-color:var(--orange);box-shadow:0 0 20px var(--orange-glow)}
+.tile-icon{font-size:1.8rem;line-height:1;margin-bottom:.5rem}
+.tile-name{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;line-height:1.2}
+.tile-sub{font-size:.72rem;color:var(--muted);margin-top:.15rem}
+.tile-soon{position:absolute;top:.8rem;right:.8rem;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:.6rem;border-radius:20px;padding:.15rem .45rem}
+.tile-active{position:absolute;top:.8rem;right:.8rem;background:var(--orange);color:#000;font-size:.6rem;font-weight:700;border-radius:20px;padding:.15rem .45rem}
+.tile:nth-child(1){animation-delay:.05s}.tile:nth-child(2){animation-delay:.10s}.tile:nth-child(3){animation-delay:.15s}.tile:nth-child(4){animation-delay:.20s}.tile:nth-child(5){animation-delay:.25s}.tile:nth-child(6){animation-delay:.30s}.tile:nth-child(7){animation-delay:.35s}.tile:nth-child(8){animation-delay:.40s}.tile:nth-child(9){animation-delay:.45s}
+
+/* NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(14,14,14,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;justify-content:space-around;align-items:center;padding:.6rem 0 1.2rem;z-index:20}
+.nav-btn{display:flex;flex-direction:column;align-items:center;gap:.2rem;color:var(--muted);font-size:.65rem;cursor:pointer;transition:.2s;background:none;border:none;padding:.3rem .8rem}
+.nav-btn.active{color:var(--orange)}
+.nav-btn svg{width:22px;height:22px}
+
+/* AGENDA */
+.agenda-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden;padding-bottom:5rem}
+.view-switcher{display:flex;gap:.5rem;padding:.75rem 1.5rem;flex-shrink:0}
+.vsw-btn{flex:1;padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.8rem;cursor:pointer;transition:.2s;text-align:center}
+.vsw-btn.active{background:var(--orange);border-color:var(--orange);color:#000;font-weight:600}
+.period-nav{display:flex;align-items:center;justify-content:space-between;padding:.25rem 1.5rem .5rem;flex-shrink:0}
+.period-label{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700}
+.arr-btn{background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);width:32px;height:32px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center}
+.arr-btn:active{background:var(--orange-dim)}
+.today-btn{background:none;border:1px solid var(--orange);border-radius:10px;color:var(--orange);font-size:.72rem;padding:.3rem .7rem;cursor:pointer;font-family:'DM Sans',sans-serif}
+.agenda-pane{flex:1;overflow:hidden;display:none;flex-direction:column}
+.agenda-pane.active{display:flex}
+.month-grid-wrap{padding:0 1rem;overflow-y:auto;flex:1}
+.weekday-headers{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:.3rem}
+.wd-hdr{text-align:center;font-size:.65rem;color:var(--muted);padding:.3rem 0;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.mday{min-height:52px;background:var(--surface);border-radius:10px;padding:.3rem .2rem;cursor:pointer;transition:.15s}
+.mday:hover{background:var(--surface2)}
+.mday.other-month .mday-num{color:var(--muted);opacity:.4}
+.mday.is-today{background:var(--surface2);outline:1.5px solid var(--orange)}
+.mday-num{font-size:.75rem;font-weight:600;text-align:center;margin-bottom:.15rem}
+.mday.is-today .mday-num{color:var(--orange)}
+.mday-dots{display:flex;flex-wrap:wrap;gap:2px;justify-content:center}
+.mday-dot{width:5px;height:5px;border-radius:50%}
+.week-scroll,.day-scroll{overflow-y:auto;flex:1;padding:0 1rem 1rem}
+.week-day-block{margin-bottom:.75rem}
+.week-day-label{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:.4rem .2rem .2rem;display:flex;align-items:center;gap:.5rem}
+.week-day-label.is-today-lbl{color:var(--orange)}
+.today-pill{background:var(--orange);color:#000;font-size:.6rem;border-radius:20px;padding:.1rem .4rem}
+.week-no-events{color:var(--muted);font-size:.78rem;padding:.4rem;font-style:italic}
+.day-header-big{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;padding:.5rem .5rem .75rem}
+.day-header-big span{color:var(--orange)}
+.event-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.75rem 1rem;margin-bottom:.5rem;display:flex;align-items:flex-start;gap:.75rem;cursor:pointer;transition:.15s}
+.event-card:active{transform:scale(.97)}
+.ev-time{font-size:.72rem;color:var(--muted);min-width:48px;text-align:right;padding-top:.1rem;line-height:1.5;flex-shrink:0}
+.ev-body{flex:1}
+.ev-title{font-size:.9rem;font-weight:600}
+.ev-sub{font-size:.72rem;color:var(--muted);margin-top:.1rem}
+.ev-reminder-tag{font-size:.65rem;color:var(--orange);margin-top:.25rem}
+
+/* FAMILLE */
 .fam-tabs{display:flex;gap:.5rem;padding:.75rem 1.5rem;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
 .fam-tabs::-webkit-scrollbar{display:none}
 .fam-tab{flex-shrink:0;padding:.45rem 1rem;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:.8rem;cursor:pointer;transition:.2s;white-space:nowrap}
 .fam-tab.active{background:var(--orange);border-color:var(--orange);color:#000;font-weight:600}
 .fam-pane{display:none;flex:1;overflow-y:auto;padding:0 1.2rem 6rem;flex-direction:column}
 .fam-pane.active{display:flex}
-
-/* PERSON FILTER */
-.person-filter{display:flex;gap:.5rem;padding:.25rem 0 .75rem;flex-wrap:wrap}
+.person-filter{display:flex;gap:.5rem;padding:.25rem 0 .75rem;flex-wrap:wrap;flex-shrink:0}
 .person-chip{padding:.3rem .75rem;background:var(--surface2);border:1px solid var(--border);border-radius:20px;font-size:.75rem;color:var(--muted);cursor:pointer;transition:.2s}
-.person-chip.active{color:#000;font-weight:600}
-
-/* CARDS */
 .fam-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.85rem 1rem;margin-bottom:.6rem;display:flex;align-items:flex-start;gap:.75rem;cursor:pointer;transition:.15s;position:relative}
 .fam-card:active{transform:scale(.97)}
 .fam-card.done .fam-card-title{text-decoration:line-through;color:var(--muted)}
-.fam-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;margin-top:.1rem}
-.fam-check.checked{background:var(--orange);border-color:var(--orange);color:#000}
+.fam-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;margin-top:.1rem;background:none}
+.fam-check.checked{background:var(--orange);border-color:var(--orange);color:#000;font-size:.8rem}
 .fam-card-body{flex:1}
 .fam-card-title{font-size:.9rem;font-weight:600;line-height:1.3}
 .fam-card-sub{font-size:.72rem;color:var(--muted);margin-top:.2rem}
 .fam-card-badges{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.35rem}
 .badge{font-size:.62rem;padding:.15rem .5rem;border-radius:20px;font-weight:600}
-.badge-person{background:var(--surface2);border:1px solid var(--border);color:var(--muted)}
 .badge-prio-urgent{background:rgba(239,68,68,.15);color:#ef4444}
 .badge-prio-normal{background:rgba(249,115,22,.15);color:var(--orange)}
 .badge-prio-plus-tard{background:rgba(107,107,107,.15);color:var(--muted)}
 .badge-cat{background:rgba(59,130,246,.15);color:#3b82f6}
-
-/* REPAS GRID */
 .repas-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;margin-bottom:1rem}
 .repas-day{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.85rem;cursor:pointer;transition:.2s;min-height:80px}
 .repas-day:hover{border-color:var(--orange)}
@@ -225,29 +138,102 @@
 .repas-day.today-day .repas-day-label{color:var(--orange)}
 .repas-day-meal{font-size:.85rem;font-weight:600;line-height:1.3}
 .repas-day-empty{font-size:.78rem;color:var(--muted);font-style:italic}
-
-/* EPICERIE */
 .epicerie-section{margin-bottom:1rem}
 .epicerie-section-title{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);padding:.3rem 0 .4rem}
 .epicerie-item{display:flex;align-items:center;gap:.75rem;padding:.6rem .85rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:.4rem;cursor:pointer;transition:.2s}
 .epicerie-item.checked-item{opacity:.5}
 .epicerie-item.checked-item .epicerie-item-name{text-decoration:line-through}
-.epicerie-item-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s}
-.epicerie-item-check.on{background:var(--orange);border-color:var(--orange);color:#000;font-size:.7rem}
+.epicerie-item-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s;background:none;font-size:.7rem}
+.epicerie-item-check.on{background:var(--orange);border-color:var(--orange);color:#000}
 .epicerie-item-name{flex:1;font-size:.88rem}
 .epicerie-item-qty{font-size:.75rem;color:var(--muted)}
-
-/* AI INLINE */
 .fam-ai-btn{display:flex;align-items:center;gap:.6rem;background:var(--surface2);border:1px solid var(--orange);border-radius:12px;padding:.65rem 1rem;margin-bottom:.75rem;cursor:pointer;transition:.2s;flex-shrink:0}
 .fam-ai-btn:active{transform:scale(.98)}
-.fam-ai-btn span{font-size:.82rem;color:var(--orange);font-weight:600}
-
-/* SECTION HEADER */
-.section-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem}
+.section-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;flex-shrink:0}
 .section-hdr-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700}
 .add-btn{background:var(--orange);border:none;border-radius:10px;color:#000;font-size:.8rem;font-weight:700;padding:.4rem .85rem;cursor:pointer}
-
 .empty-state{text-align:center;color:var(--muted);font-size:.85rem;padding:2rem 1rem;font-style:italic}
+
+/* AI SHORTCUT */
+.ai-chat-btn{background:var(--surface2);border:1px solid var(--orange);border-radius:14px;padding:.75rem 1rem;margin:.25rem 1.2rem .25rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;transition:.2s;flex-shrink:0}
+.ai-chat-btn:active{transform:scale(.98)}
+
+/* FAB */
+.fab{position:fixed;bottom:5.5rem;right:1.2rem;width:52px;height:52px;border-radius:50%;background:var(--orange);border:none;color:#000;font-size:1.6rem;cursor:pointer;z-index:15;box-shadow:0 4px 20px var(--orange-glow);transition:.2s;display:none;align-items:center;justify-content:center}
+.fab.show{display:flex}
+.fab:active{transform:scale(.9)}
+
+/* MODALS */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:50;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-sheet{background:var(--surface);border-radius:24px 24px 0 0;padding:1.5rem 1.5rem 2.5rem;width:100%;max-height:92dvh;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}
+.modal-overlay.open .modal-sheet{transform:translateY(0)}
+.modal-handle{width:40px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 1.2rem}
+.modal-title{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:1.2rem}
+.form-group{margin-bottom:1rem}
+.form-label{font-size:.78rem;color:var(--muted);margin-bottom:.35rem;display:block;font-weight:500;letter-spacing:.04em;text-transform:uppercase}
+.form-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:.75rem 1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;transition:.2s;-webkit-appearance:none;appearance:none}
+.form-input:focus{border-color:var(--orange)}
+select.form-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;padding-right:2.5rem}
+select.form-input option{background:#1c1c1c;color:#f0ede8}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:.75rem 1rem}
+.toggle-label{font-size:.9rem}
+.toggle{width:44px;height:26px;background:var(--border);border-radius:20px;position:relative;cursor:pointer;transition:.2s;border:none;flex-shrink:0}
+.toggle.on{background:var(--orange)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+.toggle.on::after{left:21px}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;max-height:200px;overflow-y:auto}
+.cat-btn{padding:.5rem .25rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--muted);font-size:.68rem;cursor:pointer;text-align:center;transition:.2s;line-height:1.4;display:flex;flex-direction:column;align-items:center;gap:.2rem;position:relative}
+.cat-btn.selected{color:var(--text);background:var(--surface)}
+.cat-del{position:absolute;top:2px;right:3px;font-size:.6rem;color:#ef4444;background:none;border:none;cursor:pointer;line-height:1;padding:1px}
+.btn-row{display:flex;gap:.75rem;margin-top:1.2rem}
+.btn-primary{flex:1;background:var(--orange);border:none;border-radius:14px;color:#000;font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;padding:.85rem;cursor:pointer;transition:.2s}
+.btn-primary:active{opacity:.8}
+.btn-secondary{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.95rem;padding:.85rem;cursor:pointer}
+.btn-danger{background:#ef4444;border:none;border-radius:14px;color:#fff;font-family:'DM Sans',sans-serif;font-size:.9rem;padding:.85rem 1rem;cursor:pointer}
+.add-cat-section{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-top:.5rem}
+.add-cat-title{font-size:.75rem;color:var(--orange);font-weight:600;margin-bottom:.75rem;letter-spacing:.05em;text-transform:uppercase}
+.emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:.3rem;margin-bottom:.75rem}
+.emoji-opt{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.35rem;text-align:center;cursor:pointer;font-size:1rem;transition:.15s}
+.emoji-opt.sel{border-color:var(--orange);background:var(--orange-dim)}
+.color-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:.3rem;margin-bottom:.75rem}
+.color-opt{width:100%;aspect-ratio:1;border-radius:8px;border:2px solid transparent;cursor:pointer;transition:.15s}
+.color-opt.sel{border-color:#fff;transform:scale(1.15)}
+.add-cat-row{display:flex;gap:.5rem}
+.add-cat-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.6rem .85rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none}
+.add-cat-input:focus{border-color:var(--orange)}
+.add-cat-btn{background:var(--orange);border:none;border-radius:10px;color:#000;font-size:.85rem;font-weight:600;padding:.6rem 1rem;cursor:pointer;white-space:nowrap}
+
+/* AI MODAL */
+#ai-modal .modal-sheet{display:flex;flex-direction:column;height:88dvh;padding:0}
+.ai-header{padding:1.5rem 1.5rem .75rem;border-bottom:1px solid var(--border);flex-shrink:0}
+.ai-messages{flex:1;overflow-y:auto;padding:1rem 1.5rem;display:flex;flex-direction:column;gap:.75rem}
+.ai-msg{max-width:85%;padding:.75rem 1rem;border-radius:16px;font-size:.88rem;line-height:1.5;animation:fadeUp .2s ease;white-space:pre-wrap}
+.ai-msg.user{background:var(--orange);color:#000;align-self:flex-end;border-bottom-right-radius:4px}
+.ai-msg.ai{background:var(--surface2);border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px}
+.ai-msg.loading{color:var(--muted);font-style:italic}
+.ai-input-row{display:flex;gap:.5rem;padding:1rem 1.5rem 2rem;border-top:1px solid var(--border);flex-shrink:0;background:var(--surface)}
+.ai-text-input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:.7rem 1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;resize:none;max-height:100px}
+.ai-text-input:focus{border-color:var(--orange)}
+.ai-send-btn{background:var(--orange);border:none;border-radius:12px;color:#000;width:42px;height:42px;cursor:pointer;font-size:1.1rem;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.ai-img-btn{background:var(--surface2);border:1px solid var(--border);border-radius:12px;color:var(--muted);width:42px;height:42px;cursor:pointer;font-size:1.1rem;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+#ai-file-input{display:none}
+
+/* SETTINGS */
+.settings-section{padding:1rem 1.5rem}
+.settings-title{font-family:'Syne',sans-serif;font-size:.8rem;font-weight:700;color:var(--orange);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem}
+.settings-row{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:1rem 1.2rem;margin-bottom:.6rem;display:flex;align-items:center;gap:.75rem;cursor:pointer}
+.settings-row-content{flex:1}
+.settings-row-title{font-size:.9rem;font-weight:500}
+.settings-row-sub{font-size:.75rem;color:var(--muted);margin-top:.1rem}
+.api-status{font-size:.7rem;padding:.2rem .5rem;border-radius:20px;font-weight:600}
+.api-status.connected{background:rgba(34,197,94,.15);color:#22c55e}
+.api-status.disconnected{background:rgba(239,68,68,.15);color:#ef4444}
+
+/* COMING SOON */
+.coming-soon-box{background:var(--surface);border:1px dashed var(--border);border-radius:20px;padding:2.5rem 1.5rem;text-align:center;color:var(--muted);margin:1rem 1.5rem}
+.coming-soon-box .big-icon{font-size:3rem;margin-bottom:1rem}
+::-webkit-scrollbar{width:0}
 </style>
 </head>
 <body>
@@ -263,7 +249,7 @@
     <button class="pin-btn" onclick="pinPress('1')">1</button><button class="pin-btn" onclick="pinPress('2')">2</button><button class="pin-btn" onclick="pinPress('3')">3</button>
     <button class="pin-btn" onclick="pinPress('4')">4</button><button class="pin-btn" onclick="pinPress('5')">5</button><button class="pin-btn" onclick="pinPress('6')">6</button>
     <button class="pin-btn" onclick="pinPress('7')">7</button><button class="pin-btn" onclick="pinPress('8')">8</button><button class="pin-btn" onclick="pinPress('9')">9</button>
-    <button class="pin-btn" style="opacity:0" disabled></button><button class="pin-btn" onclick="pinPress('0')">0</button><button class="pin-btn" onclick="pinDel()">⌫</button>
+    <button class="pin-btn" style="opacity:0" disabled></button><button class="pin-btn" onclick="pinPress('0')">0</button><button class="pin-btn" onclick="pinDel()">&#9003;</button>
   </div>
   <p style="font-size:.75rem;color:var(--muted);text-align:center">NIP : <strong style="color:var(--orange)">1234</strong></p>
 </div>
@@ -271,237 +257,203 @@
 <!-- APP -->
 <div id="app">
 
-  <!-- HOME -->
-  <div id="view-home" class="view active">
-    <div class="app-header">
-      <div class="header-row"><div class="header-title">Mon<span>Assistant</span></div><div class="date-chip" id="home-date"></div></div>
-      <div style="color:var(--muted);font-size:.85rem;margin-top:.2rem">Bonjour Éric, voici ta journée !</div>
+<!-- HOME -->
+<div id="view-home" class="view active">
+  <div class="app-header">
+    <div class="header-row"><div class="header-title">Mon<span>Assistant</span></div><div class="date-chip" id="home-date"></div></div>
+    <div style="color:var(--muted);font-size:.85rem;margin-top:.2rem">Bonjour &#201;ric, voici ta journ&#233;e !</div>
+  </div>
+  <div class="quick-strip">
+    <div class="q-chip" onclick="openAgenda()"><span class="dot"></span>Agenda</div>
+    <div class="q-chip" onclick="openFamille()"><span class="dot"></span>Famille</div>
+    <div class="q-chip" onclick="openAIChat()"><span class="dot"></span>Assistant IA</div>
+    <div class="q-chip" onclick="showView('settings')"><span class="dot"></span>Param&#232;tres</div>
+  </div>
+  <div class="section-label">Modules</div>
+  <div class="tiles-grid">
+    <div class="tile" onclick="openAgenda()">
+      <div class="tile-icon">&#128197;</div><div><div class="tile-name">Agenda</div><div class="tile-sub">Travail &amp; famille</div></div><div class="tile-active">Actif</div>
     </div>
-    <div class="quick-strip">
-      <div class="q-chip" onclick="openAgenda()"><span class="dot"></span>Agenda</div>
-      <div class="q-chip" onclick="openAIChat()"><span class="dot"></span>Assistant IA</div>
-      <div class="q-chip" onclick="showView('settings')"><span class="dot"></span>Paramètres</div>
+    <div class="tile" onclick="openFamille()">
+      <div class="tile-icon">&#128106;</div><div><div class="tile-name">Famille</div><div class="tile-sub">T&#226;ches, repas &amp; activit&#233;s</div></div><div class="tile-active">Actif</div>
     </div>
-    <div class="section-label">Modules</div>
-    <div class="tiles-grid">
-      <div class="tile" onclick="openAgenda()">
-        <div class="tile-icon">🗓</div><div><div class="tile-name">Agenda</div><div class="tile-sub">Travail & famille</div></div><div class="tile-active">Actif</div>
+    <div class="tile" onclick="showSoon('Budget','Finances et placements.')">
+      <div class="tile-icon">&#128176;</div><div><div class="tile-name">Budget</div><div class="tile-sub">Finances &amp; placements</div></div><div class="tile-soon">Bient&#244;t</div>
+    </div>
+    <div class="tile" onclick="showSoon('Nouvelles','Actualit&#233;s filtr&#233;es.')">
+      <div class="tile-icon">&#128240;</div><div><div class="tile-name">Nouvelles</div><div class="tile-sub">Filtr&#233;es pour toi</div></div><div class="tile-soon">Bient&#244;t</div>
+    </div>
+    <div class="tile" onclick="showSoon('Objectifs','Remise en forme.')">
+      <div class="tile-icon">&#127919;</div><div><div class="tile-name">Objectifs</div><div class="tile-sub">Remise en forme</div></div><div class="tile-soon">Bient&#244;t</div>
+    </div>
+    <div class="tile" onclick="showSoon('Emails','Priorisation IA.')">
+      <div class="tile-icon">&#128231;</div><div><div class="tile-name">Emails</div><div class="tile-sub">Priorisation IA</div></div><div class="tile-soon">Bient&#244;t</div>
+    </div>
+    <div class="tile" onclick="showSoon('Sant&#233;','Garmin et sommeil.')">
+      <div class="tile-icon">&#8987;</div><div><div class="tile-name">Sant&#233;</div><div class="tile-sub">Garmin &amp; sommeil</div></div><div class="tile-soon">Bient&#244;t</div>
+    </div>
+    <div class="tile" onclick="showSoon('Maison','Entretien et garanties.')">
+      <div class="tile-icon">&#127968;</div><div><div class="tile-name">Maison</div><div class="tile-sub">Entretien &amp; garanties</div></div><div class="tile-soon">Bient&#244;t</div>
+    </div>
+    <div class="tile" onclick="openAIChat()" style="grid-column:span 2;min-height:100px">
+      <div style="display:flex;align-items:center;gap:1rem">
+        <div class="tile-icon" style="font-size:2.2rem">&#129302;</div>
+        <div><div class="tile-name" style="font-size:1.1rem">Assistant IA</div><div class="tile-sub">Photo d'horaire, ajout d'&#233;v&#233;nements par conversation</div></div>
+      </div><div class="tile-active">Actif</div>
+    </div>
+  </div>
+</div>
+
+<!-- AGENDA -->
+<div id="view-agenda" class="view">
+  <div class="app-header">
+    <div class="header-row"><button class="back-btn" onclick="showView('home')">&#8592; Accueil</button><div class="date-chip" id="agenda-date"></div></div>
+    <div style="margin-top:.4rem;font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800">&#128197; <span style="color:var(--orange)">Agenda</span></div>
+  </div>
+  <div class="ai-chat-btn" onclick="openAIChat()">
+    <span style="font-size:1.3rem">&#129302;</span>
+    <div style="flex:1"><p style="font-size:.82rem;line-height:1.4"><strong style="color:var(--orange);display:block;margin-bottom:.1rem">Assistant IA</strong>Photo d'horaire ou demande d'ajout d'&#233;v&#233;nements</p></div>
+    <span style="color:var(--orange);font-size:1.2rem">&#8250;</span>
+  </div>
+  <div class="agenda-wrap">
+    <div class="view-switcher">
+      <button class="vsw-btn" id="vsw-mois" onclick="setAgendaView('mois')">Mois</button>
+      <button class="vsw-btn active" id="vsw-semaine" onclick="setAgendaView('semaine')">Semaine</button>
+      <button class="vsw-btn" id="vsw-jour" onclick="setAgendaView('jour')">Jour</button>
+    </div>
+    <div class="period-nav">
+      <button class="arr-btn" onclick="periodPrev()">&#8249;</button>
+      <div style="display:flex;align-items:center;gap:.6rem">
+        <span class="period-label" id="period-label"></span>
+        <button class="today-btn" onclick="goToday()">Aujourd'hui</button>
       </div>
-      <div class="tile" onclick="openFamille()">
-        <div class="tile-icon">👨‍👩‍👧‍👧</div><div><div class="tile-name">Famille</div><div class="tile-sub">Tâches, repas &amp; activités</div></div><div class="tile-active">Actif</div>
+      <button class="arr-btn" onclick="periodNext()">&#8250;</button>
+    </div>
+    <div id="pane-mois" class="agenda-pane">
+      <div class="month-grid-wrap">
+        <div class="weekday-headers"><div class="wd-hdr">Dim</div><div class="wd-hdr">Lun</div><div class="wd-hdr">Mar</div><div class="wd-hdr">Mer</div><div class="wd-hdr">Jeu</div><div class="wd-hdr">Ven</div><div class="wd-hdr">Sam</div></div>
+        <div class="month-grid" id="month-grid"></div>
       </div>
-      <div class="tile" onclick="showSoon('💰 Budget','Finances & placements.')">
-        <div class="tile-icon">💰</div><div><div class="tile-name">Budget</div><div class="tile-sub">Finances & placements</div></div><div class="tile-soon">Bientôt</div>
+    </div>
+    <div id="pane-semaine" class="agenda-pane active"><div class="week-scroll" id="week-scroll"></div></div>
+    <div id="pane-jour" class="agenda-pane"><div class="day-scroll" id="day-scroll"></div></div>
+  </div>
+</div>
+
+<!-- FAMILLE -->
+<div id="view-famille" class="view">
+  <div class="app-header">
+    <div class="header-row"><button class="back-btn" onclick="showView('home')">&#8592; Accueil</button><div class="date-chip" id="fam-date"></div></div>
+    <div style="margin-top:.4rem;font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800">&#128106; <span style="color:var(--orange)">Famille</span></div>
+  </div>
+  <div class="fam-tabs">
+    <div class="fam-tab active" id="ftab-rdv" onclick="setFamTab('rdv')">&#128197; RDV</div>
+    <div class="fam-tab" id="ftab-taches" onclick="setFamTab('taches')">&#9989; T&#226;ches</div>
+    <div class="fam-tab" id="ftab-activite" onclick="setFamTab('activite')">&#127939; Activit&#233;s</div>
+    <div class="fam-tab" id="ftab-repas" onclick="setFamTab('repas')">&#127869; Repas</div>
+    <div class="fam-tab" id="ftab-epicerie" onclick="setFamTab('epicerie')">&#128722; &#201;picerie</div>
+  </div>
+  <div id="fpane-rdv" class="fam-pane active">
+    <div class="fam-ai-btn" onclick="openFamAI('rdv')"><span>&#129302;</span><span style="font-size:.82rem;color:var(--orange);font-weight:600">Voir les RDV famille via l'IA</span></div>
+    <div id="fam-rdv-list"></div>
+  </div>
+  <div id="fpane-taches" class="fam-pane">
+    <div class="fam-ai-btn" onclick="openFamAI('taches')"><span>&#129302;</span><span style="font-size:.82rem;color:var(--orange);font-weight:600">G&#233;n&#233;rer des t&#226;ches avec l'IA</span></div>
+    <div class="person-filter" id="tache-person-filter"></div>
+    <div class="person-filter" id="tache-prio-filter"></div>
+    <div class="section-hdr"><div class="section-hdr-title">T&#226;ches</div><button class="add-btn" onclick="openAddTache()">+ Ajouter</button></div>
+    <div id="fam-taches-list"></div>
+  </div>
+  <div id="fpane-activite" class="fam-pane">
+    <div class="fam-ai-btn" onclick="openFamAI('activite')"><span>&#129302;</span><span style="font-size:.82rem;color:var(--orange);font-weight:600">Ajouter des activit&#233;s via l'IA</span></div>
+    <div class="person-filter" id="activite-person-filter"></div>
+    <div class="section-hdr"><div class="section-hdr-title">Activit&#233;s</div><button class="add-btn" onclick="openAddActivite()">+ Ajouter</button></div>
+    <div id="fam-activite-list"></div>
+  </div>
+  <div id="fpane-repas" class="fam-pane">
+    <div class="fam-ai-btn" onclick="openFamAI('repas')"><span>&#129302;</span><span style="font-size:.82rem;color:var(--orange);font-weight:600">G&#233;n&#233;rer le menu de la semaine</span></div>
+    <div class="section-hdr"><div class="section-hdr-title">Menu de la semaine</div><button class="add-btn" onclick="openAddRepas()">+ Ajouter</button></div>
+    <div class="repas-grid" id="repas-grid"></div>
+  </div>
+  <div id="fpane-epicerie" class="fam-pane">
+    <div class="fam-ai-btn" onclick="openFamAI('epicerie')"><span>&#129302;</span><span style="font-size:.82rem;color:var(--orange);font-weight:600">G&#233;n&#233;rer la liste selon le menu</span></div>
+    <div class="section-hdr">
+      <div class="section-hdr-title">Liste d'&#233;picerie</div>
+      <div style="display:flex;gap:.5rem">
+        <button class="add-btn" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)" onclick="clearCheckedEpicerie()">Effacer coch&#233;s</button>
+        <button class="add-btn" onclick="openAddEpicerie()">+ Ajouter</button>
       </div>
-      <div class="tile" onclick="showSoon('📰 Nouvelles','Actualités filtrées.')">
-        <div class="tile-icon">📰</div><div><div class="tile-name">Nouvelles</div><div class="tile-sub">Filtrées pour toi</div></div><div class="tile-soon">Bientôt</div>
+    </div>
+    <div id="epicerie-list"></div>
+  </div>
+</div>
+
+<!-- SETTINGS -->
+<div id="view-settings" class="view">
+  <div class="app-header">
+    <div class="header-row"><button class="back-btn" onclick="showView('home')">&#8592; Accueil</button></div>
+    <div style="margin-top:.4rem;font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800">&#9881; <span style="color:var(--orange)">Param&#232;tres</span></div>
+  </div>
+  <div style="overflow-y:auto;flex:1;padding-bottom:5rem">
+    <div class="settings-section">
+      <div class="settings-title">&#129302; Intelligence artificielle</div>
+      <div class="settings-row" onclick="openAPISettings()">
+        <span style="font-size:1.4rem">&#128273;</span>
+        <div class="settings-row-content"><div class="settings-row-title">Cl&#233; API Claude</div><div class="settings-row-sub" id="api-status-text">Non configur&#233;e</div></div>
+        <span id="api-status-badge" class="api-status disconnected">Non connect&#233;</span>
       </div>
-      <div class="tile" onclick="showSoon('🎯 Objectifs','Remise en forme.')">
-        <div class="tile-icon">🎯</div><div><div class="tile-name">Objectifs</div><div class="tile-sub">Remise en forme</div></div><div class="tile-soon">Bientôt</div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-top:.5rem">
+        <p style="font-size:.78rem;color:var(--muted);line-height:1.6">Pour obtenir ta cl&#233; API :<br>1. Va sur <strong style="color:var(--orange)">console.anthropic.com</strong><br>2. Cr&#233;e un compte ou connecte-toi<br>3. Va dans API Keys &#8594; Create Key<br>4. Copie la cl&#233; et colle-la ici</p>
       </div>
-      <div class="tile" onclick="showSoon('📧 Emails','Priorisation IA.')">
-        <div class="tile-icon">📧</div><div><div class="tile-name">Emails</div><div class="tile-sub">Priorisation IA</div></div><div class="tile-soon">Bientôt</div>
+    </div>
+    <div class="settings-section">
+      <div class="settings-title">&#128231; Rappels par email</div>
+      <div class="settings-row" onclick="openEmailSettings()">
+        <span style="font-size:1.4rem">&#9993;</span>
+        <div class="settings-row-content"><div class="settings-row-title">Email de rappel</div><div class="settings-row-sub" id="email-status-text">e.pilon12@gmail.com</div></div>
+        <span style="color:var(--orange)">&#8250;</span>
       </div>
-      <div class="tile" onclick="showSoon('⌚ Santé','Garmin & sommeil.')">
-        <div class="tile-icon">⌚</div><div><div class="tile-name">Santé</div><div class="tile-sub">Garmin & sommeil</div></div><div class="tile-soon">Bientôt</div>
+    </div>
+    <div class="settings-section">
+      <div class="settings-title">&#128274; S&#233;curit&#233;</div>
+      <div class="settings-row" onclick="openPINSettings()">
+        <span style="font-size:1.4rem">&#128290;</span>
+        <div class="settings-row-content"><div class="settings-row-title">Changer le NIP</div><div class="settings-row-sub">NIP actuel : ****</div></div>
+        <span style="color:var(--orange)">&#8250;</span>
       </div>
-      <div class="tile" onclick="showSoon('🏠 Maison','Entretien & garanties.')">
-        <div class="tile-icon">🏠</div><div><div class="tile-name">Maison</div><div class="tile-sub">Entretien & garanties</div></div><div class="tile-soon">Bientôt</div>
-      </div>
-      <div class="tile" onclick="openAIChat()" style="grid-column:span 2;min-height:100px">
-        <div style="display:flex;align-items:center;gap:1rem">
-          <div class="tile-icon" style="font-size:2.2rem">🤖</div>
-          <div><div class="tile-name" style="font-size:1.1rem">Assistant IA</div><div class="tile-sub">Photo d'horaire, ajout d'événements par conversation</div></div>
-        </div><div class="tile-active">Actif</div>
+    </div>
+    <div class="settings-section">
+      <div class="settings-title">&#8505; Application</div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:1rem 1.2rem">
+        <div style="display:flex;justify-content:space-between;margin-bottom:.5rem"><span style="font-size:.85rem;color:var(--muted)">Version</span><span style="font-size:.85rem">1.3.0</span></div>
+        <div style="display:flex;justify-content:space-between"><span style="font-size:.85rem;color:var(--muted)">D&#233;velopp&#233; avec</span><span style="font-size:.85rem">Claude + &#201;ric &#128992;</span></div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- AGENDA -->
-  <div id="view-agenda" class="view">
-    <div class="app-header">
-      <div class="header-row"><button class="back-btn" onclick="showView('home')">← Accueil</button><div class="date-chip" id="agenda-date"></div></div>
-      <div style="margin-top:.4rem;font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800">🗓 <span style="color:var(--orange)">Agenda</span></div>
-    </div>
-    <div class="ai-chat-btn" onclick="openAIChat()">
-      <span style="font-size:1.3rem">🤖</span>
-      <div style="flex:1"><p style="font-size:.82rem;line-height:1.4"><strong style="color:var(--orange);display:block;margin-bottom:.1rem">Assistant IA</strong>Photo d'horaire ou demande d'ajout d'événements</p></div>
-      <span style="color:var(--orange);font-size:1.2rem">›</span>
-    </div>
-    <div class="agenda-wrap">
-      <div class="view-switcher">
-        <button class="vsw-btn" id="vsw-mois" onclick="setView('mois')">Mois</button>
-        <button class="vsw-btn active" id="vsw-semaine" onclick="setView('semaine')">Semaine</button>
-        <button class="vsw-btn" id="vsw-jour" onclick="setView('jour')">Jour</button>
-      </div>
-      <div class="period-nav">
-        <button class="arr-btn" onclick="periodPrev()">‹</button>
-        <div style="display:flex;align-items:center;gap:.6rem">
-          <span class="period-label" id="period-label"></span>
-          <button class="today-btn" onclick="goToday()">Aujourd'hui</button>
-        </div>
-        <button class="arr-btn" onclick="periodNext()">›</button>
-      </div>
-      <div id="pane-mois" class="agenda-pane">
-        <div class="month-grid-wrap">
-          <div class="weekday-headers"><div class="wd-hdr">Dim</div><div class="wd-hdr">Lun</div><div class="wd-hdr">Mar</div><div class="wd-hdr">Mer</div><div class="wd-hdr">Jeu</div><div class="wd-hdr">Ven</div><div class="wd-hdr">Sam</div></div>
-          <div class="month-grid" id="month-grid"></div>
-        </div>
-      </div>
-      <div id="pane-semaine" class="agenda-pane active"><div class="week-scroll" id="week-scroll"></div></div>
-      <div id="pane-jour" class="agenda-pane"><div class="day-scroll" id="day-scroll"></div></div>
-    </div>
-  </div>
+<!-- SOON -->
+<div id="view-soon" class="view">
+  <div class="app-header"><div class="header-row"><button class="back-btn" onclick="showView('home')">&#8592; Accueil</button></div>
+    <div style="margin-top:.4rem;font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800" id="soon-title"></div></div>
+  <div class="coming-soon-box"><div class="big-icon">&#128679;</div><p id="soon-desc"></p><p style="margin-top:.75rem;font-size:.8rem">En cours de d&#233;veloppement.</p></div>
+</div>
 
-  <!-- SETTINGS -->
-  <div id="view-settings" class="view">
-    <div class="app-header">
-      <div class="header-row"><button class="back-btn" onclick="showView('home')">← Accueil</button></div>
-      <div style="margin-top:.4rem;font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800">⚙️ <span style="color:var(--orange)">Paramètres</span></div>
-    </div>
-    <div style="overflow-y:auto;flex:1;padding-bottom:5rem">
-      <!-- Claude API -->
-      <div class="settings-section">
-        <div class="settings-title">🤖 Intelligence artificielle</div>
-        <div class="settings-row" onclick="openAPISettings()">
-          <span style="font-size:1.4rem">🔑</span>
-          <div class="settings-row-content">
-            <div class="settings-row-title">Clé API Claude</div>
-            <div class="settings-row-sub" id="api-status-text">Non configurée</div>
-          </div>
-          <span id="api-status-badge" class="api-status disconnected">Non connecté</span>
-        </div>
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-top:.5rem">
-          <p style="font-size:.78rem;color:var(--muted);line-height:1.6">
-            Pour obtenir ta clé API :<br>
-            1. Va sur <strong style="color:var(--orange)">console.anthropic.com</strong><br>
-            2. Crée un compte ou connecte-toi<br>
-            3. Va dans <strong style="color:var(--text)">API Keys</strong> → <strong style="color:var(--text)">Create Key</strong><br>
-            4. Copie la clé et colle-la ici
-          </p>
-        </div>
-      </div>
-      <!-- Email reminders -->
-      <div class="settings-section">
-        <div class="settings-title">📧 Rappels par email</div>
-        <div class="settings-row" onclick="openEmailSettings()">
-          <span style="font-size:1.4rem">✉️</span>
-          <div class="settings-row-content">
-            <div class="settings-row-title">Email de rappel</div>
-            <div class="settings-row-sub" id="email-status-text">e.pilon12@gmail.com</div>
-          </div>
-          <span style="color:var(--orange)" class="settings-row-arrow">›</span>
-        </div>
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-top:.5rem">
-          <p style="font-size:.78rem;color:var(--muted);line-height:1.6">Les rappels sont envoyés par email quand les notifications iPhone ne sont pas disponibles. Tu recevras un email à l'heure configurée.</p>
-        </div>
-      </div>
-      <!-- Security -->
-      <div class="settings-section">
-        <div class="settings-title">🔒 Sécurité</div>
-        <div class="settings-row" onclick="openPINSettings()">
-          <span style="font-size:1.4rem">🔢</span>
-          <div class="settings-row-content">
-            <div class="settings-row-title">Changer le NIP</div>
-            <div class="settings-row-sub">NIP actuel : ****</div>
-          </div>
-          <span style="color:var(--orange)" class="settings-row-arrow">›</span>
-        </div>
-      </div>
-      <!-- App info -->
-      <div class="settings-section">
-        <div class="settings-title">ℹ️ Application</div>
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:1rem 1.2rem">
-          <div style="display:flex;justify-content:space-between;margin-bottom:.5rem"><span style="font-size:.85rem;color:var(--muted)">Version</span><span style="font-size:.85rem">1.2.0</span></div>
-          <div style="display:flex;justify-content:space-between"><span style="font-size:.85rem;color:var(--muted)">Développé avec</span><span style="font-size:.85rem">Claude + Éric 🟠</span></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SOON -->
-  <div id="view-soon" class="view">
-    <div class="app-header"><div class="header-row"><button class="back-btn" onclick="showView('home')">← Accueil</button></div>
-      <div style="margin-top:.4rem;font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800" id="soon-title"></div></div>
-    <div class="coming-soon-box"><div class="big-icon">🚧</div><p id="soon-desc"></p><p style="margin-top:.75rem;font-size:.8rem">En cours de développement.</p></div>
-  </div>
-
-  <!-- BOTTOM NAV -->
-  <nav class="bottom-nav">
-    <button class="nav-btn active" id="nav-home" onclick="showView('home')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Accueil
-    </button>
-    <button class="nav-btn" id="nav-agenda" onclick="openAgenda()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Agenda
-    </button>
-    <button class="nav-btn" id="nav-ia" onclick="openAIChat()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>IA
-    </button>
-    <button class="nav-btn" id="nav-settings" onclick="showView('settings')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Réglages
-    </button>
-  </nav>
-
-
-  <div id="view-famille" class="view">
-    <div class="app-header">
-      <div class="header-row"><button class="back-btn" onclick="showView('home')">← Accueil</button><div class="date-chip" id="fam-date"></div></div>
-      <div style="margin-top:.4rem;font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800">👨‍👩‍👧‍👧 <span style="color:var(--orange)">Famille</span></div>
-    </div>
-    <!-- TABS -->
-    <div class="fam-tabs">
-      <div class="fam-tab active" id="ftab-rdv"     onclick="setFamTab('rdv')">📅 RDV</div>
-      <div class="fam-tab"        id="ftab-taches"  onclick="setFamTab('taches')">✅ Tâches</div>
-      <div class="fam-tab"        id="ftab-activite"onclick="setFamTab('activite')">🏃 Activités</div>
-      <div class="fam-tab"        id="ftab-repas"   onclick="setFamTab('repas')">🍽️ Repas</div>
-      <div class="fam-tab"        id="ftab-epicerie"onclick="setFamTab('epicerie')">🛒 Épicerie</div>
-    </div>
-
-    <!-- RDV PANE -->
-    <div id="fpane-rdv" class="fam-pane active">
-      <div class="fam-ai-btn" onclick="openFamAI('rdv')"><span>🤖</span><span>Demander à l'IA les prochains RDV famille</span></div>
-      <div id="fam-rdv-list"></div>
-    </div>
-
-    <!-- TACHES PANE -->
-    <div id="fpane-taches" class="fam-pane">
-      <div class="fam-ai-btn" onclick="openFamAI('taches')"><span>🤖</span><span>Demander à l'IA d'organiser les tâches</span></div>
-      <div class="person-filter" id="tache-person-filter"></div>
-      <div style="display:flex;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap" id="tache-filters"></div>
-      <div class="section-hdr"><div class="section-hdr-title">Tâches</div><button class="add-btn" onclick="openAddTache()">+ Ajouter</button></div>
-      <div id="fam-taches-list"></div>
-    </div>
-
-    <!-- ACTIVITES PANE -->
-    <div id="fpane-activite" class="fam-pane">
-      <div class="fam-ai-btn" onclick="openFamAI('activite')"><span>🤖</span><span>Ajouter des activités par conversation</span></div>
-      <div class="person-filter" id="activite-person-filter"></div>
-      <div class="section-hdr"><div class="section-hdr-title">Activités</div><button class="add-btn" onclick="openAddActivite()">+ Ajouter</button></div>
-      <div id="fam-activite-list"></div>
-    </div>
-
-    <!-- REPAS PANE -->
-    <div id="fpane-repas" class="fam-pane">
-      <div class="fam-ai-btn" onclick="openFamAI('repas')"><span>🤖</span><span>Générer un menu de la semaine par l'IA</span></div>
-      <div class="section-hdr"><div class="section-hdr-title">Menu de la semaine</div><button class="add-btn" onclick="openAddRepas()">+ Ajouter</button></div>
-      <div class="repas-grid" id="repas-grid"></div>
-    </div>
-
-    <!-- EPICERIE PANE -->
-    <div id="fpane-epicerie" class="fam-pane">
-      <div class="fam-ai-btn" onclick="openFamAI('epicerie')"><span>🤖</span><span>Générer la liste selon le menu de la semaine</span></div>
-      <div class="section-hdr">
-        <div class="section-hdr-title">Liste d'épicerie</div>
-        <div style="display:flex;gap:.5rem">
-          <button class="add-btn" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)" onclick="clearCheckedEpicerie()">Effacer cochés</button>
-          <button class="add-btn" onclick="openAddEpicerie()">+ Ajouter</button>
-        </div>
-      </div>
-      <div id="epicerie-list"></div>
-    </div>
-  </div>
-
-
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="nav-home" onclick="showView('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Accueil
+  </button>
+  <button class="nav-btn" id="nav-agenda" onclick="openAgenda()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Agenda
+  </button>
+  <button class="nav-btn" id="nav-famille" onclick="openFamille()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Famille
+  </button>
+  <button class="nav-btn" id="nav-settings" onclick="showView('settings')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>R&#233;glages
+  </button>
+</nav>
 </div>
 
 <!-- FAB -->
@@ -511,45 +463,30 @@
 <div class="modal-overlay" id="event-modal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title" id="modal-title">Nouvel événement</div>
-    <div class="form-group"><label class="form-label">Titre *</label><input class="form-input" id="ev-title" type="text" placeholder="Ex: Quart de nuit, Gym Sofia..."/></div>
+    <div class="modal-title" id="modal-title">Nouvel &#233;v&#233;nement</div>
+    <div class="form-group"><label class="form-label">Titre *</label><input class="form-input" id="ev-title" type="text" placeholder="Ex: Quart de nuit..."/></div>
     <div class="form-group"><label class="form-label">Date *</label><input class="form-input" id="ev-date" type="date"/></div>
-    <!-- All day toggle -->
-    <div class="form-group">
-      <div class="toggle-row">
-        <span class="toggle-label">📅 Journée entière</span>
-        <button class="toggle" id="allday-toggle" onclick="toggleAllDay()"></button>
-      </div>
-    </div>
-    <!-- Time fields -->
+    <div class="form-group"><div class="toggle-row"><span class="toggle-label">Journ&#233;e enti&#232;re</span><button class="toggle" id="allday-toggle" onclick="toggleAllDay()"></button></div></div>
     <div id="time-fields" style="display:flex;gap:.75rem" class="form-group">
-      <div style="flex:1"><label class="form-label">Heure début</label><input class="form-input" id="ev-start" type="time"/></div>
-      <div style="flex:1"><label class="form-label">Heure fin</label><input class="form-input" id="ev-end" type="time"/></div>
+      <div style="flex:1"><label class="form-label">D&#233;but</label><input class="form-input" id="ev-start" type="time"/></div>
+      <div style="flex:1"><label class="form-label">Fin</label><input class="form-input" id="ev-end" type="time"/></div>
     </div>
     <div class="form-group">
-      <label class="form-label">Catégorie *</label>
+      <label class="form-label">Cat&#233;gorie *</label>
       <div class="cat-grid" id="cat-grid"></div>
-      <!-- Add custom category -->
       <div class="add-cat-section">
-        <div class="add-cat-title">+ Nouvelle catégorie</div>
-        <div style="margin-bottom:.5rem"><label class="form-label" style="font-size:.7rem">Symbole</label>
-          <div class="emoji-grid" id="emoji-grid"></div>
-        </div>
-        <div style="margin-bottom:.5rem"><label class="form-label" style="font-size:.7rem">Couleur</label>
-          <div class="color-grid" id="color-grid"></div>
-        </div>
-        <div class="add-cat-row">
-          <input class="add-cat-input" id="new-cat-name" type="text" placeholder="Nom de la catégorie..."/>
-          <button class="add-cat-btn" onclick="addCustomCat()">Créer</button>
-        </div>
+        <div class="add-cat-title">+ Nouvelle cat&#233;gorie</div>
+        <div style="margin-bottom:.5rem"><label class="form-label" style="font-size:.7rem">Symbole</label><div class="emoji-grid" id="emoji-grid"></div></div>
+        <div style="margin-bottom:.5rem"><label class="form-label" style="font-size:.7rem">Couleur</label><div class="color-grid" id="color-grid"></div></div>
+        <div class="add-cat-row"><input class="add-cat-input" id="new-cat-name" type="text" placeholder="Nom..."/><button class="add-cat-btn" onclick="addCustomCat()">Cr&#233;er</button></div>
       </div>
     </div>
     <div class="form-group">
-      <label class="form-label">🔔 Rappel</label>
+      <label class="form-label">Rappel</label>
       <select class="form-input" id="ev-reminder">
         <option value="">Aucun rappel</option>
-        <option value="0">À l'heure de l'événement</option>
-        <option value="allday9">Journée entière — rappel à 9h00</option>
+        <option value="0">A l'heure de l'&#233;v&#233;nement</option>
+        <option value="allday9">Journ&#233;e enti&#232;re - rappel a 9h00</option>
         <option value="15">15 minutes avant</option>
         <option value="30">30 minutes avant</option>
         <option value="60">1 heure avant</option>
@@ -557,410 +494,388 @@
         <option value="1440">1 jour avant</option>
       </select>
     </div>
-    <div class="form-group"><label class="form-label">Note (optionnel)</label><input class="form-input" id="ev-note" type="text" placeholder="Ex: Salle 3, apporter équipement..."/></div>
+    <div class="form-group"><label class="form-label">Note</label><input class="form-input" id="ev-note" type="text" placeholder="Optionnel..."/></div>
     <div class="btn-row">
       <button class="btn-secondary" onclick="closeModal('event-modal')">Annuler</button>
       <button class="btn-danger" id="btn-delete" onclick="deleteEvent()" style="display:none">Suppr.</button>
-      <button class="btn-primary" onclick="saveEvent()">✓ Enregistrer</button>
+      <button class="btn-primary" onclick="saveEvent()">Enregistrer</button>
     </div>
   </div>
 </div>
 
-<!-- API SETTINGS MODAL -->
+<!-- API MODAL -->
 <div class="modal-overlay" id="api-modal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">🔑 Clé API Claude</div>
-    <p style="font-size:.85rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.6">Entre ta clé API Anthropic pour activer l'assistant IA. Va sur <strong style="color:var(--orange)">console.anthropic.com</strong> → API Keys → Create Key.</p>
-    <div class="form-group">
-      <label class="form-label">Clé API (commence par sk-ant-...)</label>
-      <input class="form-input" id="api-key-input" type="password" placeholder="sk-ant-api03-..."/>
-    </div>
-    <div style="background:rgba(249,115,22,.08);border:1px solid var(--orange);border-radius:12px;padding:.85rem;margin-bottom:1rem">
-      <p style="font-size:.75rem;color:var(--orange);line-height:1.6">🔒 Ta clé est sauvegardée uniquement sur ton appareil, jamais partagée.</p>
-    </div>
-    <div class="btn-row">
-      <button class="btn-secondary" onclick="closeModal('api-modal')">Annuler</button>
-      <button class="btn-primary" onclick="saveAPIKey()">✓ Connecter</button>
-    </div>
+    <div class="modal-title">Cl&#233; API Claude</div>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.6">Va sur <strong style="color:var(--orange)">console.anthropic.com</strong> pour obtenir ta cl&#233; API.</p>
+    <div class="form-group"><label class="form-label">Cl&#233; API</label><input class="form-input" id="api-key-input" type="password" placeholder="sk-ant-api03-..."/></div>
+    <div style="background:rgba(249,115,22,.08);border:1px solid var(--orange);border-radius:12px;padding:.85rem;margin-bottom:1rem"><p style="font-size:.75rem;color:var(--orange);line-height:1.6">Ta cl&#233; est sauvegard&#233;e uniquement sur ton appareil.</p></div>
+    <div class="btn-row"><button class="btn-secondary" onclick="closeModal('api-modal')">Annuler</button><button class="btn-primary" onclick="saveAPIKey()">Connecter</button></div>
   </div>
 </div>
 
-<!-- EMAIL SETTINGS MODAL -->
+<!-- EMAIL MODAL -->
 <div class="modal-overlay" id="email-modal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">✉️ Email de rappel</div>
-    <p style="font-size:.85rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.6">Tu recevras un email de rappel pour chaque événement avec un rappel configuré.</p>
-    <div class="form-group">
-      <label class="form-label">Adresse email</label>
-      <input class="form-input" id="email-input" type="email" placeholder="ton@email.com"/>
-    </div>
-    <div class="btn-row">
-      <button class="btn-secondary" onclick="closeModal('email-modal')">Annuler</button>
-      <button class="btn-primary" onclick="saveEmail()">✓ Sauvegarder</button>
-    </div>
+    <div class="modal-title">Email de rappel</div>
+    <div class="form-group"><label class="form-label">Adresse email</label><input class="form-input" id="email-input" type="email" placeholder="ton@email.com"/></div>
+    <div class="btn-row"><button class="btn-secondary" onclick="closeModal('email-modal')">Annuler</button><button class="btn-primary" onclick="saveEmail()">Sauvegarder</button></div>
   </div>
 </div>
 
-<!-- PIN CHANGE MODAL -->
+<!-- PIN MODAL -->
 <div class="modal-overlay" id="pin-modal">
   <div class="modal-sheet">
     <div class="modal-handle"></div>
-    <div class="modal-title">🔢 Changer le NIP</div>
-    <div class="form-group"><label class="form-label">NIP actuel</label><input class="form-input" id="pin-old" type="password" maxlength="4" placeholder="****"/></div>
-    <div class="form-group"><label class="form-label">Nouveau NIP (4 chiffres)</label><input class="form-input" id="pin-new" type="password" maxlength="4" placeholder="****"/></div>
-    <div class="form-group"><label class="form-label">Confirmer nouveau NIP</label><input class="form-input" id="pin-confirm" type="password" maxlength="4" placeholder="****"/></div>
+    <div class="modal-title">Changer le NIP</div>
+    <div class="form-group"><label class="form-label">NIP actuel</label><input class="form-input" id="pin-old" type="password" maxlength="4"/></div>
+    <div class="form-group"><label class="form-label">Nouveau NIP</label><input class="form-input" id="pin-new" type="password" maxlength="4"/></div>
+    <div class="form-group"><label class="form-label">Confirmer</label><input class="form-input" id="pin-confirm" type="password" maxlength="4"/></div>
     <p id="pin-change-error" style="color:#ef4444;font-size:.82rem;min-height:1em;margin-bottom:.5rem"></p>
-    <div class="btn-row">
-      <button class="btn-secondary" onclick="closeModal('pin-modal')">Annuler</button>
-      <button class="btn-primary" onclick="changePIN()">✓ Changer</button>
-    </div>
+    <div class="btn-row"><button class="btn-secondary" onclick="closeModal('pin-modal')">Annuler</button><button class="btn-primary" onclick="changePIN()">Changer</button></div>
   </div>
 </div>
 
-<!-- AI CHAT MODAL -->
+<!-- AI MODAL -->
 <div class="modal-overlay" id="ai-modal">
   <div class="modal-sheet">
     <div class="ai-header">
       <div class="modal-handle"></div>
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700">🤖 Assistant <span style="color:var(--orange)">IA</span></div>
-        <button onclick="closeModal('ai-modal')" style="background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer">✕</button>
+        <div style="font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:700">&#129302; Assistant <span style="color:var(--orange)">IA</span></div>
+        <button onclick="closeModal('ai-modal')" style="background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer">&#10005;</button>
       </div>
       <div id="ai-api-warning" style="display:none;margin-top:.5rem;background:rgba(239,68,68,.1);border:1px solid #ef4444;border-radius:8px;padding:.6rem .8rem;font-size:.75rem;color:#ef4444">
-        ⚠️ Clé API non configurée. Va dans <span style="cursor:pointer;text-decoration:underline" onclick="closeModal('ai-modal');showView('settings');openAPISettings()">Paramètres → Clé API</span> pour activer l'IA.
+        Cl&#233; API non configur&#233;e. Va dans Param&#232;tres pour l'activer.
       </div>
     </div>
     <div class="ai-messages" id="ai-messages"></div>
     <div class="ai-input-row">
-      <button class="ai-img-btn" onclick="document.getElementById('ai-file-input').click()" title="Photo depuis galerie ou caméra">📷</button>
+      <button class="ai-img-btn" onclick="document.getElementById('ai-file-input').click()">&#128247;</button>
       <input type="file" id="ai-file-input" accept="image/*" onchange="handleImageUpload(event)"/>
       <textarea class="ai-text-input" id="ai-input" placeholder="Ex: Ajoute mon quart lundi 7h-15h..." rows="1" onkeydown="aiKeyDown(event)"></textarea>
-      <button class="ai-send-btn" onclick="sendAIMessage()">↑</button>
+      <button class="ai-send-btn" onclick="sendAIMessage()">&#8593;</button>
     </div>
   </div>
 </div>
 
 <script>
-// ══════════════════════════════════════
-//  STORAGE KEYS
-// ══════════════════════════════════════
-const SK_EV='ma_ev5', SK_CATS='ma_cats2', SK_CFG='ma_config';
+// ============================================================
+//  CONFIG & STORAGE
+// ============================================================
+var SK_EV='ma_ev5', SK_CATS='ma_cats2', SK_CFG='ma_config';
+var SK_TACHES='ma_taches', SK_ACTIVITES='ma_activites', SK_REPAS='ma_repas', SK_EPICERIE='ma_epicerie';
 
-// ══════════════════════════════════════
-//  CONFIG (API key, email, PIN)
-// ══════════════════════════════════════
-let cfg={pin:'1234',apiKey:'',email:'e.pilon12@gmail.com'};
-try{Object.assign(cfg,JSON.parse(localStorage.getItem(SK_CFG)||'{}'))}catch(e){}
-const saveCfg=()=>localStorage.setItem(SK_CFG,JSON.stringify(cfg));
+var cfg = {pin:'1234', apiKey:'', email:'e.pilon12@gmail.com'};
+try { Object.assign(cfg, JSON.parse(localStorage.getItem(SK_CFG)||'{}')); } catch(e) {}
+function saveCfg() { localStorage.setItem(SK_CFG, JSON.stringify(cfg)); }
 
-// ══════════════════════════════════════
-//  CATEGORIES
-// ══════════════════════════════════════
-const DEFAULT_CATS=[
-  {id:'travail',label:'Travail',emoji:'🟠',color:'#f97316',custom:false},
-  {id:'francine',label:'Francine',emoji:'💙',color:'#3b82f6',custom:false},
-  {id:'francia',label:'Francia',emoji:'💜',color:'#a855f7',custom:false},
-  {id:'medical',label:'Médical',emoji:'🏥',color:'#22c55e',custom:false},
-  {id:'famille',label:'Famille',emoji:'❤️',color:'#ec4899',custom:false},
-  {id:'perso',label:'Personnel',emoji:'⭐',color:'#f59e0b',custom:false},
-  {id:'sport',label:'Sport',emoji:'🏋️',color:'#eab308',custom:false},
-  {id:'rdv',label:'Rendez-vous',emoji:'📅',color:'#06b6d4',custom:false},
+// Categories
+var DEFAULT_CATS = [
+  {id:'travail',  label:'Travail',      emoji:'&#128992;', color:'#f97316', custom:false},
+  {id:'francine', label:'Francine',     emoji:'&#128153;', color:'#3b82f6', custom:false},
+  {id:'francia',  label:'Francia',      emoji:'&#128156;', color:'#a855f7', custom:false},
+  {id:'medical',  label:'Medical',      emoji:'&#127973;', color:'#22c55e', custom:false},
+  {id:'famille',  label:'Famille',      emoji:'&#10084;',  color:'#ec4899', custom:false},
+  {id:'perso',    label:'Personnel',    emoji:'&#11088;',  color:'#f59e0b', custom:false},
+  {id:'sport',    label:'Sport',        emoji:'&#127947;', color:'#eab308', custom:false},
+  {id:'rdv',      label:'Rendez-vous',  emoji:'&#128197;', color:'#06b6d4', custom:false}
 ];
-let cats=DEFAULT_CATS;
-try{const s=JSON.parse(localStorage.getItem(SK_CATS));if(s&&s.length)cats=s}catch(e){}
-const saveCats=()=>localStorage.setItem(SK_CATS,JSON.stringify(cats));
-const getCat=id=>cats.find(c=>c.id===id)||{label:id,emoji:'📌',color:'#6b6b6b'};
+var cats = DEFAULT_CATS.slice();
+try { var sc = JSON.parse(localStorage.getItem(SK_CATS)); if(sc && sc.length) cats = sc; } catch(e) {}
+function saveCats() { localStorage.setItem(SK_CATS, JSON.stringify(cats)); }
+function getCat(id) { return cats.find(function(c){return c.id===id;}) || {label:id, emoji:'&#128204;', color:'#6b6b6b'}; }
 
-const EMOJI_OPTS=['🏃','🍎','🎵','📚','✈️','🎮','🌿','💊','🔧','🐾','🌙','☀️','🎯','💡','🏠','🚗','🎂','🌊','⚽','🎸'];
-const COLOR_OPTS=['#f97316','#3b82f6','#a855f7','#22c55e','#ec4899','#f59e0b','#06b6d4','#ef4444','#8b5cf6','#10b981','#f43f5e','#64748b','#84cc16','#0891b2','#d946ef','#fb923c'];
+// Events
+var events = [];
+try { events = JSON.parse(localStorage.getItem(SK_EV)||'[]'); } catch(e) {}
+function saveEvents() { localStorage.setItem(SK_EV, JSON.stringify(events)); }
 
-let selNewEmoji=EMOJI_OPTS[0], selNewColor=COLOR_OPTS[0];
+// Famille data
+var taches=[], activites=[], repas={}, epicerie=[];
+try { taches = JSON.parse(localStorage.getItem(SK_TACHES)||'[]'); } catch(e) {}
+try { activites = JSON.parse(localStorage.getItem(SK_ACTIVITES)||'[]'); } catch(e) {}
+try { repas = JSON.parse(localStorage.getItem(SK_REPAS)||'{}'); } catch(e) {}
+try { epicerie = JSON.parse(localStorage.getItem(SK_EPICERIE)||'[]'); } catch(e) {}
+function saveTaches() { localStorage.setItem(SK_TACHES, JSON.stringify(taches)); }
+function saveActivites() { localStorage.setItem(SK_ACTIVITES, JSON.stringify(activites)); }
+function saveRepas() { localStorage.setItem(SK_REPAS, JSON.stringify(repas)); }
+function saveEpicerie() { localStorage.setItem(SK_EPICERIE, JSON.stringify(epicerie)); }
 
-// ══════════════════════════════════════
-//  EVENTS
-// ══════════════════════════════════════
-let events=[];
-try{events=JSON.parse(localStorage.getItem(SK_EV)||'[]')}catch(e){events=[]}
-let editId=null, selCat='travail', isAllDay=false;
-const save=()=>localStorage.setItem(SK_EV,JSON.stringify(events));
-const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
+// Misc state
+var editId = null, selCat = 'travail', isAllDay = false;
+var selNewEmoji = '&#127939;', selNewColor = '#f97316';
+var famTab = 'rdv';
+var tachePersonFilter = 'Tous', tachePrioFilter = 'Tous';
+var activitePersonFilter = 'Tous';
+var aiHistory = [], pendingImg = null;
 
-// ══════════════════════════════════════
+var MEMBRES = ['Eric','Jass','Francine','Francia'];
+var PRIO = ['urgent','normal','plus-tard'];
+var CATS_TACHE = ['Maison','Ecole','Courses','Medical','Autre'];
+var RAYONS = ['Fruits legumes','Viandes poissons','Produits laitiers','Boulangerie','Hygiene entretien','Epicerie seche','Surgeles','Boissons','Autre'];
+var RAYON_LABELS = {'Fruits legumes':'&#129382; Fruits & legumes','Viandes poissons':'&#129385; Viandes & poissons','Produits laitiers':'&#129371; Produits laitiers','Boulangerie':'&#129382; Boulangerie','Hygiene entretien':'&#129384; Hygiene & entretien','Epicerie seche':'&#129371; Epicerie seche','Surgeles':'&#10052; Surgeles','Boissons':'&#127863; Boissons','Autre':'Autre'};
+var PERSON_COLORS = {'Eric':'#f97316','Jass':'#22c55e','Francine':'#3b82f6','Francia':'#a855f7'};
+var EMOJI_OPTS = ['&#127939;','&#127822;','&#127925;','&#128218;','&#9992;','&#127918;','&#127807;','&#128138;','&#128295;','&#128062;','&#127769;','&#9728;','&#127919;','&#128161;','&#127968;','&#128663;','&#127874;','&#127754;','&#9917;','&#127928;'];
+var COLOR_OPTS = ['#f97316','#3b82f6','#a855f7','#22c55e','#ec4899','#f59e0b','#06b6d4','#ef4444','#8b5cf6','#10b981','#f43f5e','#64748b'];
+
+var DAYS = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+var MON = ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'];
+var MS = ['jan','fev','mar','avr','mai','jun','jul','aou','sep','oct','nov','dec'];
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+function ds(d) { return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
+// ============================================================
 //  PIN
-// ══════════════════════════════════════
-let pin='';
-function pinPress(n){if(pin.length>=4)return;pin+=n;dots();if(pin.length===4)checkPin()}
-function pinDel(){pin=pin.slice(0,-1);dots();document.getElementById('pin-error').textContent=''}
-function dots(){for(let i=0;i<4;i++)document.getElementById('d'+i).classList.toggle('filled',i<pin.length)}
-function checkPin(){
-  if(pin===cfg.pin){document.getElementById('login-screen').style.display='none';document.getElementById('app').classList.add('visible');boot()}
-  else{document.getElementById('pin-error').textContent='NIP incorrect, réessaie.';pin='';dots()}
+// ============================================================
+var pin = '';
+function pinPress(n) { if(pin.length>=4) return; pin+=n; updateDots(); if(pin.length===4) checkPin(); }
+function pinDel() { pin=pin.slice(0,-1); updateDots(); document.getElementById('pin-error').textContent=''; }
+function updateDots() { for(var i=0;i<4;i++) document.getElementById('d'+i).classList.toggle('filled', i<pin.length); }
+function checkPin() {
+  if(pin===cfg.pin) {
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').classList.add('visible');
+    bootApp();
+  } else {
+    document.getElementById('pin-error').textContent='NIP incorrect, reessaie.';
+    pin=''; updateDots();
+  }
 }
 
-// ══════════════════════════════════════
+// ============================================================
 //  BOOT
-// ══════════════════════════════════════
-const DAYS=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-const MON=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
-const MS=['jan','fév','mar','avr','mai','jun','jul','aoû','sep','oct','nov','déc'];
-
-function boot(){
-  const now=new Date();
-  const chip=DAYS[now.getDay()]+' '+now.getDate()+' '+MS[now.getMonth()];
-  document.getElementById('home-date').textContent=chip;
-  document.getElementById('agenda-date').textContent=chip;
+// ============================================================
+function bootApp() {
+  var now = new Date();
+  var chip = DAYS[now.getDay()]+' '+now.getDate()+' '+MS[now.getMonth()];
+  document.getElementById('home-date').textContent = chip;
+  document.getElementById('agenda-date').textContent = chip;
+  document.getElementById('fam-date').textContent = chip;
   updateSettingsUI();
-  setInterval(checkEmailReminders,60000);
-  checkEmailReminders();
   buildEmojiGrid();
   buildColorGrid();
-  addAIMsg('ai','Bonjour Éric ! 👋\n\nJe peux t\'aider à gérer ton agenda :\n• Envoie une 📷 photo de ton horaire de travail\n• Demande d\'ajouter des événements : "Ajoute mon quart lundi 7h à 15h30"\n• Consulte ton agenda : "Qu\'est-ce que j\'ai cette semaine ?"');
+  addAIMsg('ai', 'Bonjour Eric ! Je peux t\'aider a gerer ton agenda.\n- Envoie une photo de ton horaire\n- Dis-moi d\'ajouter des evenements\n- Consulte ton agenda');
+  setInterval(function(){ checkEmailReminders(); }, 60000);
 }
 
-// ══════════════════════════════════════
+// ============================================================
 //  VIEWS
-// ══════════════════════════════════════
-function showView(id){
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+// ============================================================
+function showView(id) {
+  document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
   document.getElementById('view-'+id).classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  const nm={home:'nav-home',agenda:'nav-agenda',settings:'nav-settings'};
-  if(nm[id])document.getElementById(nm[id]).classList.add('active');
-  document.getElementById('fab').classList.toggle('show',id==='agenda');
-  if(id==='settings')updateSettingsUI();
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+  var nm = {home:'nav-home', agenda:'nav-agenda', famille:'nav-famille', settings:'nav-settings'};
+  if(nm[id]) document.getElementById(nm[id]).classList.add('active');
+  document.getElementById('fab').classList.toggle('show', id==='agenda');
 }
-function openAgenda(){showView('agenda');renderAll()}
-function showSoon(t,d){document.getElementById('soon-title').textContent=t;document.getElementById('soon-desc').textContent=d;showView('soon')}
-function openAIChat(){
+function openAgenda() { showView('agenda'); renderAll(); }
+function openFamille() { showView('famille'); renderFamRDV(); renderTaches(); renderActivites(); renderRepas(); renderEpicerie(); }
+function showSoon(t, d) { document.getElementById('soon-title').textContent=t; document.getElementById('soon-desc').textContent=d; showView('soon'); }
+function openAIChat() {
   document.getElementById('ai-modal').classList.add('open');
-  document.getElementById('nav-ia').classList.add('active');
-  document.getElementById('ai-api-warning').style.display=cfg.apiKey?'none':'block';
+  document.getElementById('ai-api-warning').style.display = cfg.apiKey ? 'none' : 'block';
 }
-function closeModal(id){document.getElementById(id).classList.remove('open')}
-['event-modal','api-modal','email-modal','pin-modal','ai-modal'].forEach(id=>{
-  document.getElementById(id).addEventListener('click',function(e){if(e.target===this)closeModal(id)});
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+['event-modal','api-modal','email-modal','pin-modal','ai-modal'].forEach(function(id){
+  document.getElementById(id).addEventListener('click', function(e){ if(e.target===this) closeModal(id); });
 });
 
-// ══════════════════════════════════════
+// ============================================================
 //  SETTINGS
-// ══════════════════════════════════════
-function updateSettingsUI(){
-  const has=!!cfg.apiKey;
-  document.getElementById('api-status-text').textContent=has?'Clé configurée ✓':'Non configurée';
-  document.getElementById('api-status-badge').textContent=has?'Connecté':'Non connecté';
-  document.getElementById('api-status-badge').className='api-status '+(has?'connected':'disconnected');
-  document.getElementById('email-status-text').textContent=cfg.email||'Non configuré';
+// ============================================================
+function updateSettingsUI() {
+  var has = !!cfg.apiKey;
+  document.getElementById('api-status-text').textContent = has ? 'Cle configuree' : 'Non configuree';
+  document.getElementById('api-status-badge').textContent = has ? 'Connecte' : 'Non connecte';
+  document.getElementById('api-status-badge').className = 'api-status '+(has?'connected':'disconnected');
+  document.getElementById('email-status-text').textContent = cfg.email || 'Non configure';
 }
-function openAPISettings(){
-  document.getElementById('api-key-input').value=cfg.apiKey?'••••••••••••':'';
-  document.getElementById('api-modal').classList.add('open');
+function openAPISettings() { document.getElementById('api-key-input').value=''; document.getElementById('api-modal').classList.add('open'); }
+function saveAPIKey() {
+  var v = document.getElementById('api-key-input').value.trim();
+  if(!v) { alert('Entre ta cle API.'); return; }
+  cfg.apiKey=v; saveCfg(); updateSettingsUI(); closeModal('api-modal');
+  alert('Cle API sauvegardee !');
 }
-function saveAPIKey(){
-  const v=document.getElementById('api-key-input').value.trim();
-  if(!v){alert('Entre ta clé API.');return}
-  cfg.apiKey=v;saveCfg();updateSettingsUI();closeModal('api-modal');
-  alert('✅ Clé API sauvegardée ! L\'assistant IA est maintenant actif.');
+function openEmailSettings() { document.getElementById('email-input').value=cfg.email||''; document.getElementById('email-modal').classList.add('open'); }
+function saveEmail() {
+  var v = document.getElementById('email-input').value.trim();
+  if(!v||!v.includes('@')) { alert('Email invalide.'); return; }
+  cfg.email=v; saveCfg(); updateSettingsUI(); closeModal('email-modal');
 }
-function openEmailSettings(){
-  document.getElementById('email-input').value=cfg.email||'';
-  document.getElementById('email-modal').classList.add('open');
-}
-function saveEmail(){
-  const v=document.getElementById('email-input').value.trim();
-  if(!v||!v.includes('@')){alert('Entre une adresse email valide.');return}
-  cfg.email=v;saveCfg();updateSettingsUI();closeModal('email-modal');
-  alert('✅ Email sauvegardé ! Tu recevras tes rappels à '+v);
-}
-function openPINSettings(){document.getElementById('pin-modal').classList.add('open')}
-function changePIN(){
-  const old=document.getElementById('pin-old').value;
-  const nw=document.getElementById('pin-new').value;
-  const conf=document.getElementById('pin-confirm').value;
-  const err=document.getElementById('pin-change-error');
-  if(old!==cfg.pin){err.textContent='NIP actuel incorrect.';return}
-  if(nw.length!==4||!/^\d{4}$/.test(nw)){err.textContent='Le NIP doit être 4 chiffres.';return}
-  if(nw!==conf){err.textContent='Les NIP ne correspondent pas.';return}
-  cfg.pin=nw;saveCfg();closeModal('pin-modal');alert('✅ NIP changé avec succès !');
+function openPINSettings() { document.getElementById('pin-modal').classList.add('open'); }
+function changePIN() {
+  var old=document.getElementById('pin-old').value, nw=document.getElementById('pin-new').value, conf=document.getElementById('pin-confirm').value;
+  var err=document.getElementById('pin-change-error');
+  if(old!==cfg.pin){err.textContent='NIP actuel incorrect.';return;}
+  if(nw.length!==4||!/^\d{4}$/.test(nw)){err.textContent='4 chiffres requis.';return;}
+  if(nw!==conf){err.textContent='NIP ne correspond pas.';return;}
+  cfg.pin=nw; saveCfg(); closeModal('pin-modal'); alert('NIP change !');
 }
 
-// ══════════════════════════════════════
-//  AGENDA STATE
-// ══════════════════════════════════════
-let aView='semaine', cursor=new Date();cursor.setHours(0,0,0,0);
-function setView(v){
+// ============================================================
+//  AGENDA
+// ============================================================
+var aView = 'semaine', cursor = new Date(); cursor.setHours(0,0,0,0);
+
+function setAgendaView(v) {
   aView=v;
-  ['mois','semaine','jour'].forEach(x=>{
-    document.getElementById('vsw-'+x).classList.toggle('active',x===v);
-    document.getElementById('pane-'+x).classList.toggle('active',x===v);
+  ['mois','semaine','jour'].forEach(function(x){
+    document.getElementById('vsw-'+x).classList.toggle('active', x===v);
+    document.getElementById('pane-'+x).classList.toggle('active', x===v);
   });
   renderAll();
 }
-function goToday(){cursor=new Date();cursor.setHours(0,0,0,0);renderAll()}
-function periodPrev(){
-  if(aView==='mois')cursor.setMonth(cursor.getMonth()-1);
-  else if(aView==='semaine')cursor.setDate(cursor.getDate()-7);
+function goToday() { cursor=new Date(); cursor.setHours(0,0,0,0); renderAll(); }
+function periodPrev() {
+  if(aView==='mois') cursor.setMonth(cursor.getMonth()-1);
+  else if(aView==='semaine') cursor.setDate(cursor.getDate()-7);
   else cursor.setDate(cursor.getDate()-1);
   renderAll();
 }
-function periodNext(){
-  if(aView==='mois')cursor.setMonth(cursor.getMonth()+1);
-  else if(aView==='semaine')cursor.setDate(cursor.getDate()+7);
+function periodNext() {
+  if(aView==='mois') cursor.setMonth(cursor.getMonth()+1);
+  else if(aView==='semaine') cursor.setDate(cursor.getDate()+7);
   else cursor.setDate(cursor.getDate()+1);
   renderAll();
 }
-function renderAll(){if(aView==='mois')renderMonth();else if(aView==='semaine')renderWeek();else renderDay()}
-
-// ── MONTH ──
-function renderMonth(){
-  const y=cursor.getFullYear(),m=cursor.getMonth();
-  document.getElementById('period-label').textContent=MON[m]+' '+y;
-  const today=new Date();today.setHours(0,0,0,0);
-  const first=new Date(y,m,1),last=new Date(y,m+1,0);
-  const g=document.getElementById('month-grid');g.innerHTML='';
-  for(let i=0;i<first.getDay();i++)g.appendChild(mday(new Date(y,m,-first.getDay()+i+1),true,today));
-  for(let d=1;d<=last.getDate();d++)g.appendChild(mday(new Date(y,m,d),false,today));
-  const rem=(first.getDay()+last.getDate())%7;
-  for(let i=1;i<=(rem===0?0:7-rem);i++)g.appendChild(mday(new Date(y,m+1,i),true,today));
+function renderAll() {
+  if(aView==='mois') renderMonth();
+  else if(aView==='semaine') renderWeek();
+  else renderDay();
 }
-function mday(date,other,today){
-  const el=document.createElement('div');
+
+function renderMonth() {
+  var y=cursor.getFullYear(), m=cursor.getMonth();
+  document.getElementById('period-label').textContent = MON[m]+' '+y;
+  var today=new Date(); today.setHours(0,0,0,0);
+  var first=new Date(y,m,1), last=new Date(y,m+1,0);
+  var g=document.getElementById('month-grid'); g.innerHTML='';
+  for(var i=0;i<first.getDay();i++) g.appendChild(makeMDay(new Date(y,m,-first.getDay()+i+1),true,today));
+  for(var d=1;d<=last.getDate();d++) g.appendChild(makeMDay(new Date(y,m,d),false,today));
+  var rem=(first.getDay()+last.getDate())%7;
+  for(var j=1;j<=(rem===0?0:7-rem);j++) g.appendChild(makeMDay(new Date(y,m+1,j),true,today));
+}
+function makeMDay(date, other, today) {
+  var el=document.createElement('div');
   el.className='mday'+(other?' other-month':'')+(date.getTime()===today.getTime()?' is-today':'');
-  const n=document.createElement('div');n.className='mday-num';n.textContent=date.getDate();el.appendChild(n);
-  const dots=document.createElement('div');dots.className='mday-dots';
-  events.filter(e=>e.date===ds(date)).slice(0,3).forEach(e=>{
-    const d=document.createElement('div');d.className='mday-dot';d.style.background=getCat(e.cat).color;dots.appendChild(d);
+  var n=document.createElement('div'); n.className='mday-num'; n.textContent=date.getDate(); el.appendChild(n);
+  var dots=document.createElement('div'); dots.className='mday-dots';
+  var dStr=ds(date);
+  events.filter(function(e){return e.date===dStr;}).slice(0,3).forEach(function(e){
+    var dot=document.createElement('div'); dot.className='mday-dot'; dot.style.background=getCat(e.cat).color; dots.appendChild(dot);
   });
-  el.appendChild(dots);el.onclick=()=>{cursor=new Date(date);setView('jour')};
+  el.appendChild(dots);
+  el.onclick=function(){ cursor=new Date(date); setAgendaView('jour'); };
   return el;
 }
 
-// ── WEEK ──
-function renderWeek(){
-  const dow=cursor.getDay(),mon=new Date(cursor);mon.setDate(cursor.getDate()-dow);
-  const sun=new Date(mon);sun.setDate(mon.getDate()+6);
-  document.getElementById('period-label').textContent=mon.getDate()+' '+MS[mon.getMonth()]+' – '+sun.getDate()+' '+MS[sun.getMonth()];
-  const today=new Date();today.setHours(0,0,0,0);
-  const sc=document.getElementById('week-scroll');sc.innerHTML='';
-  for(let i=0;i<7;i++){
-    const d=new Date(mon);d.setDate(mon.getDate()+i);
-    const isToday=d.getTime()===today.getTime();
-    const blk=document.createElement('div');blk.className='week-day-block';
-    const lbl=document.createElement('div');
-    lbl.className='week-day-label'+(isToday?' is-today-lbl':'');
-    // Fix: only show "Aujourd'hui" pill for actual today
-    lbl.innerHTML=DAYS[d.getDay()]+' '+d.getDate()+' '+MS[d.getMonth()]+(isToday?' <span class="today-pill">Aujourd\'hui</span>':'');
+function renderWeek() {
+  var dow=cursor.getDay(), mon=new Date(cursor); mon.setDate(cursor.getDate()-dow);
+  var sun=new Date(mon); sun.setDate(mon.getDate()+6);
+  document.getElementById('period-label').textContent = mon.getDate()+' '+MS[mon.getMonth()]+' - '+sun.getDate()+' '+MS[sun.getMonth()];
+  var today=new Date(); today.setHours(0,0,0,0);
+  var sc=document.getElementById('week-scroll'); sc.innerHTML='';
+  for(var i=0;i<7;i++) {
+    var d=new Date(mon); d.setDate(mon.getDate()+i);
+    var isToday=d.getTime()===today.getTime();
+    var blk=document.createElement('div'); blk.className='week-day-block';
+    var lbl=document.createElement('div'); lbl.className='week-day-label'+(isToday?' is-today-lbl':'');
+    lbl.innerHTML = DAYS[d.getDay()]+' '+d.getDate()+' '+MS[d.getMonth()]+(isToday?' <span class="today-pill">Aujourd\'hui</span>':'');
     blk.appendChild(lbl);
-    const evs=events.filter(e=>e.date===ds(d)).sort((a,b)=>{
-      if(a.allDay&&!b.allDay)return-1;if(!a.allDay&&b.allDay)return 1;
-      return(a.start||'').localeCompare(b.start||'');
-    });
-    if(!evs.length){const n=document.createElement('div');n.className='week-no-events';n.textContent='Aucun événement';blk.appendChild(n)}
-    else evs.forEach(e=>blk.appendChild(card(e)));
+    var dStr=ds(d);
+    var evs=events.filter(function(e){return e.date===dStr;}).sort(function(a,b){return (a.start||'').localeCompare(b.start||'');});
+    if(!evs.length){var n=document.createElement('div');n.className='week-no-events';n.textContent='Aucun evenement';blk.appendChild(n);}
+    else evs.forEach(function(e){blk.appendChild(makeEventCard(e));});
     sc.appendChild(blk);
   }
 }
 
-// ── DAY ──
-function renderDay(){
-  const today=new Date();today.setHours(0,0,0,0);
-  const isToday=cursor.getTime()===today.getTime();
-  document.getElementById('period-label').textContent=DAYS[cursor.getDay()]+' '+cursor.getDate()+' '+MON[cursor.getMonth()]+(isToday?' — Aujourd\'hui':'');
-  const sc=document.getElementById('day-scroll');sc.innerHTML='';
-  const big=document.createElement('div');big.className='day-header-big';
-  big.innerHTML=DAYS[cursor.getDay()]+' <span>'+cursor.getDate()+' '+MON[cursor.getMonth()]+'</span>';
+function renderDay() {
+  var today=new Date();today.setHours(0,0,0,0);
+  var isToday=cursor.getTime()===today.getTime();
+  document.getElementById('period-label').textContent = DAYS[cursor.getDay()]+' '+cursor.getDate()+' '+MON[cursor.getMonth()];
+  var sc=document.getElementById('day-scroll'); sc.innerHTML='';
+  var big=document.createElement('div'); big.className='day-header-big';
+  big.innerHTML=DAYS[cursor.getDay()]+' <span>'+cursor.getDate()+' '+MON[cursor.getMonth()]+'</span>'+(isToday?' <span style="font-size:1rem;color:var(--orange)">- Aujourd\'hui</span>':'');
   sc.appendChild(big);
-  const evs=events.filter(e=>e.date===ds(cursor)).sort((a,b)=>{
-    if(a.allDay&&!b.allDay)return-1;if(!a.allDay&&b.allDay)return 1;
-    return(a.start||'').localeCompare(b.start||'');
-  });
-  if(!evs.length){const n=document.createElement('div');n.className='week-no-events';n.style.padding='.5rem';n.textContent='Aucun événement — appuie sur + pour en ajouter !';sc.appendChild(n)}
-  else evs.forEach(e=>sc.appendChild(card(e)));
+  var dStr=ds(cursor);
+  var evs=events.filter(function(e){return e.date===dStr;}).sort(function(a,b){return (a.start||'').localeCompare(b.start||'');});
+  if(!evs.length){var n=document.createElement('div');n.className='week-no-events';n.style.padding='.5rem';n.textContent='Aucun evenement - appuie sur + pour en ajouter !';sc.appendChild(n);}
+  else evs.forEach(function(e){sc.appendChild(makeEventCard(e));});
 }
 
-// ── CARD ──
-function card(ev){
-  const c=getCat(ev.cat);
-  const el=document.createElement('div');
-  el.className='event-card';
-  el.style.borderLeft='4px solid '+c.color;
-  el.innerHTML=`
-    <div class="ev-time">${ev.allDay?'<span style="font-size:.65rem;color:var(--orange)">Jour entier</span>':(ev.start||'–')+'<br><span style="font-size:.65rem">'+(ev.end||'')+'</span>'}</div>
-    <div class="ev-body">
-      <div class="ev-title">${c.emoji} ${ev.title}</div>
-      ${ev.note?'<div class="ev-sub">'+ev.note+'</div>':''}
-      ${ev.reminder!==undefined&&ev.reminder!==''?'<div class="ev-reminder-tag">🔔 '+rl(ev.reminder,ev.allDay)+'</div>':''}
-    </div>`;
-  el.onclick=()=>openEdit(ev);
+function makeEventCard(ev) {
+  var c=getCat(ev.cat);
+  var el=document.createElement('div'); el.className='event-card'; el.style.borderLeft='4px solid '+c.color;
+  el.innerHTML='<div class="ev-time">'+(ev.allDay?'<span style="font-size:.65rem;color:var(--orange)">Jour entier</span>':(ev.start||'-')+'<br><span style="font-size:.65rem">'+(ev.end||'')+'</span>')+'</div><div class="ev-body"><div class="ev-title">'+c.emoji+' '+ev.title+'</div>'+(ev.note?'<div class="ev-sub">'+ev.note+'</div>':'')+(ev.reminder!==undefined&&ev.reminder!==''?'<div class="ev-reminder-tag">Rappel : '+rl(ev.reminder,ev.allDay)+'</div>':'')+'</div>';
+  el.onclick=function(){openEditEvent(ev);};
   return el;
 }
 
-// ══════════════════════════════════════
+// ============================================================
 //  CAT GRID
-// ══════════════════════════════════════
-function buildEmojiGrid(){
-  const g=document.getElementById('emoji-grid');g.innerHTML='';
-  EMOJI_OPTS.forEach((e,i)=>{
-    const btn=document.createElement('div');btn.className='emoji-opt'+(i===0?' sel':'');
-    btn.textContent=e;btn.onclick=()=>{selNewEmoji=e;document.querySelectorAll('.emoji-opt').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel')};
+// ============================================================
+function buildEmojiGrid() {
+  var g=document.getElementById('emoji-grid'); g.innerHTML='';
+  EMOJI_OPTS.forEach(function(e,i){
+    var btn=document.createElement('div'); btn.className='emoji-opt'+(i===0?' sel':''); btn.innerHTML=e;
+    btn.onclick=function(){selNewEmoji=e;document.querySelectorAll('.emoji-opt').forEach(function(b){b.classList.remove('sel');});btn.classList.add('sel');};
     g.appendChild(btn);
   });
 }
-function buildColorGrid(){
-  const g=document.getElementById('color-grid');g.innerHTML='';
-  COLOR_OPTS.forEach((c,i)=>{
-    const btn=document.createElement('div');btn.className='color-opt'+(i===0?' sel':'');
-    btn.style.background=c;btn.onclick=()=>{selNewColor=c;document.querySelectorAll('.color-opt').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel')};
+function buildColorGrid() {
+  var g=document.getElementById('color-grid'); g.innerHTML='';
+  COLOR_OPTS.forEach(function(c,i){
+    var btn=document.createElement('div'); btn.className='color-opt'+(i===0?' sel':''); btn.style.background=c;
+    btn.onclick=function(){selNewColor=c;document.querySelectorAll('.color-opt').forEach(function(b){b.classList.remove('sel');});btn.classList.add('sel');};
     g.appendChild(btn);
   });
 }
-function renderCatGrid(){
-  const g=document.getElementById('cat-grid');g.innerHTML='';
-  cats.forEach(c=>{
-    const btn=document.createElement('div');btn.className='cat-btn'+(selCat===c.id?' selected':'');
-    btn.dataset.cat=c.id;
-    if(selCat===c.id)btn.style.borderColor=c.color;
-    btn.innerHTML=`<span style="font-size:1.1rem">${c.emoji}</span><span>${c.label}</span>`;
+function renderCatGrid() {
+  var g=document.getElementById('cat-grid'); g.innerHTML='';
+  cats.forEach(function(c){
+    var btn=document.createElement('div'); btn.className='cat-btn'+(selCat===c.id?' selected':''); btn.dataset.cat=c.id;
+    if(selCat===c.id) btn.style.borderColor=c.color;
+    btn.innerHTML='<span style="font-size:1.1rem">'+c.emoji+'</span><span>'+c.label+'</span>';
     if(c.custom){
-      const del=document.createElement('button');del.className='cat-del';del.textContent='✕';
-      del.onclick=e=>{e.stopPropagation();deleteCat(c.id)};btn.appendChild(del);
+      var del=document.createElement('button'); del.className='cat-del'; del.textContent='x';
+      del.onclick=function(e){e.stopPropagation();deleteCat(c.id);}; btn.appendChild(del);
     }
-    btn.onclick=()=>{selCat=c.id;document.querySelectorAll('.cat-btn').forEach(b=>{b.classList.toggle('selected',b===btn);b.style.borderColor=b===btn?getCat(b.dataset.cat).color:''})};
+    btn.onclick=function(){
+      selCat=c.id;
+      document.querySelectorAll('.cat-btn').forEach(function(b){b.classList.toggle('selected',b===btn);b.style.borderColor=b===btn?getCat(b.dataset.cat).color:'';});
+    };
     g.appendChild(btn);
   });
 }
-function deleteCat(id){
-  if(!confirm('Supprimer cette catégorie ?'))return;
-  cats=cats.filter(c=>c.id!==id);saveCats();if(selCat===id)selCat='travail';renderCatGrid();
+function deleteCat(id) {
+  if(!confirm('Supprimer cette categorie ?')) return;
+  cats=cats.filter(function(c){return c.id!==id;});saveCats();if(selCat===id)selCat='travail';renderCatGrid();
 }
-function addCustomCat(){
-  const name=document.getElementById('new-cat-name').value.trim();
-  if(!name){alert('Entre un nom.');return}
-  const newCat={id:'c_'+uid(),label:name,emoji:selNewEmoji,color:selNewColor,custom:true};
-  cats.push(newCat);saveCats();selCat=newCat.id;
-  document.getElementById('new-cat-name').value='';renderCatGrid();
+function addCustomCat() {
+  var name=document.getElementById('new-cat-name').value.trim();
+  if(!name){alert('Entre un nom.');return;}
+  var nc={id:'c_'+uid(),label:name,emoji:selNewEmoji,color:selNewColor,custom:true};
+  cats.push(nc);saveCats();selCat=nc.id;document.getElementById('new-cat-name').value='';renderCatGrid();
 }
 
-// ══════════════════════════════════════
-//  ALL DAY TOGGLE
-// ══════════════════════════════════════
-function toggleAllDay(){
+// ============================================================
+//  ADD/EDIT/SAVE/DELETE EVENT
+// ============================================================
+function toggleAllDay() {
   isAllDay=!isAllDay;
   document.getElementById('allday-toggle').classList.toggle('on',isAllDay);
   document.getElementById('time-fields').style.display=isAllDay?'none':'flex';
-  // Update reminder options
-  const sel=document.getElementById('ev-reminder');
-  const alldayOpt=sel.querySelector('option[value="allday9"]');
-  if(alldayOpt)alldayOpt.style.display=isAllDay?'':'none';
 }
-
-// ══════════════════════════════════════
-//  ADD / EDIT / SAVE / DELETE
-// ══════════════════════════════════════
-function openAddEvent(){
+function openAddEvent() {
   editId=null;selCat='travail';isAllDay=false;
-  document.getElementById('modal-title').textContent='Nouvel événement';
+  document.getElementById('modal-title').textContent='Nouvel evenement';
   document.getElementById('ev-title').value='';
   document.getElementById('ev-date').value=ds(cursor);
   document.getElementById('ev-start').value='';
@@ -973,7 +888,7 @@ function openAddEvent(){
   renderCatGrid();
   document.getElementById('event-modal').classList.add('open');
 }
-function openEdit(ev){
+function openEditEvent(ev) {
   editId=ev.id;selCat=ev.cat;isAllDay=!!ev.allDay;
   document.getElementById('modal-title').textContent='Modifier';
   document.getElementById('ev-title').value=ev.title;
@@ -988,566 +903,378 @@ function openEdit(ev){
   renderCatGrid();
   document.getElementById('event-modal').classList.add('open');
 }
-function saveEvent(){
-  const title=document.getElementById('ev-title').value.trim();
-  const date=document.getElementById('ev-date').value;
-  if(!title){alert('Ajoute un titre !');return}
-  if(!date){alert('Choisis une date !');return}
-  const ev={id:editId||uid(),title,date,allDay:isAllDay,start:isAllDay?'':document.getElementById('ev-start').value,end:isAllDay?'':document.getElementById('ev-end').value,note:document.getElementById('ev-note').value.trim(),cat:selCat,reminder:document.getElementById('ev-reminder').value};
-  if(editId){const i=events.findIndex(e=>e.id===editId);if(i>=0)events[i]=ev;else events.push(ev)}
+function saveEvent() {
+  var title=document.getElementById('ev-title').value.trim();
+  var date=document.getElementById('ev-date').value;
+  if(!title){alert('Ajoute un titre !');return;}
+  if(!date){alert('Choisis une date !');return;}
+  var ev={id:editId||uid(),title:title,date:date,allDay:isAllDay,start:isAllDay?'':document.getElementById('ev-start').value,end:isAllDay?'':document.getElementById('ev-end').value,note:document.getElementById('ev-note').value.trim(),cat:selCat,reminder:document.getElementById('ev-reminder').value};
+  if(editId){var idx=events.findIndex(function(e){return e.id===editId;});if(idx>=0)events[idx]=ev;else events.push(ev);}
   else events.push(ev);
-  save();schedEmailReminder(ev);closeModal('event-modal');renderAll();
+  saveEvents();schedEmailReminder(ev);closeModal('event-modal');renderAll();
 }
-function deleteEvent(){
+function deleteEvent() {
   if(!editId||!confirm('Supprimer ?'))return;
-  events=events.filter(e=>e.id!==editId);save();closeModal('event-modal');renderAll();
+  events=events.filter(function(e){return e.id!==editId;});saveEvents();closeModal('event-modal');renderAll();
 }
 
-// ══════════════════════════════════════
-//  EMAIL REMINDERS (via mailto simulation + Web Share API)
-// ══════════════════════════════════════
-const emailScheduled=new Set();
-function schedEmailReminder(ev){
-  if(!ev.reminder&&ev.reminder!=='0')return;
+// ============================================================
+//  EMAIL REMINDERS
+// ============================================================
+var emailScheduled={};
+function schedEmailReminder(ev) {
+  if(ev.reminder===undefined||ev.reminder==='')return;
   if(!cfg.email)return;
-  const key=ev.id+'-'+ev.reminder;
-  if(emailScheduled.has(key))return;
-  let notifTime;
-  if(ev.allDay||ev.reminder==='allday9'){
-    // 9h00 the day of the event
-    notifTime=new Date(ev.date);notifTime.setHours(9,0,0,0);
-  } else if(ev.start){
-    const[h,m]=ev.start.split(':').map(Number);
-    const evT=new Date(ev.date);evT.setHours(h,m,0,0);
-    notifTime=new Date(evT.getTime()-Number(ev.reminder)*60000);
-  } else return;
-  const delay=notifTime-new Date();
+  var key=ev.id+'-'+ev.reminder;
+  if(emailScheduled[key])return;
+  var notifTime;
+  if(ev.allDay||ev.reminder==='allday9'){notifTime=new Date(ev.date);notifTime.setHours(9,0,0,0);}
+  else if(ev.start){var parts=ev.start.split(':');var evT=new Date(ev.date);evT.setHours(parseInt(parts[0]),parseInt(parts[1]),0,0);notifTime=new Date(evT.getTime()-Number(ev.reminder)*60000);}
+  else return;
+  var delay=notifTime-new Date();
   if(delay>0&&delay<7*86400000){
-    emailScheduled.add(key);
-    setTimeout(()=>sendEmailReminder(ev),delay);
+    emailScheduled[key]=true;
+    setTimeout(function(){sendEmailReminder(ev);},delay);
   }
 }
-function checkEmailReminders(){events.forEach(schedEmailReminder)}
-
+function checkEmailReminders(){events.forEach(schedEmailReminder);}
 function sendEmailReminder(ev){
-  const c=getCat(ev.cat);
-  const subject=encodeURIComponent('🗓 Rappel MonAssistant : '+ev.title);
-  const body=encodeURIComponent(
-    'Rappel de ton agenda MonAssistant\n\n'+
-    '📅 Événement : '+ev.title+'\n'+
-    '📆 Date : '+ev.date+'\n'+
-    (ev.allDay?'🕘 Journée entière\n':('🕐 Heure : '+(ev.start||'')+(ev.end?' → '+ev.end:'')+'\n'))+
-    (ev.note?'📝 Note : '+ev.note+'\n':'')+
-    '🏷️ Catégorie : '+c.emoji+' '+c.label+'\n\n'+
-    '— MonAssistant'
-  );
-  // Try to open mail app
-  const link=document.createElement('a');
-  link.href='mailto:'+cfg.email+'?subject='+subject+'&body='+body;
-  link.style.display='none';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  var c=getCat(ev.cat);
+  var subject=encodeURIComponent('Rappel MonAssistant : '+ev.title);
+  var body=encodeURIComponent('Rappel : '+ev.title+'\nDate : '+ev.date+'\nHeure : '+(ev.allDay?'Journee entiere':ev.start||'')+'\n'+(ev.note?'Note : '+ev.note:''));
+  var a=document.createElement('a');a.href='mailto:'+cfg.email+'?subject='+subject+'&body='+body;a.style.display='none';document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+function rl(r,allDay){
+  if(r==='allday9'||allDay)return 'a 9h00';
+  var m=+r;return m===0?'a l\'heure':m<60?m+' min':m===60?'1h':m===120?'2h':'1 jour';
 }
 
-// ══════════════════════════════════════
-//  AI CHAT
-// ══════════════════════════════════════
-let aiHistory=[], pendingImg=null;
-
-function addAIMsg(role,text){
-  const msgs=document.getElementById('ai-messages');
-  const div=document.createElement('div');
-  div.className='ai-msg '+role;
-  div.textContent=text;
-  msgs.appendChild(div);
-  msgs.scrollTop=msgs.scrollHeight;
-  return div;
+// ============================================================
+//  FAMILLE
+// ============================================================
+function setFamTab(t) {
+  famTab=t;
+  ['rdv','taches','activite','repas','epicerie'].forEach(function(x){
+    document.getElementById('ftab-'+x).classList.toggle('active',x===t);
+    document.getElementById('fpane-'+x).classList.toggle('active',x===t);
+  });
 }
-function aiKeyDown(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAIMessage()}}
 
-async function sendAIMessage(){
-  if(!cfg.apiKey){alert('Configure ta clé API dans Paramètres → Clé API Claude.');return}
-  const inp=document.getElementById('ai-input');
-  const text=inp.value.trim();
-  if(!text&&!pendingImg)return;
-  inp.value='';
+function renderFamRDV() {
+  var list=document.getElementById('fam-rdv-list');list.innerHTML='';
+  var today=new Date();today.setHours(0,0,0,0);
+  var famCats=['francine','francia','famille','rdv','medical'];
+  var famEvs=events.filter(function(e){return famCats.indexOf(e.cat)>=0&&new Date(e.date)>=today;}).sort(function(a,b){return a.date.localeCompare(b.date);}).slice(0,15);
+  if(!famEvs.length){list.innerHTML='<div class="empty-state">Aucun RDV famille a venir. Ajoute des evenements dans l\'Agenda.</div>';return;}
+  famEvs.forEach(function(ev){
+    var c=getCat(ev.cat);var d=new Date(ev.date);
+    var el=document.createElement('div');el.className='fam-card';el.style.borderLeft='4px solid '+c.color;
+    el.innerHTML='<div style="flex-shrink:0;text-align:center;min-width:40px"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase">'+MS[d.getMonth()]+'</div><div style="font-family:Syne,sans-serif;font-size:1.3rem;font-weight:800;color:'+c.color+'">'+d.getDate()+'</div></div><div class="fam-card-body"><div class="fam-card-title">'+c.emoji+' '+ev.title+'</div><div class="fam-card-sub">'+(ev.allDay?'Journee entiere':(ev.start||'')+(ev.end?' - '+ev.end:''))+(ev.note?' | '+ev.note:'')+'</div></div>';
+    list.appendChild(el);
+  });
+}
 
-  addAIMsg('user',pendingImg?'📷 '+(text||'Photo envoyée'):text);
-  const loading=addAIMsg('ai','...');loading.classList.add('loading');
+function renderPersonFilter(containerId, current, setter, renderFn) {
+  var el=document.getElementById(containerId);el.innerHTML='';
+  ['Tous'].concat(MEMBRES).forEach(function(p){
+    var chip=document.createElement('div');chip.className='person-chip';
+    chip.textContent=p;chip.style.borderColor=current===p?PERSON_COLORS[p]||'var(--orange)':'';
+    chip.style.color=current===p?PERSON_COLORS[p]||'var(--orange)':'';
+    chip.onclick=function(){setter(p);renderFn();};
+    el.appendChild(chip);
+  });
+}
 
-  const today=new Date();
-  const upcomingEvs=events.filter(e=>new Date(e.date)>=today).slice(0,15).map(e=>{
-    const c=getCat(e.cat);
-    return `- ${e.date} ${e.allDay?'(journée entière)':e.start+'-'+e.end} ${e.title} [${c.label}]`;
-  }).join('\n');
+function renderTaches() {
+  renderPersonFilter('tache-person-filter',tachePersonFilter,function(v){tachePersonFilter=v;},renderTaches);
+  var f=document.getElementById('tache-prio-filter');f.innerHTML='';
+  ['Tous','urgent','normal','plus-tard'].forEach(function(p){
+    var chip=document.createElement('div');chip.className='person-chip';chip.textContent=p==='plus-tard'?'Plus tard':p.charAt(0).toUpperCase()+p.slice(1);
+    chip.style.color=tachePrioFilter===p?'var(--orange)':'';
+    chip.onclick=function(){tachePrioFilter=p;renderTaches();};
+    f.appendChild(chip);
+  });
+  var list=document.getElementById('fam-taches-list');list.innerHTML='';
+  var filtered=taches.filter(function(t){
+    if(tachePersonFilter!=='Tous'&&t.personne!==tachePersonFilter)return false;
+    if(tachePrioFilter!=='Tous'&&t.priorite!==tachePrioFilter)return false;
+    return true;
+  }).sort(function(a,b){var po={urgent:0,normal:1,'plus-tard':2};return (po[a.priorite]||1)-(po[b.priorite]||1);});
+  if(!filtered.length){list.innerHTML='<div class="empty-state">Aucune tache. Appuie sur + !</div>';return;}
+  var incomplete=filtered.filter(function(t){return !t.done;});
+  var done=filtered.filter(function(t){return t.done;});
+  incomplete.concat(done).forEach(function(t){list.appendChild(makeTacheCard(t));});
+}
+function makeTacheCard(t) {
+  var col=PERSON_COLORS[t.personne]||'var(--border)';
+  var el=document.createElement('div');el.className='fam-card'+(t.done?' done':'');el.style.borderLeft='4px solid '+col;
+  el.innerHTML='<button class="fam-check'+(t.done?' checked':'')+'" onclick="toggleTache(\''+t.id+'\',event)">'+(t.done?'v':'')+'</button><div class="fam-card-body"><div class="fam-card-title">'+t.titre+'</div>'+(t.note?'<div class="fam-card-sub">'+t.note+'</div>':'')+'<div class="fam-card-badges"><span class="badge" style="border:1px solid '+col+';color:'+col+'">'+t.personne+'</span><span class="badge badge-prio-'+t.priorite+'">'+(t.priorite==='plus-tard'?'Plus tard':t.priorite.charAt(0).toUpperCase()+t.priorite.slice(1))+'</span>'+(t.categorie?'<span class="badge badge-cat">'+t.categorie+'</span>':'')+'</div></div><button onclick="deleteTache(\''+t.id+'\',event)" style="background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:.2rem">x</button>';
+  return el;
+}
+function toggleTache(id,e){e.stopPropagation();var t=taches.find(function(x){return x.id===id;});if(t){t.done=!t.done;saveTaches();renderTaches();}}
+function deleteTache(id,e){e.stopPropagation();if(!confirm('Supprimer ?'))return;taches=taches.filter(function(t){return t.id!==id;});saveTaches();renderTaches();}
 
-  const catList=cats.map(c=>c.id+'='+c.label).join(', ');
+function renderActivites() {
+  renderPersonFilter('activite-person-filter',activitePersonFilter,function(v){activitePersonFilter=v;},renderActivites);
+  var list=document.getElementById('fam-activite-list');list.innerHTML='';
+  var today=new Date();today.setHours(0,0,0,0);
+  var filtered=activites.filter(function(a){return (activitePersonFilter==='Tous'||a.personne===activitePersonFilter)&&new Date(a.date)>=today;}).sort(function(a,b){return a.date.localeCompare(b.date);});
+  if(!filtered.length){list.innerHTML='<div class="empty-state">Aucune activite. Appuie sur + !</div>';return;}
+  filtered.forEach(function(a){
+    var col=PERSON_COLORS[a.personne]||'var(--border)';var d=new Date(a.date);
+    var el=document.createElement('div');el.className='fam-card';el.style.borderLeft='4px solid '+col;
+    el.innerHTML='<div style="flex-shrink:0;text-align:center;min-width:40px"><div style="font-size:.7rem;color:var(--muted);text-transform:uppercase">'+MS[d.getMonth()]+'</div><div style="font-family:Syne,sans-serif;font-size:1.3rem;font-weight:800;color:'+col+'">'+d.getDate()+'</div></div><div class="fam-card-body"><div class="fam-card-title">'+a.titre+'</div><div class="fam-card-sub">'+(a.heure||'')+(a.lieu?' | '+a.lieu:'')+'</div><div class="fam-card-badges"><span class="badge" style="border:1px solid '+col+';color:'+col+'">'+a.personne+'</span></div></div><button onclick="deleteActivite(\''+a.id+'\',event)" style="background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:.2rem">x</button>';
+    list.appendChild(el);
+  });
+}
+function deleteActivite(id,e){e.stopPropagation();if(!confirm('Supprimer ?'))return;activites=activites.filter(function(a){return a.id!==id;});saveActivites();renderActivites();}
 
-  const sys=`Tu es l'assistant IA de l'agenda personnel d'Éric Pilon, infirmier au bloc opératoire à Joliette QC. Il a deux filles Francine et Francia. Il habite à Sainte-Adèle.
-Aujourd'hui: ${today.toLocaleDateString('fr-CA')}
-Événements à venir:\n${upcomingEvs||'(aucun)'}
-Catégories: ${catList}
+function renderRepas() {
+  var g=document.getElementById('repas-grid');g.innerHTML='';
+  var today=new Date();today.setHours(0,0,0,0);
+  for(var i=0;i<7;i++){
+    var d=new Date(today);d.setDate(today.getDate()+i);
+    var key=ds(d);var isToday=i===0;
+    var el=document.createElement('div');el.className='repas-day'+(isToday?' today-day':'');
+    var meal=repas[key];
+    el.innerHTML='<div class="repas-day-label">'+DAYS[d.getDay()]+' '+d.getDate()+'</div>'+(meal?'<div class="repas-day-meal">'+meal+'</div>':'<div class="repas-day-empty">Pas de repas</div>');
+    (function(k,dd){el.onclick=function(){openEditRepas(k,dd);};})(key,d);
+    g.appendChild(el);
+  }
+}
 
-Quand l'utilisateur veut ajouter des événements, réponds UNIQUEMENT avec ce JSON (sans markdown, sans backticks):
-{"action":"add_events","events":[{"title":"...","date":"YYYY-MM-DD","start":"HH:MM","end":"HH:MM","cat":"id","note":"","allDay":false}],"message":"..."}
+function renderEpicerie() {
+  var list=document.getElementById('epicerie-list');list.innerHTML='';
+  if(!epicerie.length){list.innerHTML='<div class="empty-state">Liste vide. Utilise l\'IA pour generer ou ajoute manuellement.</div>';return;}
+  var grouped={};
+  epicerie.forEach(function(item){var r=item.rayon||'Autre';if(!grouped[r])grouped[r]=[];grouped[r].push(item);});
+  Object.entries(grouped).forEach(function(entry){
+    var rayon=entry[0],items=entry[1];
+    var sec=document.createElement('div');sec.className='epicerie-section';
+    sec.innerHTML='<div class="epicerie-section-title">'+(RAYON_LABELS[rayon]||rayon)+'</div>';
+    items.forEach(function(item){
+      var el=document.createElement('div');el.className='epicerie-item'+(item.checked?' checked-item':'');
+      el.innerHTML='<div class="epicerie-item-check'+(item.checked?' on':'')+'" onclick="toggleEpicerie(\''+item.id+'\',event)">'+(item.checked?'v':'')+'</div><span class="epicerie-item-name">'+item.nom+'</span><span class="epicerie-item-qty">'+item.qte+'</span><button onclick="deleteEpicerie(\''+item.id+'\',event)" style="background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer">x</button>';
+      sec.appendChild(el);
+    });
+    list.appendChild(sec);
+  });
+}
+function toggleEpicerie(id,e){e.stopPropagation();var item=epicerie.find(function(x){return x.id===id;});if(item){item.checked=!item.checked;saveEpicerie();renderEpicerie();}}
+function deleteEpicerie(id,e){e.stopPropagation();epicerie=epicerie.filter(function(x){return x.id!==id;});saveEpicerie();renderEpicerie();}
+function clearCheckedEpicerie(){if(!confirm('Effacer les items coches ?'))return;epicerie=epicerie.filter(function(x){return !x.checked;});saveEpicerie();renderEpicerie();}
 
-Pour journée entière: allDay=true, start="" end="".
-Si tu analyses une photo d'horaire: extrait TOUS les quarts avec dates exactes (utilise l'année ${today.getFullYear()}).
-Pour toute autre question, réponds en français naturellement.`;
+// ============================================================
+//  FAMILLE AI
+// ============================================================
+async function openFamAI(context) {
+  if(!cfg.apiKey){alert('Configure ta cle API dans Parametres.');return;}
+  var today2=new Date();today2.setHours(0,0,0,0);
+  var next7=[];for(var i=0;i<7;i++){var d=new Date(today2);d.setDate(today2.getDate()+i);next7.push(ds(d));}
 
-  try{
-    let userContent;
-    if(pendingImg){
-      userContent=[{type:'image',source:{type:'base64',media_type:pendingImg.type,data:pendingImg.data}},{type:'text',text:text||'Analyse cet horaire et ajoute tous les quarts de travail dans mon agenda.'}];
-    } else {
-      userContent=text;
-    }
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
+  var prompt='', systemPrompt='';
+
+  if(context==='repas'){
+    var menuStr=next7.map(function(k){return repas[k]?k+':'+repas[k]:'';}).filter(Boolean).join(', ')||'aucun';
+    systemPrompt='Tu es un assistant cuisine. Reponds SEULEMENT avec un objet JSON valide, sans markdown, sans backtick, sans explication.';
+    prompt='Genere un menu diner pour ces 7 dates: '+next7.join(', ')+'. Menu existant: '+menuStr+'. JSON: {"action":"set_repas","repas":{"'+next7[0]+'":"Spaghetti","'+next7[1]+'":"Poulet","'+next7[2]+'":"Tacos","'+next7[3]+'":"Soupe","'+next7[4]+'":"Pizza","'+next7[5]+'":"Saumon","'+next7[6]+'":"Boeuf"},"message":"Menu genere"}';
+  } else if(context==='epicerie'){
+    var menuItems=next7.map(function(k){return repas[k]||'';}).filter(Boolean).join(', ')||'repas varies';
+    systemPrompt='Tu es un assistant epicerie. Reponds SEULEMENT avec un objet JSON valide, sans markdown.';
+    prompt='Genere une liste epicerie pour: '+menuItems+'. Famille 4 personnes. JSON: {"action":"set_epicerie","items":[{"nom":"Tomates","qte":"4","rayon":"Fruits legumes"}],"message":"Liste generee"}. Rayons: Fruits legumes, Viandes poissons, Produits laitiers, Boulangerie, Hygiene entretien, Epicerie seche, Surgeles, Boissons, Autre. Genere 15-20 items.';
+  } else if(context==='taches'){
+    systemPrompt='Tu es un assistant organisation. Reponds SEULEMENT avec un objet JSON valide.';
+    prompt='Suggere 8 taches famille: Eric (infirmier), Jass (veterinaire), Francine (10 ans), Francia (7 ans). JSON: {"action":"add_taches","taches":[{"titre":"Faire epicerie","personne":"Eric","priorite":"normal","categorie":"Courses","note":""}],"message":"Taches suggerees"}. Personnes: Eric, Jass, Francine, Francia. Priorites: urgent, normal, plus-tard. Categories: Maison, Ecole, Courses, Medical, Autre.';
+  } else {
+    openAIChat();return;
+  }
+
+  var loading=document.createElement('div');
+  loading.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:center;justify-content:center';
+  loading.innerHTML='<div style="background:var(--surface);border-radius:20px;padding:1.5rem 2rem;text-align:center"><div style="font-size:1.5rem">&#129302;</div><div style="color:var(--orange);font-family:Syne,sans-serif;font-weight:700;margin-top:.5rem">IA en train de generer...</div></div>';
+  document.body.appendChild(loading);
+
+  try {
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1500,system:sys,messages:[...aiHistory,{role:'user',content:userContent}]})
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2500,system:systemPrompt,messages:[{role:'user',content:prompt}]})
     });
-    const data=await res.json();
-    if(data.error){loading.textContent='Erreur : '+data.error.message;loading.classList.remove('loading');pendingImg=null;return}
-    const reply=data.content?.find(b=>b.type==='text')?.text||'Désolé, erreur.';
-    let displayed=reply;
+    var data=await res.json();
+    if(loading.parentNode)document.body.removeChild(loading);
+    if(data.error){alert('Erreur API: '+data.error.message);return;}
+    var reply=data.content&&data.content.find(function(b){return b.type==='text';})?data.content.find(function(b){return b.type==='text';}).text:'';
+    var start=reply.indexOf('{'), end=reply.lastIndexOf('}');
+    if(start===-1||end===-1){alert('Reponse invalide. Reessaie !');return;}
+    var json=JSON.parse(reply.slice(start,end+1));
+
+    if(json.action==='set_repas'&&json.repas){
+      var count=0;
+      Object.entries(json.repas).forEach(function(e){if(e[1]&&typeof e[1]==='string'){repas[e[0]]=e[1];count++;}});
+      saveRepas();renderRepas();alert((json.message||count+' repas ajoutes !'));
+    } else if(json.action==='set_epicerie'&&Array.isArray(json.items)){
+      var count2=0;
+      json.items.forEach(function(item){if(item.nom){epicerie.push({id:uid(),nom:item.nom,qte:item.qte||'',rayon:item.rayon||'Autre',checked:false});count2++;}});
+      saveEpicerie();renderEpicerie();setFamTab('epicerie');alert((json.message||count2+' items ajoutes !'));
+    } else if(json.action==='add_taches'&&Array.isArray(json.taches)){
+      var count3=0;
+      json.taches.forEach(function(t){if(t.titre){taches.push({id:uid(),titre:t.titre,personne:t.personne||'Eric',priorite:t.priorite||'normal',categorie:t.categorie||'',note:t.note||'',done:false});count3++;}});
+      saveTaches();renderTaches();alert((json.message||count3+' taches ajoutees !'));
+    }
+  } catch(err) {
+    if(loading.parentNode)document.body.removeChild(loading);
+    alert('Erreur: '+err.message);
+  }
+}
+
+// ============================================================
+//  FAMILLE ADD MODALS
+// ============================================================
+function openAddTache() {
+  createSimpleModal('Nouvelle tache',
+    '<div class="form-group"><label class="form-label">Titre *</label><input class="form-input" id="fm-titre" type="text" placeholder="Ex: Faire le lavage..."/></div>'+
+    '<div class="form-group"><label class="form-label">Personne</label><select class="form-input" id="fm-personne">'+MEMBRES.map(function(m){return '<option>'+m+'</option>';}).join('')+'</select></div>'+
+    '<div class="form-group"><label class="form-label">Priorite</label><select class="form-input" id="fm-prio"><option value="urgent">Urgent</option><option value="normal" selected>Normal</option><option value="plus-tard">Plus tard</option></select></div>'+
+    '<div class="form-group"><label class="form-label">Categorie</label><select class="form-input" id="fm-cat"><option value="">-- Aucune --</option>'+CATS_TACHE.map(function(c){return '<option>'+c+'</option>';}).join('')+'</select></div>'+
+    '<div class="form-group"><label class="form-label">Note</label><input class="form-input" id="fm-note" type="text" placeholder="Optionnel..."/></div>',
+    function(){
+      var titre=document.getElementById('fm-titre').value.trim();
+      if(!titre){alert('Titre requis');return false;}
+      taches.push({id:uid(),titre:titre,personne:document.getElementById('fm-personne').value,priorite:document.getElementById('fm-prio').value,categorie:document.getElementById('fm-cat').value,note:document.getElementById('fm-note').value.trim(),done:false});
+      saveTaches();renderTaches();return true;
+    }
+  );
+}
+function openAddActivite() {
+  createSimpleModal('Nouvelle activite',
+    '<div class="form-group"><label class="form-label">Titre *</label><input class="form-input" id="fm-titre" type="text" placeholder="Ex: Gym, Soccer..."/></div>'+
+    '<div class="form-group"><label class="form-label">Personne</label><select class="form-input" id="fm-personne">'+MEMBRES.map(function(m){return '<option>'+m+'</option>';}).join('')+'</select></div>'+
+    '<div class="form-group"><label class="form-label">Date *</label><input class="form-input" id="fm-date" type="date"/></div>'+
+    '<div class="form-group"><label class="form-label">Heure</label><input class="form-input" id="fm-heure" type="time"/></div>'+
+    '<div class="form-group"><label class="form-label">Lieu</label><input class="form-input" id="fm-lieu" type="text" placeholder="Ex: Arena, Ecole..."/></div>',
+    function(){
+      var titre=document.getElementById('fm-titre').value.trim();
+      var date=document.getElementById('fm-date').value;
+      if(!titre||!date){alert('Titre et date requis');return false;}
+      activites.push({id:uid(),titre:titre,personne:document.getElementById('fm-personne').value,date:date,heure:document.getElementById('fm-heure').value,lieu:document.getElementById('fm-lieu').value.trim()});
+      saveActivites();renderActivites();return true;
+    }
+  );
+}
+function openAddRepas() {
+  var today2=new Date();
+  createSimpleModal('Ajouter un repas',
+    '<div class="form-group"><label class="form-label">Date</label><input class="form-input" id="fm-date" type="date" value="'+ds(today2)+'"/></div>'+
+    '<div class="form-group"><label class="form-label">Repas *</label><input class="form-input" id="fm-repas" type="text" placeholder="Ex: Pates, Poulet roti..."/></div>',
+    function(){
+      var date=document.getElementById('fm-date').value;
+      var meal=document.getElementById('fm-repas').value.trim();
+      if(!meal){alert('Entre un repas');return false;}
+      repas[date]=meal;saveRepas();renderRepas();return true;
+    }
+  );
+}
+function openEditRepas(key, date) {
+  createSimpleModal('Repas du '+DAYS[date.getDay()]+' '+date.getDate(),
+    '<div class="form-group"><label class="form-label">Repas</label><input class="form-input" id="fm-repas" type="text" value="'+(repas[key]||'')+'" placeholder="Ex: Pates bolognaise..."/></div>',
+    function(){
+      var meal=document.getElementById('fm-repas').value.trim();
+      if(meal)repas[key]=meal;else delete repas[key];
+      saveRepas();renderRepas();return true;
+    }
+  );
+}
+function openAddEpicerie() {
+  createSimpleModal('Ajouter un item',
+    '<div class="form-group"><label class="form-label">Item *</label><input class="form-input" id="fm-nom" type="text" placeholder="Ex: Lait, Poulet..."/></div>'+
+    '<div class="form-group"><label class="form-label">Quantite</label><input class="form-input" id="fm-qte" type="text" placeholder="Ex: 2L, 500g..."/></div>'+
+    '<div class="form-group"><label class="form-label">Rayon</label><select class="form-input" id="fm-rayon">'+RAYONS.map(function(r){return '<option>'+r+'</option>';}).join('')+'</select></div>',
+    function(){
+      var nom=document.getElementById('fm-nom').value.trim();
+      if(!nom){alert('Nom requis');return false;}
+      epicerie.push({id:uid(),nom:nom,qte:document.getElementById('fm-qte').value.trim(),rayon:document.getElementById('fm-rayon').value,checked:false});
+      saveEpicerie();renderEpicerie();return true;
+    }
+  );
+}
+
+function createSimpleModal(title, bodyHTML, onSave) {
+  var old=document.getElementById('simple-modal-overlay');if(old)old.remove();
+  var overlay=document.createElement('div');overlay.id='simple-modal-overlay';overlay.className='modal-overlay open';
+  overlay.innerHTML='<div class="modal-sheet"><div class="modal-handle"></div><div class="modal-title">'+title+'</div>'+bodyHTML+'<div class="btn-row"><button class="btn-secondary" onclick="document.getElementById(\'simple-modal-overlay\').remove()">Annuler</button><button class="btn-primary" id="sms-save">Enregistrer</button></div></div>';
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.remove();});
+  document.getElementById('sms-save').onclick=function(){if(onSave())overlay.remove();};
+}
+
+// ============================================================
+//  AI CHAT
+// ============================================================
+function addAIMsg(role, text) {
+  var msgs=document.getElementById('ai-messages');
+  var div=document.createElement('div');div.className='ai-msg '+role;div.textContent=text;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+  return div;
+}
+function aiKeyDown(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAIMessage();}}
+
+async function sendAIMessage() {
+  if(!cfg.apiKey){alert('Configure ta cle API dans Parametres.');return;}
+  var inp=document.getElementById('ai-input');
+  var text=inp.value.trim();
+  if(!text&&!pendingImg)return;
+  inp.value='';
+  addAIMsg('user', pendingImg?'Photo: '+(text||'Analyse cet horaire'):text);
+  var loading=addAIMsg('ai','...');loading.classList.add('loading');
+
+  var today2=new Date();
+  var upEv=events.filter(function(e){return new Date(e.date)>=today2;}).slice(0,10).map(function(e){return e.date+' '+e.title;}).join(', ');
+  var catList=cats.map(function(c){return c.id+'='+c.label;}).join(', ');
+  var sys='Tu es l\'assistant IA de l\'agenda d\'Eric Pilon, infirmier a Joliette QC. Filles: Francine et Francia. Aujourd\'hui: '+ds(today2)+'. Evenements: '+upEv+'. Categories: '+catList+'. Pour ajouter des evenements, reponds UNIQUEMENT en JSON sans markdown: {"action":"add_events","events":[{"title":"...","date":"YYYY-MM-DD","start":"HH:MM","end":"HH:MM","cat":"id","note":"","allDay":false}],"message":"..."}. Sinon reponds en francais.';
+
+  try {
+    var userContent;
+    if(pendingImg){userContent=[{type:'image',source:{type:'base64',media_type:pendingImg.type,data:pendingImg.data}},{type:'text',text:text||'Analyse cet horaire et ajoute les quarts de travail.'}];}
+    else{userContent=text;}
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1500,system:sys,messages:aiHistory.concat([{role:'user',content:userContent}])})
+    });
+    var data=await res.json();
+    if(data.error){loading.textContent='Erreur: '+data.error.message;loading.classList.remove('loading');pendingImg=null;return;}
+    var reply=data.content&&data.content.find(function(b){return b.type==='text';})?data.content.find(function(b){return b.type==='text';}).text:'';
+    var displayed=reply;
     try{
-      const clean=reply.trim().replace(/^```json\n?/,'').replace(/\n?```$/,'');
-      const json=JSON.parse(clean);
-      if(json.action==='add_events'&&json.events){
-        json.events.forEach(ev=>events.push({id:uid(),title:ev.title,date:ev.date,start:ev.start||'',end:ev.end||'',cat:ev.cat||'travail',note:ev.note||'',allDay:!!ev.allDay,reminder:''}));
-        save();renderAll();
-        displayed=(json.message||'✅ '+json.events.length+' événement(s) ajouté(s) !');
+      var s=reply.indexOf('{'),en=reply.lastIndexOf('}');
+      if(s!==-1&&en!==-1){
+        var json=JSON.parse(reply.slice(s,en+1));
+        if(json.action==='add_events'&&json.events){
+          json.events.forEach(function(ev){events.push({id:uid(),title:ev.title,date:ev.date,start:ev.start||'',end:ev.end||'',cat:ev.cat||'travail',note:ev.note||'',allDay:!!ev.allDay,reminder:''});});
+          saveEvents();renderAll();displayed=json.message||json.events.length+' evenement(s) ajoute(s) !';
+        }
       }
     }catch(e){}
     loading.textContent=displayed;loading.classList.remove('loading');
     aiHistory.push({role:'user',content:typeof userContent==='string'?userContent:'[image]'});
     aiHistory.push({role:'assistant',content:reply});
     if(aiHistory.length>12)aiHistory=aiHistory.slice(-12);
-  }catch(err){
-    loading.textContent='Erreur de connexion. Vérifie ta clé API et ta connexion.';
-    loading.classList.remove('loading');
+  } catch(err) {
+    loading.textContent='Erreur de connexion.';loading.classList.remove('loading');
   }
   pendingImg=null;
 }
 
-function handleImageUpload(e){
-  const file=e.target.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=ev=>{
+function handleImageUpload(e) {
+  var file=e.target.files[0];if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(ev){
     pendingImg={type:file.type,data:ev.target.result.split(',')[1]};
-    addAIMsg('user','📷 Photo chargée — envoi en cours...');
     sendAIMessage();
   };
   reader.readAsDataURL(file);
   e.target.value='';
 }
-
-// ══════════════════════════════════════
-//  HELPERS
-// ══════════════════════════════════════
-function ds(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
-function rl(r,allDay){
-  if(r==='allday9'||allDay)return 'Rappel à 9h00';
-  const m=+r;
-  if(m===0)return 'À l\'heure';if(m<60)return m+' min avant';if(m===60)return '1h avant';if(m===120)return '2h avant';return '1 jour avant';
-}
-
-
-// Inject Famille view into DOM
-
-
-// ══════════════════════════════════════
-//  FAMILLE DATA
-// ══════════════════════════════════════
-const SK_TACHES='ma_taches', SK_ACTIVITES='ma_activites', SK_REPAS='ma_repas', SK_EPICERIE='ma_epicerie';
-let taches=[], activites=[], repas={}, epicerie=[];
-try{taches=JSON.parse(localStorage.getItem(SK_TACHES)||'[]')}catch(e){}
-try{activites=JSON.parse(localStorage.getItem(SK_ACTIVITES)||'[]')}catch(e){}
-try{repas=JSON.parse(localStorage.getItem(SK_REPAS)||'{}')}catch(e){}
-try{epicerie=JSON.parse(localStorage.getItem(SK_EPICERIE)||'[]')}catch(e){}
-
-const saveTaches=()=>localStorage.setItem(SK_TACHES,JSON.stringify(taches));
-const saveActivites=()=>localStorage.setItem(SK_ACTIVITES,JSON.stringify(activites));
-const saveRepas=()=>localStorage.setItem(SK_REPAS,JSON.stringify(repas));
-const saveEpicerie=()=>localStorage.setItem(SK_EPICERIE,JSON.stringify(epicerie));
-
-const MEMBRES=['Éric','Jass','Francine','Francia'];
-const PRIO=['urgent','normal','plus-tard'];
-const CATS_TACHE=['Maison','École','Courses','Médical','Autre'];
-const RAYONS=['🥦 Fruits & légumes','🥩 Viandes & poissons','🥛 Produits laitiers','🥖 Boulangerie','🧴 Hygiène & entretien','🥫 Épicerie sèche','❄️ Surgelés','🍷 Boissons','Autre'];
-const PERSON_COLORS={Éric:'#f97316',Jass:'#22c55e',Francine:'#3b82f6',Francia:'#a855f7'};
-
-let famTab='rdv';
-let tachePersonFilter='Tous', tachePrioFilter='Tous', tacheCatFilter='Tous';
-let activitePersonFilter='Tous';
-
-// ══════════════════════════════════════
-//  OPEN FAMILLE
-// ══════════════════════════════════════
-function openFamille(){
-  showView('famille');
-  document.getElementById('fam-date').textContent=document.getElementById('home-date').textContent;
-  renderFamRDV();renderTaches();renderActivites();renderRepas();renderEpicerie();
-}
-
-// ══════════════════════════════════════
-//  TABS
-// ══════════════════════════════════════
-function setFamTab(t){
-  famTab=t;
-  ['rdv','taches','activite','repas','epicerie'].forEach(x=>{
-    document.getElementById('ftab-'+x).classList.toggle('active',x===t);
-    document.getElementById('fpane-'+x).classList.toggle('active',x===t);
-  });
-}
-
-// ══════════════════════════════════════
-//  RDV (from agenda events tagged famille/francine/francia/jass)
-// ══════════════════════════════════════
-function renderFamRDV(){
-  const list=document.getElementById('fam-rdv-list');list.innerHTML='';
-  const today=new Date();today.setHours(0,0,0,0);
-  const famCats=['francine','francia','famille','rdv','medical'];
-  const famEvs=events
-    .filter(e=>famCats.includes(e.cat)&&new Date(e.date)>=today)
-    .sort((a,b)=>a.date.localeCompare(b.date))
-    .slice(0,15);
-  if(!famEvs.length){list.innerHTML='<div class="empty-state">Aucun RDV famille à venir.<br>Ajoute des événements dans l\'Agenda avec les catégories Francine, Francia, Famille ou Rendez-vous.</div>';return}
-  famEvs.forEach(ev=>{
-    const c=getCat(ev.cat);
-    const d=new Date(ev.date);
-    const el=document.createElement('div');el.className='fam-card';
-    el.style.borderLeft='4px solid '+c.color;
-    el.innerHTML=`
-      <div style="flex-shrink:0;text-align:center;min-width:40px">
-        <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase">${MS[d.getMonth()]}</div>
-        <div style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:${c.color}">${d.getDate()}</div>
-      </div>
-      <div class="fam-card-body">
-        <div class="fam-card-title">${c.emoji} ${ev.title}</div>
-        <div class="fam-card-sub">${ev.allDay?'Journée entière':(ev.start||'')+(ev.end?' → '+ev.end:'')}${ev.note?' · '+ev.note:''}</div>
-      </div>`;
-    list.appendChild(el);
-  });
-}
-
-// ══════════════════════════════════════
-//  TACHES
-// ══════════════════════════════════════
-function renderPersonFilter(containerId, currentFilter, setter, renderFn){
-  const el=document.getElementById(containerId);el.innerHTML='';
-  ['Tous',...MEMBRES].forEach(p=>{
-    const chip=document.createElement('div');chip.className='person-chip'+(currentFilter===p?' active':'');
-    if(currentFilter===p&&p!=='Tous')chip.style.background=PERSON_COLORS[p]||'var(--orange)';
-    chip.textContent=p;
-    chip.onclick=()=>{setter(p);renderFn()};
-    el.appendChild(chip);
-  });
-}
-function renderTaches(){
-  renderPersonFilter('tache-person-filter',tachePersonFilter,v=>tachePersonFilter=v,renderTaches);
-  // Prio + cat filters
-  const f=document.getElementById('tache-filters');f.innerHTML='';
-  ['Tous',...PRIO].forEach(p=>{
-    const chip=document.createElement('div');chip.className='person-chip'+(tachePrioFilter===p?' active':'');
-    chip.textContent=p==='plus-tard'?'Plus tard':p.charAt(0).toUpperCase()+p.slice(1);
-    chip.onclick=()=>{tachePrioFilter=p;renderTaches()};
-    f.appendChild(chip);
-  });
-  const list=document.getElementById('fam-taches-list');list.innerHTML='';
-  let filtered=taches.filter(t=>{
-    if(tachePersonFilter!=='Tous'&&t.personne!==tachePersonFilter)return false;
-    if(tachePrioFilter!=='Tous'&&t.priorite!==tachePrioFilter)return false;
-    return true;
-  }).sort((a,b)=>{
-    const po={urgent:0,normal:1,'plus-tard':2};
-    return (po[a.priorite]||1)-(po[b.priorite]||1);
-  });
-  if(!filtered.length){list.innerHTML='<div class="empty-state">Aucune tâche. Appuie sur + pour en ajouter !</div>';return}
-  // Show incomplete first
-  const incomplete=filtered.filter(t=>!t.done);
-  const done=filtered.filter(t=>t.done);
-  [...incomplete,...done].forEach(t=>list.appendChild(tacheCard(t)));
-}
-function tacheCard(t){
-  const el=document.createElement('div');
-  el.className='fam-card'+(t.done?' done':'');
-  const col=PERSON_COLORS[t.personne]||'var(--border)';
-  el.style.borderLeft='4px solid '+col;
-  el.innerHTML=`
-    <div class="fam-check${t.done?' checked':''}" onclick="toggleTache('${t.id}',event)">${t.done?'✓':''}</div>
-    <div class="fam-card-body">
-      <div class="fam-card-title">${t.titre}</div>
-      ${t.note?'<div class="fam-card-sub">'+t.note+'</div>':''}
-      <div class="fam-card-badges">
-        <span class="badge badge-person" style="border-color:${col};color:${col}">${t.personne}</span>
-        <span class="badge badge-prio-${t.priorite}">${t.priorite==='plus-tard'?'Plus tard':t.priorite.charAt(0).toUpperCase()+t.priorite.slice(1)}</span>
-        ${t.categorie?'<span class="badge badge-cat">'+t.categorie+'</span>':''}
-      </div>
-    </div>
-    <button onclick="deleteTache('${t.id}',event)" style="background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:.2rem">✕</button>`;
-  return el;
-}
-function toggleTache(id,e){e.stopPropagation();const t=taches.find(x=>x.id===id);if(t){t.done=!t.done;saveTaches();renderTaches()}}
-function deleteTache(id,e){e.stopPropagation();if(!confirm('Supprimer cette tâche ?'))return;taches=taches.filter(t=>t.id!==id);saveTaches();renderTaches()}
-
-// ══════════════════════════════════════
-//  ACTIVITES
-// ══════════════════════════════════════
-function renderActivites(){
-  renderPersonFilter('activite-person-filter',activitePersonFilter,v=>activitePersonFilter=v,renderActivites);
-  const list=document.getElementById('fam-activite-list');list.innerHTML='';
-  const today=new Date();today.setHours(0,0,0,0);
-  let filtered=activites
-    .filter(a=>activitePersonFilter==='Tous'||a.personne===activitePersonFilter)
-    .filter(a=>new Date(a.date)>=today)
-    .sort((a,b)=>a.date.localeCompare(b.date));
-  if(!filtered.length){list.innerHTML='<div class="empty-state">Aucune activité à venir. Appuie sur + pour en ajouter !</div>';return}
-  filtered.forEach(a=>{
-    const col=PERSON_COLORS[a.personne]||'var(--border)';
-    const d=new Date(a.date);
-    const el=document.createElement('div');el.className='fam-card';
-    el.style.borderLeft='4px solid '+col;
-    el.innerHTML=`
-      <div style="flex-shrink:0;text-align:center;min-width:40px">
-        <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase">${MS[d.getMonth()]}</div>
-        <div style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:${col}">${d.getDate()}</div>
-      </div>
-      <div class="fam-card-body">
-        <div class="fam-card-title">${a.titre}</div>
-        <div class="fam-card-sub">${a.heure||''}${a.lieu?' · '+a.lieu:''}</div>
-        <div class="fam-card-badges"><span class="badge badge-person" style="border-color:${col};color:${col}">${a.personne}</span></div>
-      </div>
-      <button onclick="deleteActivite('${a.id}',event)" style="background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:.2rem">✕</button>`;
-    list.appendChild(el);
-  });
-}
-function deleteActivite(id,e){e.stopPropagation();if(!confirm('Supprimer ?'))return;activites=activites.filter(a=>a.id!==id);saveActivites();renderActivites()}
-
-// ══════════════════════════════════════
-//  REPAS
-// ══════════════════════════════════════
-const DAYS7=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
-function renderRepas(){
-  const g=document.getElementById('repas-grid');g.innerHTML='';
-  const today=new Date();today.setHours(0,0,0,0);
-  for(let i=0;i<7;i++){
-    const d=new Date(today);d.setDate(today.getDate()+i);
-    const key=ds(d);
-    const isToday=i===0;
-    const el=document.createElement('div');
-    el.className='repas-day'+(isToday?' today-day':'');
-    const meal=repas[key];
-    el.innerHTML=`
-      <div class="repas-day-label">${isToday?'Aujourd\'hui':DAYS7[d.getDay()]} ${d.getDate()}</div>
-      ${meal?'<div class="repas-day-meal">'+meal+'</div>':'<div class="repas-day-empty">Pas de repas planifié</div>'}`;
-    el.onclick=()=>openEditRepas(key,d);
-    g.appendChild(el);
-  }
-}
-
-// ══════════════════════════════════════
-//  EPICERIE
-// ══════════════════════════════════════
-function renderEpicerie(){
-  const list=document.getElementById('epicerie-list');list.innerHTML='';
-  if(!epicerie.length){list.innerHTML='<div class="empty-state">Liste vide. Utilise l\'IA pour la générer selon le menu ou ajoute des items manuellement.</div>';return}
-  // Group by rayon
-  const grouped={};
-  epicerie.forEach(item=>{
-    const r=item.rayon||'Autre';
-    if(!grouped[r])grouped[r]=[];grouped[r].push(item);
-  });
-  Object.entries(grouped).forEach(([rayon,items])=>{
-    const sec=document.createElement('div');sec.className='epicerie-section';
-    sec.innerHTML='<div class="epicerie-section-title">'+rayon+'</div>';
-    items.forEach(item=>{
-      const el=document.createElement('div');
-      el.className='epicerie-item'+(item.checked?' checked-item':'');
-      el.innerHTML=`
-        <div class="epicerie-item-check${item.checked?' on':''}" onclick="toggleEpicerie('${item.id}',event)">${item.checked?'✓':''}</div>
-        <span class="epicerie-item-name">${item.nom}</span>
-        <span class="epicerie-item-qty">${item.qte||''}</span>
-        <button onclick="deleteEpicerie('${item.id}',event)" style="background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer">✕</button>`;
-      sec.appendChild(el);
-    });
-    list.appendChild(sec);
-  });
-}
-function toggleEpicerie(id,e){e.stopPropagation();const item=epicerie.find(x=>x.id===id);if(item){item.checked=!item.checked;saveEpicerie();renderEpicerie()}}
-function deleteEpicerie(id,e){e.stopPropagation();epicerie=epicerie.filter(x=>x.id!==id);saveEpicerie();renderEpicerie()}
-function clearCheckedEpicerie(){if(!confirm('Effacer tous les items cochés ?'))return;epicerie=epicerie.filter(x=>!x.checked);saveEpicerie();renderEpicerie()}
-
-// ══════════════════════════════════════
-//  FAM AI CHAT
-// ══════════════════════════════════════
-async function openFamAI(context){
-  if(!cfg.apiKey){alert('Configure ta clé API dans Paramètres → Clé API Claude.');return}
-
-  const today2=new Date();today2.setHours(0,0,0,0);
-  const next7=[];
-  for(let i=0;i<7;i++){const d=new Date(today2);d.setDate(today2.getDate()+i);next7.push(ds(d));}
-
-  let prompt='',systemPrompt='';
-
-  if(context==='repas'){
-    const menuStr=Object.entries(repas).filter(([k])=>next7.includes(k)).map(([k,v])=>k+': '+v).join(', ')||'(aucun)';
-    systemPrompt='Tu es un assistant cuisine. Reponds SEULEMENT avec un objet JSON valide, rien dautre, pas de markdown, pas dexplication.';
-    prompt='Genere un menu diner equilibre pour exactement ces 7 dates: '+next7.join(', ')+'. Famille quebecoise: Eric (infirmier), Jass (veterinaire), Francine (10 ans), Francia (7 ans). Menu existant: '+menuStr+'. Reponds SEULEMENT avec ce JSON exact: {"action":"set_repas","repas":{"'+next7[0]+'":"Spaghetti bolognaise","'+next7[1]+'":"Poulet roti","'+next7[2]+'":"Tacos","'+next7[3]+'":"Soupe","'+next7[4]+'":"Pizza maison","'+next7[5]+'":"Saumon grille","'+next7[6]+'":"Mijoteuse boeuf"},"message":"Menu genere!"}';
-
-  } else if(context==='epicerie'){
-    const menuStr=Object.entries(repas).filter(([k])=>next7.includes(k)).map(([k,v])=>v).filter(Boolean).join(', ')||'(aucun repas planifie)';
-    systemPrompt='Tu es un assistant epicerie. Reponds SEULEMENT avec un objet JSON valide, rien dautre, pas de markdown.';
-    prompt='Genere une liste epicerie pour ces repas: '+menuStr+'. Famille de 4 personnes. Reponds SEULEMENT avec ce JSON: {"action":"set_epicerie","items":[{"nom":"Tomates","qte":"4","rayon":"Fruits legumes"},{"nom":"Poulet","qte":"1.5kg","rayon":"Viandes poissons"}],"message":"Liste generee!"}. Genere 15-25 items. Rayons possibles: Fruits legumes, Viandes poissons, Produits laitiers, Boulangerie, Hygiene entretien, Epicerie seche, Surgeles, Boissons, Autre.';
-
-  } else if(context==='taches'){
-    systemPrompt='Tu es un assistant organisation. Reponds SEULEMENT avec un objet JSON valide, rien dautre.';
-    prompt='Suggere 8 taches hebdomadaires famille: Eric (infirmier), Jass (veterinaire), Francine (10 ans), Francia (7 ans). JSON: {"action":"add_taches","taches":[{"titre":"Faire lepicerie","personne":"Eric","priorite":"normal","categorie":"Courses","note":""}],"message":"Taches suggerees!"}. Personnes: Eric, Jass, Francine, Francia. Priorites: urgent, normal, plus-tard. Categories: Maison, Ecole, Courses, Medical, Autre.';
-
-  } else {
-    document.getElementById('ai-modal').classList.add('open');
-    return;
-  }
-
-  const loading=document.createElement('div');
-  loading.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center';
-  loading.innerHTML='<div style="background:var(--surface);border-radius:20px;padding:1.5rem 2rem;text-align:center"><div style="font-size:1.5rem;margin-bottom:.5rem">🤖</div><div style="color:var(--orange);font-family:Syne,sans-serif;font-weight:700">IA en train de générer...</div><div style="font-size:.8rem;color:var(--muted);margin-top:.4rem">Quelques secondes...</div></div>';
-  document.body.appendChild(loading);
-
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2500,system:systemPrompt,messages:[{role:'user',content:prompt}]})
-    });
-    const data=await res.json();
-    if(loading.parentNode)document.body.removeChild(loading);
-    if(data.error){alert('Erreur API: '+data.error.message);return}
-    const reply=data.content?.find(b=>b.type==='text')?.text||'';
-    // Extract JSON robustly
-    const start=reply.indexOf('{');
-    const end=reply.lastIndexOf('}');
-    if(start===-1||end===-1){alert('Réponse invalide de l'IA. Réessaie !');return}
-    const json=JSON.parse(reply.slice(start,end+1));
-
-    if(json.action==='set_repas'&&json.repas){
-      let count=0;
-      Object.entries(json.repas).forEach(([date,meal])=>{if(meal&&typeof meal==='string'){repas[date]=meal;count++;}});
-      saveRepas();renderRepas();
-      alert('✅ '+(json.message||count+' repas ajoutés !'));
-
-    } else if(json.action==='set_epicerie'&&Array.isArray(json.items)){
-      let count=0;
-      const rayonMap={'Fruits legumes':'🥦 Fruits & légumes','Viandes poissons':'🥩 Viandes & poissons','Produits laitiers':'🥛 Produits laitiers','Boulangerie':'🥖 Boulangerie','Hygiene entretien':'🧴 Hygiène & entretien','Epicerie seche':'🥫 Épicerie sèche','Surgeles':'❄️ Surgelés','Boissons':'🍷 Boissons'};
-      json.items.forEach(item=>{
-        if(item.nom){
-          const rayon=rayonMap[item.rayon]||item.rayon||'Autre';
-          epicerie.push({id:uid(),nom:item.nom,qte:item.qte||'',rayon,checked:false});count++;
-        }
-      });
-      saveEpicerie();renderEpicerie();setFamTab('epicerie');
-      alert('✅ '+(json.message||count+' items ajoutés !'));
-
-    } else if(json.action==='add_taches'&&Array.isArray(json.taches)){
-      let count=0;
-      json.taches.forEach(t=>{
-        if(t.titre){taches.push({id:uid(),titre:t.titre,personne:t.personne||'Éric',priorite:t.priorite||'normal',categorie:t.categorie||'',note:t.note||'',done:false});count++;}
-      });
-      saveTaches();renderTaches();
-      alert('✅ '+(json.message||count+' tâches ajoutées !'));
-    }
-
-  }catch(err){
-    if(loading.parentNode)document.body.removeChild(loading);
-    alert('Erreur: '+err.message+'. Réessaie !');
-  }
-
-
-// ══════════════════════════════════════
-//  ADD MODALS (tache, activite, repas, epicerie)
-// ══════════════════════════════════════
-function openAddTache(){
-  const modal=createSimpleModal('Nouvelle tâche',`
-    <div class="form-group"><label class="form-label">Titre *</label><input class="form-input" id="fm-titre" type="text" placeholder="Ex: Faire le lavage..."/></div>
-    <div class="form-group"><label class="form-label">Personne</label><select class="form-input" id="fm-personne">${MEMBRES.map(m=>'<option>'+m+'</option>').join('')}</select></div>
-    <div class="form-group"><label class="form-label">Priorité</label><select class="form-input" id="fm-prio"><option value="urgent">Urgent</option><option value="normal" selected>Normal</option><option value="plus-tard">Plus tard</option></select></div>
-    <div class="form-group"><label class="form-label">Catégorie</label><select class="form-input" id="fm-cat"><option value="">-- Aucune --</option>${CATS_TACHE.map(c=>'<option>'+c+'</option>').join('')}</select></div>
-    <div class="form-group"><label class="form-label">Note</label><input class="form-input" id="fm-note" type="text" placeholder="Optionnel..."/></div>
-  `,()=>{
-    const titre=document.getElementById('fm-titre').value.trim();
-    if(!titre){alert('Titre requis');return false}
-    taches.push({id:uid(),titre,personne:document.getElementById('fm-personne').value,priorite:document.getElementById('fm-prio').value,categorie:document.getElementById('fm-cat').value,note:document.getElementById('fm-note').value.trim(),done:false});
-    saveTaches();renderTaches();return true;
-  });
-}
-
-function openAddActivite(){
-  const modal=createSimpleModal('Nouvelle activité',`
-    <div class="form-group"><label class="form-label">Titre *</label><input class="form-input" id="fm-titre" type="text" placeholder="Ex: Gym, Soccer, Natation..."/></div>
-    <div class="form-group"><label class="form-label">Personne</label><select class="form-input" id="fm-personne">${MEMBRES.map(m=>'<option>'+m+'</option>').join('')}</select></div>
-    <div class="form-group"><label class="form-label">Date *</label><input class="form-input" id="fm-date" type="date"/></div>
-    <div class="form-group"><label class="form-label">Heure</label><input class="form-input" id="fm-heure" type="time"/></div>
-    <div class="form-group"><label class="form-label">Lieu</label><input class="form-input" id="fm-lieu" type="text" placeholder="Ex: Aréna, École..."/></div>
-  `,()=>{
-    const titre=document.getElementById('fm-titre').value.trim();
-    const date=document.getElementById('fm-date').value;
-    if(!titre||!date){alert('Titre et date requis');return false}
-    activites.push({id:uid(),titre,personne:document.getElementById('fm-personne').value,date,heure:document.getElementById('fm-heure').value,lieu:document.getElementById('fm-lieu').value.trim()});
-    saveActivites();renderActivites();return true;
-  });
-}
-
-function openAddRepas(){
-  const today2=new Date();
-  const modal=createSimpleModal('Ajouter un repas',`
-    <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="fm-date" type="date" value="${ds(today2)}"/></div>
-    <div class="form-group"><label class="form-label">Repas *</label><input class="form-input" id="fm-repas" type="text" placeholder="Ex: Pâtes bolognaise, Poulet rôti..."/></div>
-  `,()=>{
-    const date=document.getElementById('fm-date').value;
-    const meal=document.getElementById('fm-repas').value.trim();
-    if(!meal){alert('Entre un repas');return false}
-    repas[date]=meal;saveRepas();renderRepas();return true;
-  });
-}
-
-function openEditRepas(key,date){
-  const modal=createSimpleModal('Repas du '+DAYS7[date.getDay()]+' '+date.getDate(),`
-    <div class="form-group"><label class="form-label">Repas</label><input class="form-input" id="fm-repas" type="text" value="${repas[key]||''}" placeholder="Ex: Pâtes bolognaise..."/></div>
-  `,()=>{
-    const meal=document.getElementById('fm-repas').value.trim();
-    if(meal)repas[key]=meal;else delete repas[key];
-    saveRepas();renderRepas();return true;
-  });
-}
-
-function openAddEpicerie(){
-  const modal=createSimpleModal('Ajouter un item',`
-    <div class="form-group"><label class="form-label">Item *</label><input class="form-input" id="fm-nom" type="text" placeholder="Ex: Lait, Poulet, Pommes..."/></div>
-    <div class="form-group"><label class="form-label">Quantité</label><input class="form-input" id="fm-qte" type="text" placeholder="Ex: 2L, 500g, 1 douzaine..."/></div>
-    <div class="form-group"><label class="form-label">Rayon</label><select class="form-input" id="fm-rayon">${RAYONS.map(r=>'<option>'+r+'</option>').join('')}</select></div>
-  `,()=>{
-    const nom=document.getElementById('fm-nom').value.trim();
-    if(!nom){alert('Nom requis');return false}
-    epicerie.push({id:uid(),nom,qte:document.getElementById('fm-qte').value.trim(),rayon:document.getElementById('fm-rayon').value,checked:false});
-    saveEpicerie();renderEpicerie();return true;
-  });
-}
-
-// ── Generic simple modal ──
-function createSimpleModal(title, bodyHTML, onSave){
-  // Remove existing
-  const old=document.getElementById('simple-modal-overlay');if(old)old.remove();
-  const overlay=document.createElement('div');overlay.id='simple-modal-overlay';overlay.className='modal-overlay open';
-  overlay.innerHTML=`<div class="modal-sheet"><div class="modal-handle"></div><div class="modal-title">${title}</div>${bodyHTML}<div class="btn-row"><button class="btn-secondary" onclick="document.getElementById('simple-modal-overlay').remove()">Annuler</button><button class="btn-primary" id="simple-modal-save">✓ Enregistrer</button></div></div>`;
-  document.body.appendChild(overlay);
-  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove()});
-  document.getElementById('simple-modal-save').onclick=()=>{if(onSave())overlay.remove()};
-  return overlay;
-}
-
 </script>
-
 </body>
 </html>
