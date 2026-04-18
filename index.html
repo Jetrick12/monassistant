@@ -1314,14 +1314,30 @@ function validateImportJSON() {
     var s = raw.indexOf('{'), e = raw.lastIndexOf('}');
     if(s===-1||e===-1) throw new Error('JSON invalide');
     var json = JSON.parse(raw.slice(s,e+1));
-    // Accept both formats
-    var repasArr = json.repas || json.menu || json.semaine_repas || [];
-    if(!Array.isArray(repasArr) || repasArr.length===0) throw new Error('Aucun repas trouve dans le JSON');
-    // Build preview
+
+    // Support multiple formats
+    var repasArr = (json.menuSemaine && json.menuSemaine.repas)
+      || json.repas || json.menu || [];
+
+    if(!Array.isArray(repasArr) || repasArr.length===0)
+      throw new Error('Aucun repas trouve dans le JSON');
+
+    var hasIngredients = repasArr.some(function(r){
+      return (r.ingredients||r.ingrediants||[]).length > 0;
+    });
+
+    // Check epicerie section
+    var hasEpicerie = !!(json.listeEpicerie && json.listeEpicerie.categories);
+
     var lines = repasArr.map(function(r) {
       var ing = (r.ingredients||r.ingrediants||[]).length;
-      return '<div style="margin-bottom:.3rem"><strong style="color:var(--text)">'+r.jour+' '+r.date+'</strong> — '+r.nom+(ing?' <span style="color:#22c55e">('+ing+' ingr.)</span>':'')+'</div>';
+      return '<div style="margin-bottom:.3rem"><strong style="color:var(--text)">'+(r.jour||'')+'</strong> — '+r.nom+(ing?' <span style="color:#22c55e">('+ing+' ingr.)</span>':'')+'</div>';
     });
+
+    if(hasEpicerie) {
+      lines.push('<div style="color:#22c55e;margin-top:.5rem">+ Liste epicerie detectee !</div>');
+    }
+
     document.getElementById('import-preview-content').innerHTML = lines.join('');
     preview.style.display = 'block';
     error.style.display = 'none';
@@ -1336,30 +1352,81 @@ function validateImportJSON() {
 
 function importMenuJSON() {
   var json = validateImportJSON();
-  if(!json) { alert("Corrige le JSON avant d'importer."); return; }
-  var repasArr = json.repas || json.menu || json.semaine_repas || [];
+  if(!json) { alert("Corrige le JSON avant d importer."); return; }
+
+  // Category mapping from JSON format to app rayons
+  var catToRayon = {
+    'viandes':       'Viandes poissons',
+    'legumes':       'Fruits legumes',
+    'frais':         'Produits laitiers',
+    'epicerie_seche':'Epicerie seche',
+    'condiments':    'Epicerie seche',
+    'epices':        'Epicerie seche',
+    'boulangerie':   'Boulangerie',
+    'surgeles':      'Surgeles',
+    'boissons':      'Boissons'
+  };
+
+  // Get days of current week (Monday = today or next Monday)
+  var today2 = new Date(); today2.setHours(0,0,0,0);
+  var dayNames = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  var jourToDate = {};
+  // Map jour names to actual dates starting from today
+  var jours = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+  var dow = today2.getDay(); // 0=Sun, 1=Mon...
+  var mondayOffset = dow === 0 ? -6 : 1 - dow;
+  var monday = new Date(today2); monday.setDate(today2.getDate() + mondayOffset);
+  jours.forEach(function(j, i) {
+    var d = new Date(monday); d.setDate(monday.getDate() + i);
+    jourToDate[j] = ds(d);
+  });
+
+  var repasArr = (json.menuSemaine && json.menuSemaine.repas) || json.repas || json.menu || [];
   var repasCount = 0, epicerieCount = 0;
+
+  // Import repas
   repasArr.forEach(function(r) {
-    if(r.date && r.nom) {
-      repas[r.date] = r.nom;
+    var dateKey = r.date || jourToDate[r.jour] || '';
+    if(r.nom && dateKey) {
+      repas[dateKey] = r.nom;
       repasCount++;
     }
-    // Import ingredients into epicerie (avoid duplicates)
+
+    // Import ingredients from each repas
     var ings = r.ingredients || r.ingrediants || [];
     ings.forEach(function(ing) {
       if(!ing.nom) return;
-      // Check if already in epicerie list
       var exists = epicerie.find(function(x){ return x.nom.toLowerCase()===ing.nom.toLowerCase(); });
       if(!exists) {
-        epicerie.push({id:uid(), nom:ing.nom, qte:ing.qte||'', rayon:ing.rayon||'Autre', checked:false});
+        var qte = ing.quantite ? ing.quantite + (ing.unite ? ' '+ing.unite : '') : (ing.qte||'');
+        var rayon = catToRayon[ing.categorie] || ing.rayon || 'Autre';
+        epicerie.push({id:uid(), nom:ing.nom, qte:qte, rayon:rayon, checked:false});
         epicerieCount++;
       }
     });
   });
+
+  // Also import from listeEpicerie if present (more consolidated)
+  if(json.listeEpicerie && json.listeEpicerie.categories && epicerieCount === 0) {
+    Object.entries(json.listeEpicerie.categories).forEach(function(entry) {
+      var catKey = entry[0], catData = entry[1];
+      var rayon = catToRayon[catKey] || 'Autre';
+      (catData.items||[]).forEach(function(item) {
+        if(!item.nom) return;
+        var exists = epicerie.find(function(x){ return x.nom.toLowerCase()===item.nom.toLowerCase(); });
+        if(!exists) {
+          var qte = item.quantite ? item.quantite+(item.unite?' '+item.unite:'') : '';
+          epicerie.push({id:uid(), nom:item.nom, qte:qte, rayon:rayon, checked:false});
+          epicerieCount++;
+        }
+      });
+    });
+  }
+
   saveRepas(); saveEpicerie();
   renderRepas(); renderEpicerie();
   closeModal('import-modal');
-  alert("Importe avec succes ! " + repasCount + " repas et " + epicerieCount + " ingredients ajoutes.");
+  alert(repasCount + " repas et " + epicerieCount + " ingredients importes avec succes !");
 }
 
 // import-modal click handler added in DOMContentLoaded above
