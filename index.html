@@ -1367,17 +1367,17 @@ function importMenuJSON() {
     'boissons':      'Boissons'
   };
 
-  // Get days of current week (Monday = today or next Monday)
+  // Map jour names to dates starting from TODAY
   var today2 = new Date(); today2.setHours(0,0,0,0);
-  var dayNames = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
   var jourToDate = {};
-  // Map jour names to actual dates starting from today
-  var jours = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
-  var dow = today2.getDay(); // 0=Sun, 1=Mon...
-  var mondayOffset = dow === 0 ? -6 : 1 - dow;
-  var monday = new Date(today2); monday.setDate(today2.getDate() + mondayOffset);
-  jours.forEach(function(j, i) {
-    var d = new Date(monday); d.setDate(monday.getDate() + i);
+  var joursOrdre = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+  // Find index of today in jours
+  var dowFr = [6,0,1,2,3,4,5][today2.getDay()]; // 0=Lundi, 6=Dimanche
+  // Map each jour to its next occurrence from today
+  joursOrdre.forEach(function(j, i) {
+    var diff = i - dowFr;
+    if(diff < 0) diff += 7;
+    var d = new Date(today2); d.setDate(today2.getDate() + diff);
     jourToDate[j] = ds(d);
   });
 
