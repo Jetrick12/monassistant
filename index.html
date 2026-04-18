@@ -580,7 +580,7 @@ select.form-input option{background:#1c1c1c;color:#f0ede8}
 //  CONFIG & STORAGE
 // ============================================================
 var SK_EV='ma_ev5', SK_CATS='ma_cats2', SK_CFG='ma_config';
-var SK_TACHES='ma_taches', SK_ACTIVITES='ma_activites', SK_REPAS='ma_repas', SK_EPICERIE='ma_epicerie';
+var SK_TACHES='ma_taches', SK_ACTIVITES='ma_activites', SK_REPAS='ma_repas', SK_EPICERIE='ma_epicerie', SK_RECETTES='ma_recettes';
 
 var cfg = {pin:'1234', apiKey:'', email:'e.pilon12@gmail.com'};
 try { Object.assign(cfg, JSON.parse(localStorage.getItem(SK_CFG)||'{}')); } catch(e) {}
@@ -613,6 +613,9 @@ try { taches = JSON.parse(localStorage.getItem(SK_TACHES)||'[]'); } catch(e) {}
 try { activites = JSON.parse(localStorage.getItem(SK_ACTIVITES)||'[]'); } catch(e) {}
 try { repas = JSON.parse(localStorage.getItem(SK_REPAS)||'{}'); } catch(e) {}
 try { epicerie = JSON.parse(localStorage.getItem(SK_EPICERIE)||'[]'); } catch(e) {}
+var recettes = {};
+try { recettes = JSON.parse(localStorage.getItem(SK_RECETTES)||'{}'); } catch(e) {}
+function saveRecettes() { localStorage.setItem(SK_RECETTES, JSON.stringify(recettes)); }
 function saveTaches() { localStorage.setItem(SK_TACHES, JSON.stringify(taches)); }
 function saveActivites() { localStorage.setItem(SK_ACTIVITES, JSON.stringify(activites)); }
 function saveRepas() { localStorage.setItem(SK_REPAS, JSON.stringify(repas)); }
@@ -1080,6 +1083,7 @@ function renderEpicerie() {
 function toggleEpicerie(id,e){e.stopPropagation();var item=epicerie.find(function(x){return x.id===id;});if(item){item.checked=!item.checked;saveEpicerie();renderEpicerie();}}
 function deleteEpicerie(id,e){e.stopPropagation();epicerie=epicerie.filter(function(x){return x.id!==id;});saveEpicerie();renderEpicerie();}
 function clearCheckedEpicerie(){if(!confirm('Effacer les items coches ?'))return;epicerie=epicerie.filter(function(x){return !x.checked;});saveEpicerie();renderEpicerie();}
+function clearAllEpicerie(){if(!confirm('Effacer TOUTE la liste ? Cette action est irreversible.'))return;epicerie=[];saveEpicerie();renderEpicerie();}
 
 // ============================================================
 //  FAMILLE AI
@@ -1384,11 +1388,13 @@ function importMenuJSON() {
   var repasArr = (json.menuSemaine && json.menuSemaine.repas) || json.repas || json.menu || [];
   var repasCount = 0, epicerieCount = 0;
 
-  // Import repas
+  // Import repas + recettes
   repasArr.forEach(function(r) {
     var dateKey = r.date || jourToDate[r.jour] || '';
     if(r.nom && dateKey) {
       repas[dateKey] = r.nom;
+      // Save full recipe details
+      recettes[dateKey] = r;
       repasCount++;
     }
 
@@ -1423,7 +1429,7 @@ function importMenuJSON() {
     });
   }
 
-  saveRepas(); saveEpicerie();
+  saveRepas(); saveEpicerie(); saveRecettes();
   renderRepas(); renderEpicerie();
   closeModal('import-modal');
   alert(repasCount + " repas et " + epicerieCount + " ingredients importes avec succes !");
