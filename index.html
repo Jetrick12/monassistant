@@ -1085,7 +1085,6 @@ function toggleEpicerie(id,e){e.stopPropagation();var item=epicerie.find(functio
 function deleteEpicerie(id,e){e.stopPropagation();epicerie=epicerie.filter(function(x){return x.id!==id;});saveEpicerie();renderEpicerie();}
 function clearCheckedEpicerie(){if(!confirm('Effacer les items coches ?'))return;epicerie=epicerie.filter(function(x){return !x.checked;});saveEpicerie();renderEpicerie();}
 function clearAllEpicerie(){if(!confirm('Effacer TOUTE la liste ?'))return;epicerie=[];saveEpicerie();renderEpicerie();}
-function clearAllEpicerie(){if(!confirm('Effacer TOUTE la liste ? Cette action est irreversible.'))return;epicerie=[];saveEpicerie();renderEpicerie();}
 
 // ============================================================
 //  FAMILLE AI
