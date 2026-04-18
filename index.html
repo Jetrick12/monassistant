@@ -695,8 +695,11 @@ function openAIChat() {
   document.getElementById('ai-api-warning').style.display = cfg.apiKey ? 'none' : 'block';
 }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-['event-modal','api-modal','email-modal','pin-modal','ai-modal'].forEach(function(id){
-  document.getElementById(id).addEventListener('click', function(e){ if(e.target===this) closeModal(id); });
+document.addEventListener('DOMContentLoaded', function() {
+  ['event-modal','api-modal','email-modal','pin-modal','ai-modal','import-modal'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.addEventListener('click', function(e){ if(e.target===this) closeModal(id); });
+  });
 });
 
 // ============================================================
@@ -1359,8 +1362,7 @@ function importMenuJSON() {
   alert("Importe avec succes ! " + repasCount + " repas et " + epicerieCount + " ingredients ajoutes.");
 }
 
-// Add click outside handler for import modal
-document.getElementById('import-modal').addEventListener('click', function(e){ if(e.target===this) closeModal('import-modal'); });
+// import-modal click handler added in DOMContentLoaded above
 
 </script>
 
