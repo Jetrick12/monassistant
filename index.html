@@ -222,8 +222,8 @@
       <div class="tile" onclick="openAgenda()">
         <div class="tile-icon">🗓</div><div><div class="tile-name">Agenda</div><div class="tile-sub">Travail & famille</div></div><div class="tile-active">Actif</div>
       </div>
-      <div class="tile" onclick="showSoon('👨‍👩‍👧‍👧 Famille','Tâches, repas et activités.')">
-        <div class="tile-icon">👨‍👩‍👧‍👧</div><div><div class="tile-name">Famille</div><div class="tile-sub">Tâches & repas</div></div><div class="tile-soon">Bientôt</div>
+      <div class="tile" onclick="openFamille()">
+        <div class="tile-icon">👨‍👩‍👧‍👧</div><div><div class="tile-name">Famille</div><div class="tile-sub">Tâches, repas &amp; activités</div></div><div class="tile-active">Actif</div>
       </div>
       <div class="tile" onclick="showSoon('💰 Budget','Finances & placements.')">
         <div class="tile-icon">💰</div><div><div class="tile-name">Budget</div><div class="tile-sub">Finances & placements</div></div><div class="tile-soon">Bientôt</div>
@@ -1030,3 +1030,501 @@ function rl(r,allDay){
 </script>
 </body>
 </html>
+<!-- ══════════════════════════════════════
+     FAMILLE MODULE — injected styles
+══════════════════════════════════════ -->
+<style>
+/* FAMILLE TABS */
+.fam-tabs{display:flex;gap:.5rem;padding:.75rem 1.5rem;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.fam-tabs::-webkit-scrollbar{display:none}
+.fam-tab{flex-shrink:0;padding:.45rem 1rem;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:.8rem;cursor:pointer;transition:.2s;white-space:nowrap}
+.fam-tab.active{background:var(--orange);border-color:var(--orange);color:#000;font-weight:600}
+.fam-pane{display:none;flex:1;overflow-y:auto;padding:0 1.2rem 6rem;flex-direction:column}
+.fam-pane.active{display:flex}
+
+/* PERSON FILTER */
+.person-filter{display:flex;gap:.5rem;padding:.25rem 0 .75rem;flex-wrap:wrap}
+.person-chip{padding:.3rem .75rem;background:var(--surface2);border:1px solid var(--border);border-radius:20px;font-size:.75rem;color:var(--muted);cursor:pointer;transition:.2s}
+.person-chip.active{color:#000;font-weight:600}
+
+/* CARDS */
+.fam-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.85rem 1rem;margin-bottom:.6rem;display:flex;align-items:flex-start;gap:.75rem;cursor:pointer;transition:.15s;position:relative}
+.fam-card:active{transform:scale(.97)}
+.fam-card.done .fam-card-title{text-decoration:line-through;color:var(--muted)}
+.fam-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;margin-top:.1rem}
+.fam-check.checked{background:var(--orange);border-color:var(--orange);color:#000}
+.fam-card-body{flex:1}
+.fam-card-title{font-size:.9rem;font-weight:600;line-height:1.3}
+.fam-card-sub{font-size:.72rem;color:var(--muted);margin-top:.2rem}
+.fam-card-badges{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.35rem}
+.badge{font-size:.62rem;padding:.15rem .5rem;border-radius:20px;font-weight:600}
+.badge-person{background:var(--surface2);border:1px solid var(--border);color:var(--muted)}
+.badge-prio-urgent{background:rgba(239,68,68,.15);color:#ef4444}
+.badge-prio-normal{background:rgba(249,115,22,.15);color:var(--orange)}
+.badge-prio-plus-tard{background:rgba(107,107,107,.15);color:var(--muted)}
+.badge-cat{background:rgba(59,130,246,.15);color:#3b82f6}
+
+/* REPAS GRID */
+.repas-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem;margin-bottom:1rem}
+.repas-day{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.85rem;cursor:pointer;transition:.2s;min-height:80px}
+.repas-day:hover{border-color:var(--orange)}
+.repas-day.today-day{border-color:var(--orange);background:var(--surface2)}
+.repas-day-label{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem}
+.repas-day.today-day .repas-day-label{color:var(--orange)}
+.repas-day-meal{font-size:.85rem;font-weight:600;line-height:1.3}
+.repas-day-empty{font-size:.78rem;color:var(--muted);font-style:italic}
+
+/* EPICERIE */
+.epicerie-section{margin-bottom:1rem}
+.epicerie-section-title{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--orange);padding:.3rem 0 .4rem}
+.epicerie-item{display:flex;align-items:center;gap:.75rem;padding:.6rem .85rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;margin-bottom:.4rem;cursor:pointer;transition:.2s}
+.epicerie-item.checked-item{opacity:.5}
+.epicerie-item.checked-item .epicerie-item-name{text-decoration:line-through}
+.epicerie-item-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:.2s}
+.epicerie-item-check.on{background:var(--orange);border-color:var(--orange);color:#000;font-size:.7rem}
+.epicerie-item-name{flex:1;font-size:.88rem}
+.epicerie-item-qty{font-size:.75rem;color:var(--muted)}
+
+/* AI INLINE */
+.fam-ai-btn{display:flex;align-items:center;gap:.6rem;background:var(--surface2);border:1px solid var(--orange);border-radius:12px;padding:.65rem 1rem;margin-bottom:.75rem;cursor:pointer;transition:.2s;flex-shrink:0}
+.fam-ai-btn:active{transform:scale(.98)}
+.fam-ai-btn span{font-size:.82rem;color:var(--orange);font-weight:600}
+
+/* SECTION HEADER */
+.section-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem}
+.section-hdr-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700}
+.add-btn{background:var(--orange);border:none;border-radius:10px;color:#000;font-size:.8rem;font-weight:700;padding:.4rem .85rem;cursor:pointer}
+
+.empty-state{text-align:center;color:var(--muted);font-size:.85rem;padding:2rem 1rem;font-style:italic}
+</style>
+
+<!-- FAMILLE VIEW (injected into #app) -->
+<script>
+// Inject Famille view into DOM
+(function(){
+  const famHTML = `
+  <div id="view-famille" class="view">
+    <div class="app-header">
+      <div class="header-row"><button class="back-btn" onclick="showView('home')">← Accueil</button><div class="date-chip" id="fam-date"></div></div>
+      <div style="margin-top:.4rem;font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800">👨‍👩‍👧‍👧 <span style="color:var(--orange)">Famille</span></div>
+    </div>
+    <!-- TABS -->
+    <div class="fam-tabs">
+      <div class="fam-tab active" id="ftab-rdv"     onclick="setFamTab('rdv')">📅 RDV</div>
+      <div class="fam-tab"        id="ftab-taches"  onclick="setFamTab('taches')">✅ Tâches</div>
+      <div class="fam-tab"        id="ftab-activite"onclick="setFamTab('activite')">🏃 Activités</div>
+      <div class="fam-tab"        id="ftab-repas"   onclick="setFamTab('repas')">🍽️ Repas</div>
+      <div class="fam-tab"        id="ftab-epicerie"onclick="setFamTab('epicerie')">🛒 Épicerie</div>
+    </div>
+
+    <!-- RDV PANE -->
+    <div id="fpane-rdv" class="fam-pane active">
+      <div class="fam-ai-btn" onclick="openFamAI('rdv')"><span>🤖</span><span>Demander à l'IA les prochains RDV famille</span></div>
+      <div id="fam-rdv-list"></div>
+    </div>
+
+    <!-- TACHES PANE -->
+    <div id="fpane-taches" class="fam-pane">
+      <div class="fam-ai-btn" onclick="openFamAI('taches')"><span>🤖</span><span>Demander à l'IA d'organiser les tâches</span></div>
+      <div class="person-filter" id="tache-person-filter"></div>
+      <div style="display:flex;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap" id="tache-filters"></div>
+      <div class="section-hdr"><div class="section-hdr-title">Tâches</div><button class="add-btn" onclick="openAddTache()">+ Ajouter</button></div>
+      <div id="fam-taches-list"></div>
+    </div>
+
+    <!-- ACTIVITES PANE -->
+    <div id="fpane-activite" class="fam-pane">
+      <div class="fam-ai-btn" onclick="openFamAI('activite')"><span>🤖</span><span>Ajouter des activités par conversation</span></div>
+      <div class="person-filter" id="activite-person-filter"></div>
+      <div class="section-hdr"><div class="section-hdr-title">Activités</div><button class="add-btn" onclick="openAddActivite()">+ Ajouter</button></div>
+      <div id="fam-activite-list"></div>
+    </div>
+
+    <!-- REPAS PANE -->
+    <div id="fpane-repas" class="fam-pane">
+      <div class="fam-ai-btn" onclick="openFamAI('repas')"><span>🤖</span><span>Générer un menu de la semaine par l'IA</span></div>
+      <div class="section-hdr"><div class="section-hdr-title">Menu de la semaine</div><button class="add-btn" onclick="openAddRepas()">+ Ajouter</button></div>
+      <div class="repas-grid" id="repas-grid"></div>
+    </div>
+
+    <!-- EPICERIE PANE -->
+    <div id="fpane-epicerie" class="fam-pane">
+      <div class="fam-ai-btn" onclick="openFamAI('epicerie')"><span>🤖</span><span>Générer la liste selon le menu de la semaine</span></div>
+      <div class="section-hdr">
+        <div class="section-hdr-title">Liste d'épicerie</div>
+        <div style="display:flex;gap:.5rem">
+          <button class="add-btn" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)" onclick="clearCheckedEpicerie()">Effacer cochés</button>
+          <button class="add-btn" onclick="openAddEpicerie()">+ Ajouter</button>
+        </div>
+      </div>
+      <div id="epicerie-list"></div>
+    </div>
+  </div>`;
+
+  // Insert before bottom nav
+  const nav = document.querySelector('.bottom-nav');
+  nav.insertAdjacentHTML('beforebegin', famHTML);
+})();
+
+// ══════════════════════════════════════
+//  FAMILLE DATA
+// ══════════════════════════════════════
+const SK_TACHES='ma_taches', SK_ACTIVITES='ma_activites', SK_REPAS='ma_repas', SK_EPICERIE='ma_epicerie';
+let taches=[], activites=[], repas={}, epicerie=[];
+try{taches=JSON.parse(localStorage.getItem(SK_TACHES)||'[]')}catch(e){}
+try{activites=JSON.parse(localStorage.getItem(SK_ACTIVITES)||'[]')}catch(e){}
+try{repas=JSON.parse(localStorage.getItem(SK_REPAS)||'{}')}catch(e){}
+try{epicerie=JSON.parse(localStorage.getItem(SK_EPICERIE)||'[]')}catch(e){}
+
+const saveTaches=()=>localStorage.setItem(SK_TACHES,JSON.stringify(taches));
+const saveActivites=()=>localStorage.setItem(SK_ACTIVITES,JSON.stringify(activites));
+const saveRepas=()=>localStorage.setItem(SK_REPAS,JSON.stringify(repas));
+const saveEpicerie=()=>localStorage.setItem(SK_EPICERIE,JSON.stringify(epicerie));
+
+const MEMBRES=['Éric','Jass','Francine','Francia'];
+const PRIO=['urgent','normal','plus-tard'];
+const CATS_TACHE=['Maison','École','Courses','Médical','Autre'];
+const RAYONS=['🥦 Fruits & légumes','🥩 Viandes & poissons','🥛 Produits laitiers','🥖 Boulangerie','🧴 Hygiène & entretien','🥫 Épicerie sèche','❄️ Surgelés','🍷 Boissons','Autre'];
+const PERSON_COLORS={Éric:'#f97316',Jass:'#22c55e',Francine:'#3b82f6',Francia:'#a855f7'};
+
+let famTab='rdv';
+let tachePersonFilter='Tous', tachePrioFilter='Tous', tacheCatFilter='Tous';
+let activitePersonFilter='Tous';
+
+// ══════════════════════════════════════
+//  OPEN FAMILLE
+// ══════════════════════════════════════
+function openFamille(){
+  showView('famille');
+  document.getElementById('fam-date').textContent=document.getElementById('home-date').textContent;
+  renderFamRDV();renderTaches();renderActivites();renderRepas();renderEpicerie();
+}
+
+// ══════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════
+function setFamTab(t){
+  famTab=t;
+  ['rdv','taches','activite','repas','epicerie'].forEach(x=>{
+    document.getElementById('ftab-'+x).classList.toggle('active',x===t);
+    document.getElementById('fpane-'+x).classList.toggle('active',x===t);
+  });
+}
+
+// ══════════════════════════════════════
+//  RDV (from agenda events tagged famille/francine/francia/jass)
+// ══════════════════════════════════════
+function renderFamRDV(){
+  const list=document.getElementById('fam-rdv-list');list.innerHTML='';
+  const today=new Date();today.setHours(0,0,0,0);
+  const famCats=['francine','francia','famille','rdv','medical'];
+  const famEvs=events
+    .filter(e=>famCats.includes(e.cat)&&new Date(e.date)>=today)
+    .sort((a,b)=>a.date.localeCompare(b.date))
+    .slice(0,15);
+  if(!famEvs.length){list.innerHTML='<div class="empty-state">Aucun RDV famille à venir.<br>Ajoute des événements dans l\'Agenda avec les catégories Francine, Francia, Famille ou Rendez-vous.</div>';return}
+  famEvs.forEach(ev=>{
+    const c=getCat(ev.cat);
+    const d=new Date(ev.date);
+    const el=document.createElement('div');el.className='fam-card';
+    el.style.borderLeft='4px solid '+c.color;
+    el.innerHTML=`
+      <div style="flex-shrink:0;text-align:center;min-width:40px">
+        <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase">${MS[d.getMonth()]}</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:${c.color}">${d.getDate()}</div>
+      </div>
+      <div class="fam-card-body">
+        <div class="fam-card-title">${c.emoji} ${ev.title}</div>
+        <div class="fam-card-sub">${ev.allDay?'Journée entière':(ev.start||'')+(ev.end?' → '+ev.end:'')}${ev.note?' · '+ev.note:''}</div>
+      </div>`;
+    list.appendChild(el);
+  });
+}
+
+// ══════════════════════════════════════
+//  TACHES
+// ══════════════════════════════════════
+function renderPersonFilter(containerId, currentFilter, setter, renderFn){
+  const el=document.getElementById(containerId);el.innerHTML='';
+  ['Tous',...MEMBRES].forEach(p=>{
+    const chip=document.createElement('div');chip.className='person-chip'+(currentFilter===p?' active':'');
+    if(currentFilter===p&&p!=='Tous')chip.style.background=PERSON_COLORS[p]||'var(--orange)';
+    chip.textContent=p;
+    chip.onclick=()=>{setter(p);renderFn()};
+    el.appendChild(chip);
+  });
+}
+function renderTaches(){
+  renderPersonFilter('tache-person-filter',tachePersonFilter,v=>tachePersonFilter=v,renderTaches);
+  // Prio + cat filters
+  const f=document.getElementById('tache-filters');f.innerHTML='';
+  ['Tous',...PRIO].forEach(p=>{
+    const chip=document.createElement('div');chip.className='person-chip'+(tachePrioFilter===p?' active':'');
+    chip.textContent=p==='plus-tard'?'Plus tard':p.charAt(0).toUpperCase()+p.slice(1);
+    chip.onclick=()=>{tachePrioFilter=p;renderTaches()};
+    f.appendChild(chip);
+  });
+  const list=document.getElementById('fam-taches-list');list.innerHTML='';
+  let filtered=taches.filter(t=>{
+    if(tachePersonFilter!=='Tous'&&t.personne!==tachePersonFilter)return false;
+    if(tachePrioFilter!=='Tous'&&t.priorite!==tachePrioFilter)return false;
+    return true;
+  }).sort((a,b)=>{
+    const po={urgent:0,normal:1,'plus-tard':2};
+    return (po[a.priorite]||1)-(po[b.priorite]||1);
+  });
+  if(!filtered.length){list.innerHTML='<div class="empty-state">Aucune tâche. Appuie sur + pour en ajouter !</div>';return}
+  // Show incomplete first
+  const incomplete=filtered.filter(t=>!t.done);
+  const done=filtered.filter(t=>t.done);
+  [...incomplete,...done].forEach(t=>list.appendChild(tacheCard(t)));
+}
+function tacheCard(t){
+  const el=document.createElement('div');
+  el.className='fam-card'+(t.done?' done':'');
+  const col=PERSON_COLORS[t.personne]||'var(--border)';
+  el.style.borderLeft='4px solid '+col;
+  el.innerHTML=`
+    <div class="fam-check${t.done?' checked':''}" onclick="toggleTache('${t.id}',event)">${t.done?'✓':''}</div>
+    <div class="fam-card-body">
+      <div class="fam-card-title">${t.titre}</div>
+      ${t.note?'<div class="fam-card-sub">'+t.note+'</div>':''}
+      <div class="fam-card-badges">
+        <span class="badge badge-person" style="border-color:${col};color:${col}">${t.personne}</span>
+        <span class="badge badge-prio-${t.priorite}">${t.priorite==='plus-tard'?'Plus tard':t.priorite.charAt(0).toUpperCase()+t.priorite.slice(1)}</span>
+        ${t.categorie?'<span class="badge badge-cat">'+t.categorie+'</span>':''}
+      </div>
+    </div>
+    <button onclick="deleteTache('${t.id}',event)" style="background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:.2rem">✕</button>`;
+  return el;
+}
+function toggleTache(id,e){e.stopPropagation();const t=taches.find(x=>x.id===id);if(t){t.done=!t.done;saveTaches();renderTaches()}}
+function deleteTache(id,e){e.stopPropagation();if(!confirm('Supprimer cette tâche ?'))return;taches=taches.filter(t=>t.id!==id);saveTaches();renderTaches()}
+
+// ══════════════════════════════════════
+//  ACTIVITES
+// ══════════════════════════════════════
+function renderActivites(){
+  renderPersonFilter('activite-person-filter',activitePersonFilter,v=>activitePersonFilter=v,renderActivites);
+  const list=document.getElementById('fam-activite-list');list.innerHTML='';
+  const today=new Date();today.setHours(0,0,0,0);
+  let filtered=activites
+    .filter(a=>activitePersonFilter==='Tous'||a.personne===activitePersonFilter)
+    .filter(a=>new Date(a.date)>=today)
+    .sort((a,b)=>a.date.localeCompare(b.date));
+  if(!filtered.length){list.innerHTML='<div class="empty-state">Aucune activité à venir. Appuie sur + pour en ajouter !</div>';return}
+  filtered.forEach(a=>{
+    const col=PERSON_COLORS[a.personne]||'var(--border)';
+    const d=new Date(a.date);
+    const el=document.createElement('div');el.className='fam-card';
+    el.style.borderLeft='4px solid '+col;
+    el.innerHTML=`
+      <div style="flex-shrink:0;text-align:center;min-width:40px">
+        <div style="font-size:.7rem;color:var(--muted);text-transform:uppercase">${MS[d.getMonth()]}</div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:${col}">${d.getDate()}</div>
+      </div>
+      <div class="fam-card-body">
+        <div class="fam-card-title">${a.titre}</div>
+        <div class="fam-card-sub">${a.heure||''}${a.lieu?' · '+a.lieu:''}</div>
+        <div class="fam-card-badges"><span class="badge badge-person" style="border-color:${col};color:${col}">${a.personne}</span></div>
+      </div>
+      <button onclick="deleteActivite('${a.id}',event)" style="background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:.2rem">✕</button>`;
+    list.appendChild(el);
+  });
+}
+function deleteActivite(id,e){e.stopPropagation();if(!confirm('Supprimer ?'))return;activites=activites.filter(a=>a.id!==id);saveActivites();renderActivites()}
+
+// ══════════════════════════════════════
+//  REPAS
+// ══════════════════════════════════════
+const DAYS7=['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+function renderRepas(){
+  const g=document.getElementById('repas-grid');g.innerHTML='';
+  const today=new Date();today.setHours(0,0,0,0);
+  for(let i=0;i<7;i++){
+    const d=new Date(today);d.setDate(today.getDate()+i);
+    const key=ds(d);
+    const isToday=i===0;
+    const el=document.createElement('div');
+    el.className='repas-day'+(isToday?' today-day':'');
+    const meal=repas[key];
+    el.innerHTML=`
+      <div class="repas-day-label">${isToday?'Aujourd\'hui':DAYS7[d.getDay()]} ${d.getDate()}</div>
+      ${meal?'<div class="repas-day-meal">'+meal+'</div>':'<div class="repas-day-empty">Pas de repas planifié</div>'}`;
+    el.onclick=()=>openEditRepas(key,d);
+    g.appendChild(el);
+  }
+}
+
+// ══════════════════════════════════════
+//  EPICERIE
+// ══════════════════════════════════════
+function renderEpicerie(){
+  const list=document.getElementById('epicerie-list');list.innerHTML='';
+  if(!epicerie.length){list.innerHTML='<div class="empty-state">Liste vide. Utilise l\'IA pour la générer selon le menu ou ajoute des items manuellement.</div>';return}
+  // Group by rayon
+  const grouped={};
+  epicerie.forEach(item=>{
+    const r=item.rayon||'Autre';
+    if(!grouped[r])grouped[r]=[];grouped[r].push(item);
+  });
+  Object.entries(grouped).forEach(([rayon,items])=>{
+    const sec=document.createElement('div');sec.className='epicerie-section';
+    sec.innerHTML='<div class="epicerie-section-title">'+rayon+'</div>';
+    items.forEach(item=>{
+      const el=document.createElement('div');
+      el.className='epicerie-item'+(item.checked?' checked-item':'');
+      el.innerHTML=`
+        <div class="epicerie-item-check${item.checked?' on':''}" onclick="toggleEpicerie('${item.id}',event)">${item.checked?'✓':''}</div>
+        <span class="epicerie-item-name">${item.nom}</span>
+        <span class="epicerie-item-qty">${item.qte||''}</span>
+        <button onclick="deleteEpicerie('${item.id}',event)" style="background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer">✕</button>`;
+      sec.appendChild(el);
+    });
+    list.appendChild(sec);
+  });
+}
+function toggleEpicerie(id,e){e.stopPropagation();const item=epicerie.find(x=>x.id===id);if(item){item.checked=!item.checked;saveEpicerie();renderEpicerie()}}
+function deleteEpicerie(id,e){e.stopPropagation();epicerie=epicerie.filter(x=>x.id!==id);saveEpicerie();renderEpicerie()}
+function clearCheckedEpicerie(){if(!confirm('Effacer tous les items cochés ?'))return;epicerie=epicerie.filter(x=>!x.checked);saveEpicerie();renderEpicerie()}
+
+// ══════════════════════════════════════
+//  FAM AI CHAT
+// ══════════════════════════════════════
+async function openFamAI(context){
+  if(!cfg.apiKey){alert('Configure ta clé API dans Paramètres → Clé API Claude.');return}
+  let prompt='';
+  if(context==='repas'){
+    const menuStr=Object.entries(repas).map(([k,v])=>k+': '+v).join(', ')||'(aucun repas planifié)';
+    prompt='Menu actuel: '+menuStr+'. Génère un menu équilibré pour les 7 prochains jours (dîners soirs) pour une famille avec deux filles de 10 et 7 ans. Réponds en JSON: {"action":"set_repas","repas":{"YYYY-MM-DD":"nom du repas",...},"message":"..."}';
+  } else if(context==='epicerie'){
+    const menuStr=Object.entries(repas).map(([k,v])=>k+': '+v).join(', ')||'(aucun)';
+    prompt='Voici le menu de la semaine: '+menuStr+'. Génère une liste d\'épicerie complète organisée par rayon. Réponds en JSON: {"action":"set_epicerie","items":[{"nom":"...","qte":"...","rayon":"🥦 Fruits & légumes"}],"message":"..."}';
+  } else if(context==='taches'){
+    prompt='Aide-moi à organiser les tâches familiales. Famille: Éric (infirmier), Jass (vétérinaire), Francine (10 ans), Francia (7 ans). Suggère des tâches hebdomadaires typiques. JSON: {"action":"add_taches","taches":[{"titre":"...","personne":"Éric","priorite":"normal","categorie":"Maison","note":""}],"message":"..."}';
+  } else {
+    // Open regular AI chat with family context
+    document.getElementById('ai-modal').classList.add('open');
+    document.getElementById('ai-input').value='';
+    return;
+  }
+
+  const loading=document.createElement('div');
+  loading.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center';
+  loading.innerHTML='<div style="background:var(--surface);border-radius:20px;padding:1.5rem 2rem;text-align:center"><div style="font-size:1.5rem;margin-bottom:.5rem">🤖</div><div style="color:var(--orange);font-family:Syne,sans-serif;font-weight:700">IA en train de générer...</div></div>';
+  document.body.appendChild(loading);
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,
+        system:'Tu es l\'assistant IA de MonAssistant pour Éric Pilon. Réponds UNIQUEMENT en JSON pur sans markdown ni backticks.',
+        messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    const reply=data.content?.find(b=>b.type==='text')?.text||'';
+    document.body.removeChild(loading);
+    try{
+      const json=JSON.parse(reply.trim());
+      if(json.action==='set_repas'&&json.repas){
+        Object.assign(repas,json.repas);saveRepas();renderRepas();
+        alert('✅ '+json.message);
+      } else if(json.action==='set_epicerie'&&json.items){
+        json.items.forEach(item=>epicerie.push({id:uid(),nom:item.nom,qte:item.qte||'',rayon:item.rayon||'Autre',checked:false}));
+        saveEpicerie();renderEpicerie();setFamTab('epicerie');
+        alert('✅ '+json.message);
+      } else if(json.action==='add_taches'&&json.taches){
+        json.taches.forEach(t=>taches.push({id:uid(),titre:t.titre,personne:t.personne||'Éric',priorite:t.priorite||'normal',categorie:t.categorie||'',note:t.note||'',done:false}));
+        saveTaches();renderTaches();
+        alert('✅ '+json.message);
+      }
+    }catch(e){alert('Réponse IA : '+reply.slice(0,200))}
+  }catch(err){
+    document.body.removeChild(loading);
+    alert('Erreur de connexion.');
+  }
+}
+
+// ══════════════════════════════════════
+//  ADD MODALS (tache, activite, repas, epicerie)
+// ══════════════════════════════════════
+function openAddTache(){
+  const modal=createSimpleModal('Nouvelle tâche',`
+    <div class="form-group"><label class="form-label">Titre *</label><input class="form-input" id="fm-titre" type="text" placeholder="Ex: Faire le lavage..."/></div>
+    <div class="form-group"><label class="form-label">Personne</label><select class="form-input" id="fm-personne">${MEMBRES.map(m=>'<option>'+m+'</option>').join('')}</select></div>
+    <div class="form-group"><label class="form-label">Priorité</label><select class="form-input" id="fm-prio"><option value="urgent">Urgent</option><option value="normal" selected>Normal</option><option value="plus-tard">Plus tard</option></select></div>
+    <div class="form-group"><label class="form-label">Catégorie</label><select class="form-input" id="fm-cat"><option value="">-- Aucune --</option>${CATS_TACHE.map(c=>'<option>'+c+'</option>').join('')}</select></div>
+    <div class="form-group"><label class="form-label">Note</label><input class="form-input" id="fm-note" type="text" placeholder="Optionnel..."/></div>
+  `,()=>{
+    const titre=document.getElementById('fm-titre').value.trim();
+    if(!titre){alert('Titre requis');return false}
+    taches.push({id:uid(),titre,personne:document.getElementById('fm-personne').value,priorite:document.getElementById('fm-prio').value,categorie:document.getElementById('fm-cat').value,note:document.getElementById('fm-note').value.trim(),done:false});
+    saveTaches();renderTaches();return true;
+  });
+}
+
+function openAddActivite(){
+  const modal=createSimpleModal('Nouvelle activité',`
+    <div class="form-group"><label class="form-label">Titre *</label><input class="form-input" id="fm-titre" type="text" placeholder="Ex: Gym, Soccer, Natation..."/></div>
+    <div class="form-group"><label class="form-label">Personne</label><select class="form-input" id="fm-personne">${MEMBRES.map(m=>'<option>'+m+'</option>').join('')}</select></div>
+    <div class="form-group"><label class="form-label">Date *</label><input class="form-input" id="fm-date" type="date"/></div>
+    <div class="form-group"><label class="form-label">Heure</label><input class="form-input" id="fm-heure" type="time"/></div>
+    <div class="form-group"><label class="form-label">Lieu</label><input class="form-input" id="fm-lieu" type="text" placeholder="Ex: Aréna, École..."/></div>
+  `,()=>{
+    const titre=document.getElementById('fm-titre').value.trim();
+    const date=document.getElementById('fm-date').value;
+    if(!titre||!date){alert('Titre et date requis');return false}
+    activites.push({id:uid(),titre,personne:document.getElementById('fm-personne').value,date,heure:document.getElementById('fm-heure').value,lieu:document.getElementById('fm-lieu').value.trim()});
+    saveActivites();renderActivites();return true;
+  });
+}
+
+function openAddRepas(){
+  const today2=new Date();
+  const modal=createSimpleModal('Ajouter un repas',`
+    <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="fm-date" type="date" value="${ds(today2)}"/></div>
+    <div class="form-group"><label class="form-label">Repas *</label><input class="form-input" id="fm-repas" type="text" placeholder="Ex: Pâtes bolognaise, Poulet rôti..."/></div>
+  `,()=>{
+    const date=document.getElementById('fm-date').value;
+    const meal=document.getElementById('fm-repas').value.trim();
+    if(!meal){alert('Entre un repas');return false}
+    repas[date]=meal;saveRepas();renderRepas();return true;
+  });
+}
+
+function openEditRepas(key,date){
+  const modal=createSimpleModal('Repas du '+DAYS7[date.getDay()]+' '+date.getDate(),`
+    <div class="form-group"><label class="form-label">Repas</label><input class="form-input" id="fm-repas" type="text" value="${repas[key]||''}" placeholder="Ex: Pâtes bolognaise..."/></div>
+  `,()=>{
+    const meal=document.getElementById('fm-repas').value.trim();
+    if(meal)repas[key]=meal;else delete repas[key];
+    saveRepas();renderRepas();return true;
+  });
+}
+
+function openAddEpicerie(){
+  const modal=createSimpleModal('Ajouter un item',`
+    <div class="form-group"><label class="form-label">Item *</label><input class="form-input" id="fm-nom" type="text" placeholder="Ex: Lait, Poulet, Pommes..."/></div>
+    <div class="form-group"><label class="form-label">Quantité</label><input class="form-input" id="fm-qte" type="text" placeholder="Ex: 2L, 500g, 1 douzaine..."/></div>
+    <div class="form-group"><label class="form-label">Rayon</label><select class="form-input" id="fm-rayon">${RAYONS.map(r=>'<option>'+r+'</option>').join('')}</select></div>
+  `,()=>{
+    const nom=document.getElementById('fm-nom').value.trim();
+    if(!nom){alert('Nom requis');return false}
+    epicerie.push({id:uid(),nom,qte:document.getElementById('fm-qte').value.trim(),rayon:document.getElementById('fm-rayon').value,checked:false});
+    saveEpicerie();renderEpicerie();return true;
+  });
+}
+
+// ── Generic simple modal ──
+function createSimpleModal(title, bodyHTML, onSave){
+  // Remove existing
+  const old=document.getElementById('simple-modal-overlay');if(old)old.remove();
+  const overlay=document.createElement('div');overlay.id='simple-modal-overlay';overlay.className='modal-overlay open';
+  overlay.innerHTML=`<div class="modal-sheet"><div class="modal-handle"></div><div class="modal-title">${title}</div>${bodyHTML}<div class="btn-row"><button class="btn-secondary" onclick="document.getElementById('simple-modal-overlay').remove()">Annuler</button><button class="btn-primary" id="simple-modal-save">✓ Enregistrer</button></div></div>`;
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove()});
+  document.getElementById('simple-modal-save').onclick=()=>{if(onSave())overlay.remove()};
+  return overlay;
+}
+</script>
