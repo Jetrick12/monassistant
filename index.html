@@ -1393,58 +1393,85 @@ function clearCheckedEpicerie(){if(!confirm('Effacer tous les items cochés ?'))
 // ══════════════════════════════════════
 async function openFamAI(context){
   if(!cfg.apiKey){alert('Configure ta clé API dans Paramètres → Clé API Claude.');return}
-  let prompt='';
+
+  const today2=new Date();today2.setHours(0,0,0,0);
+  const next7=[];
+  for(let i=0;i<7;i++){const d=new Date(today2);d.setDate(today2.getDate()+i);next7.push(ds(d));}
+
+  let prompt='',systemPrompt='';
+
   if(context==='repas'){
-    const menuStr=Object.entries(repas).map(([k,v])=>k+': '+v).join(', ')||'(aucun repas planifié)';
-    prompt='Menu actuel: '+menuStr+'. Génère un menu équilibré pour les 7 prochains jours (dîners soirs) pour une famille avec deux filles de 10 et 7 ans. Réponds en JSON: {"action":"set_repas","repas":{"YYYY-MM-DD":"nom du repas",...},"message":"..."}';
+    const menuStr=Object.entries(repas).filter(([k])=>next7.includes(k)).map(([k,v])=>k+': '+v).join(', ')||'(aucun)';
+    systemPrompt='Tu es un assistant cuisine. Reponds SEULEMENT avec un objet JSON valide, rien dautre, pas de markdown, pas dexplication.';
+    prompt='Genere un menu diner equilibre pour exactement ces 7 dates: '+next7.join(', ')+'. Famille quebecoise: Eric (infirmier), Jass (veterinaire), Francine (10 ans), Francia (7 ans). Menu existant: '+menuStr+'. Reponds SEULEMENT avec ce JSON exact: {"action":"set_repas","repas":{"'+next7[0]+'":"Spaghetti bolognaise","'+next7[1]+'":"Poulet roti","'+next7[2]+'":"Tacos","'+next7[3]+'":"Soupe","'+next7[4]+'":"Pizza maison","'+next7[5]+'":"Saumon grille","'+next7[6]+'":"Mijoteuse boeuf"},"message":"Menu genere!"}';
+
   } else if(context==='epicerie'){
-    const menuStr=Object.entries(repas).map(([k,v])=>k+': '+v).join(', ')||'(aucun)';
-    prompt='Voici le menu de la semaine: '+menuStr+'. Génère une liste d\'épicerie complète organisée par rayon. Réponds en JSON: {"action":"set_epicerie","items":[{"nom":"...","qte":"...","rayon":"🥦 Fruits & légumes"}],"message":"..."}';
+    const menuStr=Object.entries(repas).filter(([k])=>next7.includes(k)).map(([k,v])=>v).filter(Boolean).join(', ')||'(aucun repas planifie)';
+    systemPrompt='Tu es un assistant epicerie. Reponds SEULEMENT avec un objet JSON valide, rien dautre, pas de markdown.';
+    prompt='Genere une liste epicerie pour ces repas: '+menuStr+'. Famille de 4 personnes. Reponds SEULEMENT avec ce JSON: {"action":"set_epicerie","items":[{"nom":"Tomates","qte":"4","rayon":"Fruits legumes"},{"nom":"Poulet","qte":"1.5kg","rayon":"Viandes poissons"}],"message":"Liste generee!"}. Genere 15-25 items. Rayons possibles: Fruits legumes, Viandes poissons, Produits laitiers, Boulangerie, Hygiene entretien, Epicerie seche, Surgeles, Boissons, Autre.';
+
   } else if(context==='taches'){
-    prompt='Aide-moi à organiser les tâches familiales. Famille: Éric (infirmier), Jass (vétérinaire), Francine (10 ans), Francia (7 ans). Suggère des tâches hebdomadaires typiques. JSON: {"action":"add_taches","taches":[{"titre":"...","personne":"Éric","priorite":"normal","categorie":"Maison","note":""}],"message":"..."}';
+    systemPrompt='Tu es un assistant organisation. Reponds SEULEMENT avec un objet JSON valide, rien dautre.';
+    prompt='Suggere 8 taches hebdomadaires famille: Eric (infirmier), Jass (veterinaire), Francine (10 ans), Francia (7 ans). JSON: {"action":"add_taches","taches":[{"titre":"Faire lepicerie","personne":"Eric","priorite":"normal","categorie":"Courses","note":""}],"message":"Taches suggerees!"}. Personnes: Eric, Jass, Francine, Francia. Priorites: urgent, normal, plus-tard. Categories: Maison, Ecole, Courses, Medical, Autre.';
+
   } else {
-    // Open regular AI chat with family context
     document.getElementById('ai-modal').classList.add('open');
-    document.getElementById('ai-input').value='';
     return;
   }
 
   const loading=document.createElement('div');
   loading.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center';
-  loading.innerHTML='<div style="background:var(--surface);border-radius:20px;padding:1.5rem 2rem;text-align:center"><div style="font-size:1.5rem;margin-bottom:.5rem">🤖</div><div style="color:var(--orange);font-family:Syne,sans-serif;font-weight:700">IA en train de générer...</div></div>';
+  loading.innerHTML='<div style="background:var(--surface);border-radius:20px;padding:1.5rem 2rem;text-align:center"><div style="font-size:1.5rem;margin-bottom:.5rem">🤖</div><div style="color:var(--orange);font-family:Syne,sans-serif;font-weight:700">IA en train de générer...</div><div style="font-size:.8rem;color:var(--muted);margin-top:.4rem">Quelques secondes...</div></div>';
   document.body.appendChild(loading);
 
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,
-        system:'Tu es l\'assistant IA de MonAssistant pour Éric Pilon. Réponds UNIQUEMENT en JSON pur sans markdown ni backticks.',
-        messages:[{role:'user',content:prompt}]})
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2500,system:systemPrompt,messages:[{role:'user',content:prompt}]})
     });
     const data=await res.json();
+    if(loading.parentNode)document.body.removeChild(loading);
+    if(data.error){alert('Erreur API: '+data.error.message);return}
     const reply=data.content?.find(b=>b.type==='text')?.text||'';
-    document.body.removeChild(loading);
-    try{
-      const json=JSON.parse(reply.trim());
-      if(json.action==='set_repas'&&json.repas){
-        Object.assign(repas,json.repas);saveRepas();renderRepas();
-        alert('✅ '+json.message);
-      } else if(json.action==='set_epicerie'&&json.items){
-        json.items.forEach(item=>epicerie.push({id:uid(),nom:item.nom,qte:item.qte||'',rayon:item.rayon||'Autre',checked:false}));
-        saveEpicerie();renderEpicerie();setFamTab('epicerie');
-        alert('✅ '+json.message);
-      } else if(json.action==='add_taches'&&json.taches){
-        json.taches.forEach(t=>taches.push({id:uid(),titre:t.titre,personne:t.personne||'Éric',priorite:t.priorite||'normal',categorie:t.categorie||'',note:t.note||'',done:false}));
-        saveTaches();renderTaches();
-        alert('✅ '+json.message);
-      }
-    }catch(e){alert('Réponse IA : '+reply.slice(0,200))}
+    // Extract JSON robustly
+    const start=reply.indexOf('{');
+    const end=reply.lastIndexOf('}');
+    if(start===-1||end===-1){alert('Réponse invalide de l'IA. Réessaie !');return}
+    const json=JSON.parse(reply.slice(start,end+1));
+
+    if(json.action==='set_repas'&&json.repas){
+      let count=0;
+      Object.entries(json.repas).forEach(([date,meal])=>{if(meal&&typeof meal==='string'){repas[date]=meal;count++;}});
+      saveRepas();renderRepas();
+      alert('✅ '+(json.message||count+' repas ajoutés !'));
+
+    } else if(json.action==='set_epicerie'&&Array.isArray(json.items)){
+      let count=0;
+      const rayonMap={'Fruits legumes':'🥦 Fruits & légumes','Viandes poissons':'🥩 Viandes & poissons','Produits laitiers':'🥛 Produits laitiers','Boulangerie':'🥖 Boulangerie','Hygiene entretien':'🧴 Hygiène & entretien','Epicerie seche':'🥫 Épicerie sèche','Surgeles':'❄️ Surgelés','Boissons':'🍷 Boissons'};
+      json.items.forEach(item=>{
+        if(item.nom){
+          const rayon=rayonMap[item.rayon]||item.rayon||'Autre';
+          epicerie.push({id:uid(),nom:item.nom,qte:item.qte||'',rayon,checked:false});count++;
+        }
+      });
+      saveEpicerie();renderEpicerie();setFamTab('epicerie');
+      alert('✅ '+(json.message||count+' items ajoutés !'));
+
+    } else if(json.action==='add_taches'&&Array.isArray(json.taches)){
+      let count=0;
+      json.taches.forEach(t=>{
+        if(t.titre){taches.push({id:uid(),titre:t.titre,personne:t.personne||'Éric',priorite:t.priorite||'normal',categorie:t.categorie||'',note:t.note||'',done:false});count++;}
+      });
+      saveTaches();renderTaches();
+      alert('✅ '+(json.message||count+' tâches ajoutées !'));
+    }
+
   }catch(err){
-    document.body.removeChild(loading);
-    alert('Erreur de connexion.');
+    if(loading.parentNode)document.body.removeChild(loading);
+    alert('Erreur: '+err.message+'. Réessaie !');
   }
-}
+
 
 // ══════════════════════════════════════
 //  ADD MODALS (tache, activite, repas, epicerie)
