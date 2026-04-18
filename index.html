@@ -395,6 +395,7 @@ select.form-input option{background:#1c1c1c;color:#f0ede8}
       <div class="section-hdr-title">Liste d'&#233;picerie</div>
       <div style="display:flex;gap:.5rem">
         <button class="add-btn" style="background:var(--surface2);border:1px solid var(--border);color:var(--text)" onclick="clearCheckedEpicerie()">Effacer coch&#233;s</button>
+        <button class="add-btn" style="background:#ef4444;border:none" onclick="clearAllEpicerie()">Tout effacer</button>
         <button class="add-btn" onclick="openAddEpicerie()">+ Ajouter</button>
       </div>
     </div>
@@ -1083,6 +1084,7 @@ function renderEpicerie() {
 function toggleEpicerie(id,e){e.stopPropagation();var item=epicerie.find(function(x){return x.id===id;});if(item){item.checked=!item.checked;saveEpicerie();renderEpicerie();}}
 function deleteEpicerie(id,e){e.stopPropagation();epicerie=epicerie.filter(function(x){return x.id!==id;});saveEpicerie();renderEpicerie();}
 function clearCheckedEpicerie(){if(!confirm('Effacer les items coches ?'))return;epicerie=epicerie.filter(function(x){return !x.checked;});saveEpicerie();renderEpicerie();}
+function clearAllEpicerie(){if(!confirm('Effacer TOUTE la liste ?'))return;epicerie=[];saveEpicerie();renderEpicerie();}
 function clearAllEpicerie(){if(!confirm('Effacer TOUTE la liste ? Cette action est irreversible.'))return;epicerie=[];saveEpicerie();renderEpicerie();}
 
 // ============================================================
@@ -1196,12 +1198,30 @@ function openAddRepas() {
   );
 }
 function openEditRepas(key, date) {
-  createSimpleModal('Repas du '+DAYS[date.getDay()]+' '+date.getDate(),
-    '<div class="form-group"><label class="form-label">Repas</label><input class="form-input" id="fm-repas" type="text" value="'+(repas[key]||'')+'" placeholder="Ex: Pates bolognaise..."/></div>',
+  var rec = recettes[key] || null;
+  var detailsHTML = '';
+  if(rec) {
+    var ingsHTML = (rec.ingredients||[]).map(function(ing){
+      var qte = ing.quantite ? ing.quantite+(ing.unite?' '+ing.unite:'') : (ing.qte||'');
+      return '<div style="display:flex;justify-content:space-between;padding:.3rem 0;border-bottom:1px solid var(--border)"><span style="font-size:.82rem">'+ing.nom+'</span><span style="font-size:.8rem;color:var(--orange);white-space:nowrap;margin-left:.5rem">'+qte+'</span></div>';
+    }).join('');
+    var etapesHTML = (rec.etapes||[]).map(function(e){
+      var mins = e.minuterie ? ' ('+Math.round(e.minuterie/60)+' min)' : '';
+      return '<div style="margin-bottom:.75rem"><div style="font-size:.82rem;font-weight:700;color:var(--orange);margin-bottom:.2rem">'+e.numero+'. '+e.titre+mins+'</div><div style="font-size:.78rem;color:var(--muted);line-height:1.5">'+e.description+'</div></div>';
+    }).join('');
+    detailsHTML += '<div style="margin-top:1rem"><div style="font-size:.75rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem">Ingredients ('+( rec.ingredients||[]).length+')</div>'+ingsHTML+'</div>';
+    if(etapesHTML) detailsHTML += '<div style="margin-top:1rem"><div style="font-size:.75rem;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem">Etapes</div>'+etapesHTML+'</div>';
+    if(rec.conservation && rec.conservation.refrigerateur) {
+      detailsHTML += '<div style="margin-top:.75rem;background:var(--surface2);border-radius:10px;padding:.75rem"><div style="font-size:.72rem;color:var(--orange);font-weight:600;margin-bottom:.25rem">Conservation</div><div style="font-size:.78rem;color:var(--muted);line-height:1.5">Frigo: '+rec.conservation.refrigerateur+(rec.conservation.congelation?' | Congelateur: '+rec.conservation.congelation:'')+(rec.conservation.conseil?'<br>'+rec.conservation.conseil:'')+'</div></div>';
+    }
+  }
+  createSimpleModal(
+    (rec && rec.nom ? rec.nom : 'Repas') + ' — ' + DAYS[date.getDay()] + ' ' + date.getDate(),
+    '<div class="form-group"><label class="form-label">Nom du repas</label><input class="form-input" id="fm-repas" type="text" value="'+(repas[key]||'')+'" placeholder="Ex: Pates bolognaise..."/></div>' + detailsHTML,
     function(){
-      var meal=document.getElementById('fm-repas').value.trim();
-      if(meal)repas[key]=meal;else delete repas[key];
-      saveRepas();renderRepas();return true;
+      var meal = document.getElementById('fm-repas').value.trim();
+      if(meal) repas[key] = meal; else delete repas[key];
+      saveRepas(); renderRepas(); return true;
     }
   );
 }
