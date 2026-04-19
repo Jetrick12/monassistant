@@ -506,8 +506,8 @@ select.form-input option{background:#1c1c1c;color:#f0ede8}
     <div class="budget-summary" id="budget-summary"></div>
     <div style="font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;margin-bottom:.6rem">Dépenses par catégorie</div>
     <div id="budget-cats"></div>
-    <div class="fam-ai-btn" onclick="openBudgetAI('analyse')" style="margin-top:.5rem">
-      <span>&#129302;</span><div style="flex:1"><div style="font-size:.82rem;color:var(--orange);font-weight:600">Analyser photo de relevé bancaire</div><div style="font-size:.72rem;color:var(--muted)">Envoie une photo de ton relevé — l IA extrait les transactions</div></div><span style="color:var(--orange)">&#8250;</span>
+    <div class="fam-ai-btn" onclick="openImportBudget('transactions')" style="margin-top:.5rem;border-color:#22c55e">
+      <span>&#128196;</span><div style="flex:1"><div style="font-size:.82rem;color:#22c55e;font-weight:600">Importer JSON gratuit (Claude.ai)</div><div style="font-size:.72rem;color:var(--muted)">Photo dans Claude.ai puis colle le JSON ici</div></div><span style="color:#22c55e">&#8250;</span>
     </div>
   </div>
 
@@ -527,8 +527,8 @@ select.form-input option{background:#1c1c1c;color:#f0ede8}
 
   <!-- PLACEMENTS -->
   <div id="bpane-placements" class="budget-pane">
-    <div class="fam-ai-btn" onclick="openBudgetAI('placements')" style="margin-bottom:.75rem">
-      <span>&#129302;</span><div style="flex:1"><div style="font-size:.82rem;color:var(--orange);font-weight:600">Analyser photo de compte</div><div style="font-size:.72rem;color:var(--muted)">Photo de relevé de placements — IA met à jour les données</div></div><span style="color:var(--orange)">&#8250;</span>
+    <div class="fam-ai-btn" onclick="openImportBudget('placements')" style="margin-bottom:.75rem;border-color:#22c55e">
+      <span>&#128196;</span><div style="flex:1"><div style="font-size:.82rem;color:#22c55e;font-weight:600">Importer JSON gratuit (Claude.ai)</div><div style="font-size:.72rem;color:var(--muted)">Photo dans Claude.ai → colle le JSON ici</div></div><span style="color:#22c55e">&#8250;</span>
     </div>
     <div class="section-hdr">
       <div class="section-hdr-title">Mes placements</div>
@@ -543,8 +543,11 @@ select.form-input option{background:#1c1c1c;color:#f0ede8}
 
   <!-- CRYPTO -->
   <div id="bpane-crypto" class="budget-pane">
-    <div class="fam-ai-btn" onclick="refreshCryptoPrices()" style="border-color:#22c55e;margin-bottom:.75rem">
-      <span>&#129689;</span><div style="flex:1"><div style="font-size:.82rem;color:#22c55e;font-weight:600">Actualiser les prix</div><div style="font-size:.72rem;color:var(--muted)">Prix en temps réel via CoinGecko (gratuit)</div></div><span style="color:#22c55e">&#8250;</span>
+    <div class="fam-ai-btn" onclick="openImportBudget('crypto')" style="border-color:#22c55e;margin-bottom:.5rem">
+      <span>&#128196;</span><div style="flex:1"><div style="font-size:.82rem;color:#22c55e;font-weight:600">Importer JSON gratuit (Claude.ai)</div><div style="font-size:.72rem;color:var(--muted)">Photo dans Claude.ai → colle le JSON ici</div></div><span style="color:#22c55e">&#8250;</span>
+    </div>
+    <div class="fam-ai-btn" onclick="refreshCryptoPrices()" style="border-color:var(--border);margin-bottom:.75rem">
+      <span>&#129689;</span><div style="flex:1"><div style="font-size:.82rem;color:var(--muted);font-weight:600">Actualiser les prix CoinGecko</div><div style="font-size:.72rem;color:var(--muted)">Prix temps réel gratuits (sans IA)</div></div><span style="color:var(--muted)">&#8250;</span>
     </div>
     <div class="section-hdr">
       <div class="section-hdr-title">Portefeuille Kraken</div>
@@ -872,7 +875,7 @@ function openAIChat() {
 }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.addEventListener('DOMContentLoaded', function() {
-  ['event-modal','api-modal','email-modal','pin-modal','ai-modal','import-modal'].forEach(function(id){
+  ['event-modal','api-modal','email-modal','pin-modal','ai-modal','import-modal','import-budget-modal'].forEach(function(id){
     var el = document.getElementById(id);
     if(el) el.addEventListener('click', function(e){ if(e.target===this) closeModal(id); });
   });
@@ -2084,6 +2087,144 @@ function openEditObjectif(obj){
 // ── HELPERS ──
 function fmt(n){return n.toLocaleString('fr-CA',{minimumFractionDigits:0,maximumFractionDigits:0})+'$';}
 
+
+// ============================================================
+//  IMPORT BUDGET JSON
+// ============================================================
+var importBudgetContext = 'transactions';
+
+var IMPORT_CONFIG = {
+  transactions: {
+    title: '&#128196; Importer des transactions',
+    instructions: '1. Ouvre Claude.ai (projet MonAssistant - Budget)<br>2. Envoie une photo de ton releve bancaire<br>3. Copie le prompt ci-dessous et envoie-le<br>4. Claude genere le JSON<br>5. Copie et colle ici',
+    prompt: 'Analyse cette photo de releve bancaire et genere un JSON MonAssistant. Format: {"transactions":[{"desc":"Epicerie IGA","montant":87.50,"type":"debit","cat":"alimentation","date":"2026-04-19"}]}. Categories: alimentation,logement,transport,restaurants,loisirs,sante,vetements,abonnements,epargne,enfants,autres. Type: debit ou credit. Date: YYYY-MM-DD.'
+  },
+  placements: {
+    title: '&#128196; Importer des placements',
+    instructions: '1. Ouvre Claude.ai (projet MonAssistant - Budget)<br>2. Envoie une photo de ton releve de placements<br>3. Copie le prompt ci-dessous<br>4. Claude genere le JSON<br>5. Copie et colle ici',
+    prompt: 'Analyse ce releve de placements et genere un JSON MonAssistant. Format: {"placements":[{"nom":"CELI Desjardins","type":"CELI","valeur":15000,"variation":2.5}]}. Types: REER, CELI, Compte epargne, Actions, Cryptomonnaie, Autre.'
+  },
+  crypto: {
+    title: '&#128196; Importer crypto Kraken',
+    instructions: '1. Ouvre Claude.ai (projet MonAssistant - Budget)<br>2. Envoie une capture de ton portefeuille Kraken<br>3. Copie le prompt ci-dessous<br>4. Claude genere le JSON<br>5. Copie et colle ici',
+    prompt: 'Analyse ce portefeuille Kraken et genere un JSON MonAssistant. Format: {"cryptos":[{"symbol":"BTC","nom":"Bitcoin","quantite":0.05,"prix":95000}]}. Symbole en majuscules, prix en CAD.'
+  }
+};
+
+function openImportBudget(context) {
+  importBudgetContext = context;
+  var config = IMPORT_CONFIG[context];
+  document.getElementById('import-budget-title').innerHTML = config.title;
+  document.getElementById('import-budget-instructions').innerHTML = config.instructions;
+  document.getElementById('import-budget-prompt').textContent = config.prompt;
+  document.getElementById('import-budget-json').value = '';
+  document.getElementById('import-budget-preview').style.display = 'none';
+  document.getElementById('import-budget-error').style.display = 'none';
+  document.getElementById('import-budget-modal').classList.add('open');
+}
+
+function copyPrompt() {
+  var prompt = document.getElementById('import-budget-prompt').textContent;
+  if(navigator.clipboard) {
+    navigator.clipboard.writeText(prompt).then(function(){ alert('Prompt copie ! Colle-le dans Claude.ai.'); });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = prompt; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    alert('Prompt copie !');
+  }
+}
+
+function validateBudgetJSON() {
+  var raw = document.getElementById('import-budget-json').value.trim();
+  var preview = document.getElementById('import-budget-preview');
+  var error = document.getElementById('import-budget-error');
+  if(!raw) { preview.style.display='none'; error.style.display='none'; return null; }
+  try {
+    var s = raw.indexOf('{'), e = raw.lastIndexOf('}');
+    if(s===-1||e===-1) throw new Error('JSON invalide');
+    var json = JSON.parse(raw.slice(s,e+1));
+    var lines = [];
+    if(json.transactions && Array.isArray(json.transactions)) {
+      lines.push('<strong style="color:var(--text)">'+json.transactions.length+' transactions</strong>');
+      json.transactions.slice(0,3).forEach(function(t){ lines.push('• '+t.desc+' — '+(t.type==='debit'?'-':'+')+(t.montant||0)+'$'); });
+      if(json.transactions.length>3) lines.push('... et '+(json.transactions.length-3)+' autres');
+    }
+    if(json.placements && Array.isArray(json.placements)) {
+      lines.push('<strong style="color:var(--text)">'+json.placements.length+' placements</strong>');
+      json.placements.forEach(function(p){ lines.push('• '+p.nom+' — '+(p.valeur||0)+'$'); });
+    }
+    if(json.cryptos && Array.isArray(json.cryptos)) {
+      lines.push('<strong style="color:var(--text)">'+json.cryptos.length+' cryptos</strong>');
+      json.cryptos.forEach(function(cr){ lines.push('• '+cr.symbol+' : '+cr.quantite+' @ '+(cr.prix||0)+'$'); });
+    }
+    if(!lines.length) throw new Error('Aucune donnee reconnue dans le JSON');
+    document.getElementById('import-budget-preview-content').innerHTML = lines.join('<br>');
+    preview.style.display = 'block';
+    error.style.display = 'none';
+    return json;
+  } catch(err) {
+    preview.style.display = 'none';
+    error.style.display = 'block';
+    document.getElementById('import-budget-error-msg').textContent = 'Erreur : ' + err.message;
+    return null;
+  }
+}
+
+function importBudgetJSON() {
+  var json = validateBudgetJSON();
+  if(!json) { alert('Corrige le JSON avant d importer.'); return; }
+  var counts = [];
+
+  if(json.transactions && Array.isArray(json.transactions)) {
+    var count = 0;
+    json.transactions.forEach(function(tx) {
+      if(tx.desc && tx.montant) {
+        transactions.push({id:uid(), desc:tx.desc, montant:Math.abs(tx.montant), type:tx.type||'debit', cat:tx.cat||'autres', date:tx.date||ds(new Date())});
+        count++;
+      }
+    });
+    if(count) { saveTx(); counts.push(count+' transactions'); renderBudgetApercu(); renderTxList(); }
+  }
+
+  if(json.placements && Array.isArray(json.placements)) {
+    var count2 = 0;
+    json.placements.forEach(function(p) {
+      if(p.nom) {
+        var ex = placements.find(function(x){ return x.nom.toLowerCase()===p.nom.toLowerCase(); });
+        if(ex) { ex.valeur=p.valeur||0; ex.variation=p.variation||0; }
+        else { placements.push({id:uid(), nom:p.nom, type:p.type||'Autre', valeur:p.valeur||0, variation:p.variation||0}); }
+        count2++;
+      }
+    });
+    if(count2) { savePlacements(); counts.push(count2+' placements'); renderPlacements(); }
+  }
+
+  if(json.cryptos && Array.isArray(json.cryptos)) {
+    var count3 = 0;
+    json.cryptos.forEach(function(cr) {
+      if(cr.symbol) {
+        var ex2 = cryptos.find(function(x){ return x.symbol===cr.symbol.toUpperCase(); });
+        if(ex2) { ex2.quantite=cr.quantite||0; ex2.prix=cr.prix||0; }
+        else { cryptos.push({id:uid(), symbol:cr.symbol.toUpperCase(), nom:cr.nom||cr.symbol, quantite:cr.quantite||0, prix:cr.prix||0, variation24h:0}); }
+        count3++;
+      }
+    });
+    if(count3) { saveCryptos(); counts.push(count3+' cryptos'); renderCryptos(); }
+  }
+
+  closeModal('import-budget-modal');
+  if(counts.length) {
+    alert('Importe avec succes : ' + counts.join(', ') + ' !');
+    // Navigate to right tab
+    if(importBudgetContext==='transactions') setBudgetTab('depenses');
+    else if(importBudgetContext==='placements') setBudgetTab('placements');
+    else if(importBudgetContext==='crypto') setBudgetTab('crypto');
+  } else {
+    alert('Aucune donnee reconnue. Verifie le format JSON.');
+  }
+}
+
 </script>
 
 <!-- IMPORT MENU MODAL -->
@@ -2114,6 +2255,47 @@ function fmt(n){return n.toLocaleString('fr-CA',{minimumFractionDigits:0,maximum
     <div class="btn-row">
       <button class="btn-secondary" onclick="closeModal('import-modal')">Annuler</button>
       <button class="btn-primary" style="background:#22c55e" onclick="importMenuJSON()">&#8593; Importer</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT BUDGET MODAL -->
+<div class="modal-overlay" id="import-budget-modal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="import-budget-title">&#128196; Importer JSON Budget</div>
+
+    <!-- Instructions -->
+    <div style="background:var(--surface2);border:1px solid #22c55e;border-radius:12px;padding:1rem;margin-bottom:1rem">
+      <p style="font-size:.8rem;color:#22c55e;font-weight:600;margin-bottom:.5rem">Comment faire (100% gratuit) :</p>
+      <p style="font-size:.78rem;color:var(--muted);line-height:1.7" id="import-budget-instructions"></p>
+    </div>
+
+    <!-- Prompt to copy -->
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:.85rem;margin-bottom:1rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <p style="font-size:.75rem;color:var(--orange);font-weight:600">Prompt a copier dans Claude.ai :</p>
+        <button onclick="copyPrompt()" style="background:var(--orange);border:none;border-radius:8px;color:#000;font-size:.72rem;font-weight:700;padding:.25rem .6rem;cursor:pointer">Copier</button>
+      </div>
+      <p style="font-size:.75rem;color:var(--text);line-height:1.6;font-family:monospace" id="import-budget-prompt"></p>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Colle ton JSON ici</label>
+      <textarea class="form-input" id="import-budget-json" rows="7" placeholder="Colle ici le JSON genere par Claude.ai..." style="resize:vertical;font-size:.78rem;font-family:monospace" oninput="validateBudgetJSON()"></textarea>
+    </div>
+
+    <div id="import-budget-preview" style="display:none;background:var(--surface2);border:1px solid #22c55e;border-radius:12px;padding:.85rem;margin-bottom:.75rem">
+      <p style="font-size:.75rem;color:#22c55e;font-weight:600;margin-bottom:.3rem">JSON valide :</p>
+      <div id="import-budget-preview-content" style="font-size:.78rem;color:var(--muted);line-height:1.6"></div>
+    </div>
+    <div id="import-budget-error" style="display:none;background:rgba(239,68,68,.1);border:1px solid #ef4444;border-radius:12px;padding:.75rem;margin-bottom:.75rem">
+      <p style="font-size:.78rem;color:#ef4444" id="import-budget-error-msg"></p>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="closeModal('import-budget-modal')">Annuler</button>
+      <button class="btn-primary" style="background:#22c55e" onclick="importBudgetJSON()">&#8593; Importer</button>
     </div>
   </div>
 </div>
