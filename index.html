@@ -234,6 +234,83 @@ select.form-input option{background:#1c1c1c;color:#f0ede8}
 .coming-soon-box{background:var(--surface);border:1px dashed var(--border);border-radius:20px;padding:2.5rem 1.5rem;text-align:center;color:var(--muted);margin:1rem 1.5rem}
 .coming-soon-box .big-icon{font-size:3rem;margin-bottom:1rem}
 ::-webkit-scrollbar{width:0}
+
+/* ── BUDGET MODULE ── */
+.budget-tabs{display:flex;gap:.5rem;padding:.75rem 1.5rem;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.budget-tabs::-webkit-scrollbar{display:none}
+.budget-tab{flex-shrink:0;padding:.45rem 1rem;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:.8rem;cursor:pointer;transition:.2s;white-space:nowrap}
+.budget-tab.active{background:var(--orange);border-color:var(--orange);color:#000;font-weight:600}
+.budget-pane{display:none;flex:1;overflow-y:auto;padding:0 1.2rem 6rem;flex-direction:column}
+.budget-pane.active{display:flex}
+.period-switcher{display:flex;gap:.4rem;margin-bottom:1rem;flex-shrink:0}
+.period-btn{flex:1;padding:.4rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--muted);font-size:.75rem;cursor:pointer;text-align:center;transition:.2s}
+.period-btn.active{background:var(--orange);border-color:var(--orange);color:#000;font-weight:600}
+.budget-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1rem;flex-shrink:0}
+.summary-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.85rem .75rem;text-align:center}
+.summary-card.green{border-color:#22c55e}
+.summary-card.red{border-color:#ef4444}
+.summary-label{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.25rem}
+.summary-value{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800}
+.summary-value.green{color:#22c55e}
+.summary-value.red{color:#ef4444}
+.summary-value.orange{color:var(--orange)}
+.cat-bar-wrap{margin-bottom:.75rem}
+.cat-bar-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem}
+.cat-bar-name{font-size:.82rem;font-weight:600}
+.cat-bar-amount{font-size:.78rem;color:var(--muted)}
+.cat-bar-track{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden}
+.cat-bar-fill{height:100%;border-radius:4px;transition:width .5s ease}
+.tx-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.75rem 1rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;transition:.15s}
+.tx-item:active{transform:scale(.97)}
+.tx-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.tx-body{flex:1}
+.tx-title{font-size:.88rem;font-weight:600}
+.tx-sub{font-size:.72rem;color:var(--muted);margin-top:.1rem}
+.tx-amount{font-size:.95rem;font-weight:700;white-space:nowrap}
+.tx-amount.debit{color:#ef4444}
+.tx-amount.credit{color:#22c55e}
+.placement-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem 1.2rem;margin-bottom:.6rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;transition:.15s}
+.placement-card:active{transform:scale(.97)}
+.placement-left{}
+.placement-name{font-size:.9rem;font-weight:600}
+.placement-type{font-size:.72rem;color:var(--muted);margin-top:.1rem}
+.placement-right{text-align:right}
+.placement-value{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--orange)}
+.placement-change{font-size:.72rem;margin-top:.1rem}
+.placement-change.up{color:#22c55e}
+.placement-change.down{color:#ef4444}
+.crypto-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem 1.2rem;margin-bottom:.6rem;cursor:pointer;transition:.15s}
+.crypto-card:active{transform:scale(.97)}
+.crypto-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.crypto-name{font-size:.95rem;font-weight:700}
+.crypto-price{font-size:.85rem;color:var(--muted)}
+.crypto-row{display:flex;justify-content:space-between;font-size:.78rem}
+.crypto-label{color:var(--muted)}
+.crypto-val{font-weight:600}
+.objectif-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem 1.2rem;margin-bottom:.6rem;cursor:pointer;transition:.15s}
+.objectif-card:active{transform:scale(.97)}
+.objectif-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
+.objectif-name{font-size:.9rem;font-weight:600}
+.objectif-pct{font-size:.82rem;color:var(--orange);font-weight:700}
+.objectif-bar-track{height:10px;background:var(--surface2);border-radius:5px;overflow:hidden;margin-bottom:.4rem}
+.objectif-bar-fill{height:100%;background:var(--orange);border-radius:5px;transition:width .5s}
+.objectif-amounts{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted)}
+.conseil-card{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:1rem 1.2rem;margin-bottom:.6rem}
+.conseil-card.important{border-color:var(--orange)}
+.conseil-icon{font-size:1.4rem;margin-bottom:.4rem}
+.conseil-title{font-size:.88rem;font-weight:700;margin-bottom:.3rem}
+.conseil-text{font-size:.8rem;color:var(--muted);line-height:1.5}
+.alerte-card{background:var(--surface);border-radius:14px;padding:.85rem 1rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem;border-left:4px solid var(--orange)}
+.alerte-card.red{border-left-color:#ef4444}
+.alerte-card.green{border-left-color:#22c55e}
+.alerte-text{font-size:.85rem;line-height:1.4}
+.alerte-time{font-size:.7rem;color:var(--muted);margin-top:.15rem}
+/* Mini donut chart */
+.donut-wrap{display:flex;align-items:center;gap:1rem;margin-bottom:1rem}
+.donut-legend{flex:1;display:flex;flex-direction:column;gap:.35rem}
+.legend-item{display:flex;align-items:center;gap:.5rem;font-size:.75rem}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
 </style>
 </head>
 <body>
@@ -277,8 +354,8 @@ select.form-input option{background:#1c1c1c;color:#f0ede8}
     <div class="tile" onclick="openFamille()">
       <div class="tile-icon">&#128106;</div><div><div class="tile-name">Famille</div><div class="tile-sub">T&#226;ches, repas &amp; activit&#233;s</div></div><div class="tile-active">Actif</div>
     </div>
-    <div class="tile" onclick="showSoon('Budget','Finances et placements.')">
-      <div class="tile-icon">&#128176;</div><div><div class="tile-name">Budget</div><div class="tile-sub">Finances &amp; placements</div></div><div class="tile-soon">Bient&#244;t</div>
+    <div class="tile" onclick="openBudget()">
+      <div class="tile-icon">&#128176;</div><div><div class="tile-name">Budget</div><div class="tile-sub">Finances &amp; placements</div></div><div class="tile-active">Actif</div>
     </div>
     <div class="tile" onclick="showSoon('Nouvelles','Actualit&#233;s filtr&#233;es.')">
       <div class="tile-icon">&#128240;</div><div><div class="tile-name">Nouvelles</div><div class="tile-sub">Filtr&#233;es pour toi</div></div><div class="tile-soon">Bient&#244;t</div>
@@ -354,18 +431,18 @@ select.form-input option{background:#1c1c1c;color:#f0ede8}
     <div class="fam-tab" id="ftab-epicerie" onclick="setFamTab('epicerie')">&#128722; &#201;picerie</div>
   </div>
   <div id="fpane-rdv" class="fam-pane active">
-    <div class="fam-ai-btn" onclick="openFamAI('rdv')"><span>&#129302;</span><span style="font-size:.82rem;color:var(--orange);font-weight:600">Voir les RDV famille via l'IA</span></div>
+    <div class="fam-ai-btn" onclick="openFamAI('rdv')"><span>&#129302;</span><span style="font-size:.82rem;color:var(--orange);font-weight:600">Voir les RDV famille via l IA</span></div>
     <div id="fam-rdv-list"></div>
   </div>
   <div id="fpane-taches" class="fam-pane">
-    <div class="fam-ai-btn" onclick="openFamAI('taches')"><span>&#129302;</span><span style="font-size:.82rem;color:var(--orange);font-weight:600">G&#233;n&#233;rer des t&#226;ches avec l'IA</span></div>
+    <div class="fam-ai-btn" onclick="openFamAI('taches')"><span>&#129302;</span><span style="font-size:.82rem;color:var(--orange);font-weight:600">G&#233;n&#233;rer des t&#226;ches avec l IA</span></div>
     <div class="person-filter" id="tache-person-filter"></div>
     <div class="person-filter" id="tache-prio-filter"></div>
     <div class="section-hdr"><div class="section-hdr-title">T&#226;ches</div><button class="add-btn" onclick="openAddTache()">+ Ajouter</button></div>
     <div id="fam-taches-list"></div>
   </div>
   <div id="fpane-activite" class="fam-pane">
-    <div class="fam-ai-btn" onclick="openFamAI('activite')"><span>&#129302;</span><span style="font-size:.82rem;color:var(--orange);font-weight:600">Ajouter des activit&#233;s via l'IA</span></div>
+    <div class="fam-ai-btn" onclick="openFamAI('activite')"><span>&#129302;</span><span style="font-size:.82rem;color:var(--orange);font-weight:600">Ajouter des activit&#233;s via l IA</span></div>
     <div class="person-filter" id="activite-person-filter"></div>
     <div class="section-hdr"><div class="section-hdr-title">Activit&#233;s</div><button class="add-btn" onclick="openAddActivite()">+ Ajouter</button></div>
     <div id="fam-activite-list"></div>
@@ -400,6 +477,101 @@ select.form-input option{background:#1c1c1c;color:#f0ede8}
       </div>
     </div>
     <div id="epicerie-list"></div>
+  </div>
+</div>
+
+
+<!-- BUDGET -->
+<div id="view-budget" class="view">
+  <div class="app-header">
+    <div class="header-row"><button class="back-btn" onclick="showView('home')">&#8592; Accueil</button><div class="date-chip" id="budget-date"></div></div>
+    <div style="margin-top:.4rem;font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800">&#128176; <span style="color:var(--orange)">Budget</span></div>
+  </div>
+  <div class="budget-tabs">
+    <div class="budget-tab active" id="btab-apercu"      onclick="setBudgetTab('apercu')">&#128200; Aperçu</div>
+    <div class="budget-tab"        id="btab-depenses"    onclick="setBudgetTab('depenses')">&#128179; Dépenses</div>
+    <div class="budget-tab"        id="btab-placements"  onclick="setBudgetTab('placements')">&#128218; Placements</div>
+    <div class="budget-tab"        id="btab-crypto"      onclick="setBudgetTab('crypto')">&#129689; Crypto</div>
+    <div class="budget-tab"        id="btab-objectifs"   onclick="setBudgetTab('objectifs')">&#127919; Objectifs</div>
+    <div class="budget-tab"        id="btab-conseils"    onclick="setBudgetTab('conseils')">&#129302; Conseils IA</div>
+  </div>
+
+  <!-- APERCU -->
+  <div id="bpane-apercu" class="budget-pane active">
+    <div class="period-switcher">
+      <div class="period-btn active" id="pb-semaine" onclick="setBudgetPeriod('semaine')">Semaine</div>
+      <div class="period-btn" id="pb-mois" onclick="setBudgetPeriod('mois')">Mois</div>
+      <div class="period-btn" id="pb-annee" onclick="setBudgetPeriod('annee')">Année</div>
+    </div>
+    <div class="budget-summary" id="budget-summary"></div>
+    <div style="font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;margin-bottom:.6rem">Dépenses par catégorie</div>
+    <div id="budget-cats"></div>
+    <div class="fam-ai-btn" onclick="openBudgetAI('analyse')" style="margin-top:.5rem">
+      <span>&#129302;</span><div style="flex:1"><div style="font-size:.82rem;color:var(--orange);font-weight:600">Analyser photo de relevé bancaire</div><div style="font-size:.72rem;color:var(--muted)">Envoie une photo de ton relevé — l IA extrait les transactions</div></div><span style="color:var(--orange)">&#8250;</span>
+    </div>
+  </div>
+
+  <!-- DEPENSES -->
+  <div id="bpane-depenses" class="budget-pane">
+    <div class="period-switcher">
+      <div class="period-btn active" id="pb2-semaine" onclick="setBudgetPeriod2('semaine')">Semaine</div>
+      <div class="period-btn" id="pb2-mois" onclick="setBudgetPeriod2('mois')">Mois</div>
+      <div class="period-btn" id="pb2-annee" onclick="setBudgetPeriod2('annee')">Année</div>
+    </div>
+    <div class="section-hdr">
+      <div class="section-hdr-title">Transactions</div>
+      <button class="add-btn" onclick="openAddTransaction()">+ Ajouter</button>
+    </div>
+    <div id="tx-list"></div>
+  </div>
+
+  <!-- PLACEMENTS -->
+  <div id="bpane-placements" class="budget-pane">
+    <div class="fam-ai-btn" onclick="openBudgetAI('placements')" style="margin-bottom:.75rem">
+      <span>&#129302;</span><div style="flex:1"><div style="font-size:.82rem;color:var(--orange);font-weight:600">Analyser photo de compte</div><div style="font-size:.72rem;color:var(--muted)">Photo de relevé de placements — IA met à jour les données</div></div><span style="color:var(--orange)">&#8250;</span>
+    </div>
+    <div class="section-hdr">
+      <div class="section-hdr-title">Mes placements</div>
+      <button class="add-btn" onclick="openAddPlacement()">+ Ajouter</button>
+    </div>
+    <div id="placements-list"></div>
+    <div style="margin-top:.75rem;background:var(--surface2);border-radius:14px;padding:1rem;text-align:center">
+      <div style="font-size:.75rem;color:var(--muted)">Valeur totale des placements</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--orange)" id="total-placements">0 $</div>
+    </div>
+  </div>
+
+  <!-- CRYPTO -->
+  <div id="bpane-crypto" class="budget-pane">
+    <div class="fam-ai-btn" onclick="refreshCryptoPrices()" style="border-color:#22c55e;margin-bottom:.75rem">
+      <span>&#129689;</span><div style="flex:1"><div style="font-size:.82rem;color:#22c55e;font-weight:600">Actualiser les prix</div><div style="font-size:.72rem;color:var(--muted)">Prix en temps réel via CoinGecko (gratuit)</div></div><span style="color:#22c55e">&#8250;</span>
+    </div>
+    <div class="section-hdr">
+      <div class="section-hdr-title">Portefeuille Kraken</div>
+      <button class="add-btn" onclick="openAddCrypto()">+ Ajouter</button>
+    </div>
+    <div id="crypto-list"></div>
+    <div style="margin-top:.75rem;background:var(--surface2);border-radius:14px;padding:1rem;text-align:center">
+      <div style="font-size:.75rem;color:var(--muted)">Valeur totale crypto</div>
+      <div style="font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;color:var(--orange)" id="total-crypto">0 $</div>
+    </div>
+  </div>
+
+  <!-- OBJECTIFS -->
+  <div id="bpane-objectifs" class="budget-pane">
+    <div class="section-hdr">
+      <div class="section-hdr-title">Objectifs d'épargne</div>
+      <button class="add-btn" onclick="openAddObjectif()">+ Ajouter</button>
+    </div>
+    <div id="objectifs-list"></div>
+  </div>
+
+  <!-- CONSEILS IA -->
+  <div id="bpane-conseils" class="budget-pane">
+    <div class="fam-ai-btn" onclick="genererConseils()" style="margin-bottom:.75rem">
+      <span>&#129302;</span><div style="flex:1"><div style="font-size:.82rem;color:var(--orange);font-weight:600">Générer des conseils personnalisés</div><div style="font-size:.72rem;color:var(--muted)">Basé sur ton profil financier et tes données actuelles</div></div><span style="color:var(--orange)">&#8250;</span>
+    </div>
+    <div id="conseils-list"></div>
   </div>
 </div>
 
@@ -1098,7 +1270,7 @@ function clearAllEpicerie(){
 //  FAMILLE AI
 // ============================================================
 async function openFamAI(context) {
-  if(!cfg.apiKey){alert('Configure ta cle API dans Parametres.');return;}
+  if(!cfg.apiKey){alert('Configure ta cle API dans Parametres');return;}
   var today2=new Date();today2.setHours(0,0,0,0);
   var next7=[];for(var i=0;i<7;i++){var d=new Date(today2);d.setDate(today2.getDate()+i);next7.push(ds(d));}
 
@@ -1463,6 +1635,454 @@ function importMenuJSON() {
 }
 
 // import-modal click handler added in DOMContentLoaded above
+
+
+// ============================================================
+//  BUDGET MODULE
+// ============================================================
+var SK_TX='ma_tx', SK_PLACEMENTS='ma_placements', SK_CRYPTO='ma_crypto', SK_OBJECTIFS='ma_objectifs', SK_CONSEILS='ma_conseils';
+var transactions=[], placements=[], cryptos=[], objectifs=[], conseils=[];
+try{transactions=JSON.parse(localStorage.getItem(SK_TX)||'[]');}catch(e){}
+try{placements=JSON.parse(localStorage.getItem(SK_PLACEMENTS)||'[]');}catch(e){}
+try{cryptos=JSON.parse(localStorage.getItem(SK_CRYPTO)||'[]');}catch(e){}
+try{objectifs=JSON.parse(localStorage.getItem(SK_OBJECTIFS)||'[]');}catch(e){}
+try{conseils=JSON.parse(localStorage.getItem(SK_CONSEILS)||'[]');}catch(e){}
+
+function saveTx(){localStorage.setItem(SK_TX,JSON.stringify(transactions));}
+function savePlacements(){localStorage.setItem(SK_PLACEMENTS,JSON.stringify(placements));}
+function saveCryptos(){localStorage.setItem(SK_CRYPTO,JSON.stringify(cryptos));}
+function saveObjectifs(){localStorage.setItem(SK_OBJECTIFS,JSON.stringify(objectifs));}
+function saveConseils(){localStorage.setItem(SK_CONSEILS,JSON.stringify(conseils));}
+
+var budgetTab='apercu', budgetPeriod='mois', budgetPeriod2='mois';
+
+var CAT_BUDGET=[
+  {id:'alimentation', label:'Alimentation', color:'#22c55e', emoji:'&#129382;'},
+  {id:'logement',     label:'Logement',     color:'#3b82f6', emoji:'&#127968;'},
+  {id:'transport',    label:'Transport',    color:'#f97316', emoji:'&#128663;'},
+  {id:'restaurants',  label:'Restaurants',  color:'#f59e0b', emoji:'&#127829;'},
+  {id:'loisirs',      label:'Loisirs',      color:'#a855f7', emoji:'&#127918;'},
+  {id:'sante',        label:'Santé',        color:'#06b6d4', emoji:'&#127973;'},
+  {id:'vetements',    label:'Vêtements',    color:'#ec4899', emoji:'&#128084;'},
+  {id:'abonnements',  label:'Abonnements',  color:'#8b5cf6', emoji:'&#128250;'},
+  {id:'epargne',      label:'Épargne',      color:'#10b981', emoji:'&#128176;'},
+  {id:'enfants',      label:'Enfants',      color:'#f43f5e', emoji:'&#128100;'},
+  {id:'autres',       label:'Autres',       color:'#6b7280', emoji:'&#128204;'}
+];
+var TYPE_PLACEMENTS=['REER','CELI','Compte epargne','Actions','Cryptomonnaie','Autre'];
+var CRYPTOS_DEFAUT=[
+  {id:'bitcoin',  symbol:'BTC', name:'Bitcoin',  color:'#f97316'},
+  {id:'ethereum', symbol:'ETH', name:'Ethereum', color:'#6366f1'},
+  {id:'solana',   symbol:'SOL', name:'Solana',   color:'#a855f7'},
+];
+
+function getCatBudget(id){return CAT_BUDGET.find(function(c){return c.id===id;})||{label:id,color:'#6b7280',emoji:'&#128204;'};}
+
+function openBudget(){
+  showView('budget');
+  document.getElementById('budget-date').textContent=document.getElementById('home-date').textContent;
+  renderBudgetApercu();renderTxList();renderPlacements();renderCryptos();renderObjectifs();renderConseils();
+}
+
+function setBudgetTab(t){
+  budgetTab=t;
+  ['apercu','depenses','placements','crypto','objectifs','conseils'].forEach(function(x){
+    document.getElementById('btab-'+x).classList.toggle('active',x===t);
+    document.getElementById('bpane-'+x).classList.toggle('active',x===t);
+  });
+}
+
+function setBudgetPeriod(p){
+  budgetPeriod=p;
+  ['semaine','mois','annee'].forEach(function(x){document.getElementById('pb-'+x).classList.toggle('active',x===p);});
+  renderBudgetApercu();
+}
+function setBudgetPeriod2(p){
+  budgetPeriod2=p;
+  ['semaine','mois','annee'].forEach(function(x){document.getElementById('pb2-'+x).classList.toggle('active',x===p);});
+  renderTxList();
+}
+
+// ── Date filter ──
+function getDateRange(period){
+  var now=new Date(); var start=new Date();
+  if(period==='semaine'){start.setDate(now.getDate()-7);}
+  else if(period==='mois'){start=new Date(now.getFullYear(),now.getMonth(),1);}
+  else{start=new Date(now.getFullYear(),0,1);}
+  return {start:start,end:now};
+}
+function txInPeriod(tx,period){
+  var range=getDateRange(period);
+  var d=new Date(tx.date);
+  return d>=range.start&&d<=range.end;
+}
+
+// ── APERCU ──
+function renderBudgetApercu(){
+  var range=getDateRange(budgetPeriod);
+  var periodTx=transactions.filter(function(t){return txInPeriod(t,budgetPeriod);});
+  var revenus=periodTx.filter(function(t){return t.type==='credit';}).reduce(function(s,t){return s+t.montant;},0);
+  var depenses=periodTx.filter(function(t){return t.type==='debit';}).reduce(function(s,t){return s+t.montant;},0);
+  var solde=revenus-depenses;
+
+  // Summary cards
+  var sum=document.getElementById('budget-summary');
+  sum.innerHTML=
+    '<div class="summary-card"><div class="summary-label">Revenus</div><div class="summary-value green">'+fmt(revenus)+'</div></div>'+
+    '<div class="summary-card '+(depenses>revenus?'red':'')+'"><div class="summary-label">Dépenses</div><div class="summary-value '+(depenses>revenus?'red':'orange')+'">'+fmt(depenses)+'</div></div>'+
+    '<div class="summary-card '+(solde>=0?'green':'red')+'"><div class="summary-label">Solde</div><div class="summary-value '+(solde>=0?'green':'red')+'">'+fmt(solde)+'</div></div>';
+
+  // Category bars
+  var cats=document.getElementById('budget-cats'); cats.innerHTML='';
+  var bycat={};
+  periodTx.filter(function(t){return t.type==='debit';}).forEach(function(t){
+    if(!bycat[t.cat])bycat[t.cat]=0; bycat[t.cat]+=t.montant;
+  });
+  var sorted=Object.entries(bycat).sort(function(a,b){return b[1]-a[1];});
+  var maxVal=sorted.length?sorted[0][1]:1;
+  sorted.forEach(function(entry){
+    var cat=getCatBudget(entry[0]); var pct=Math.round(entry[1]/maxVal*100);
+    var div=document.createElement('div'); div.className='cat-bar-wrap';
+    div.innerHTML='<div class="cat-bar-header"><div class="cat-bar-name">'+cat.emoji+' '+cat.label+'</div><div class="cat-bar-amount">'+fmt(entry[1])+'</div></div>'+
+      '<div class="cat-bar-track"><div class="cat-bar-fill" style="width:'+pct+'%;background:'+cat.color+'"></div></div>';
+    cats.appendChild(div);
+  });
+  if(!sorted.length) cats.innerHTML='<div class="empty-state">Aucune dépense cette période.<br>Ajoute des transactions ou prends une photo de relevé !</div>';
+}
+
+// ── TRANSACTIONS ──
+function renderTxList(){
+  var list=document.getElementById('tx-list'); list.innerHTML='';
+  var filtered=transactions.filter(function(t){return txInPeriod(t,budgetPeriod2);})
+    .sort(function(a,b){return new Date(b.date)-new Date(a.date);});
+  if(!filtered.length){list.innerHTML='<div class="empty-state">Aucune transaction. Ajoute-en ou prends une photo de relevé !</div>';return;}
+  filtered.forEach(function(tx){
+    var cat=getCatBudget(tx.cat);
+    var el=document.createElement('div'); el.className='tx-item';
+    var dateStr=new Date(tx.date).toLocaleDateString('fr-CA',{month:'short',day:'numeric'});
+    el.innerHTML='<div class="tx-dot" style="background:'+cat.color+'"></div>'+
+      '<div class="tx-body"><div class="tx-title">'+tx.desc+'</div><div class="tx-sub">'+cat.emoji+' '+cat.label+' &nbsp;&#183;&nbsp; '+dateStr+'</div></div>'+
+      '<div class="tx-amount '+(tx.type==='debit'?'debit':'credit')+'">'+(tx.type==='debit'?'-':'+')+''+fmt(tx.montant)+'</div>'+
+      '<button onclick="deleteTx(\'' + tx.id + '\', event)" style="background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer;padding:.2rem .4rem">x</button>';
+    list.appendChild(el);
+  });
+}
+function deleteTx(id,e){e.stopPropagation();transactions=transactions.filter(function(t){return t.id!==id;});saveTx();renderBudgetApercu();renderTxList();}
+
+// ── PLACEMENTS ──
+function renderPlacements(){
+  var list=document.getElementById('placements-list'); list.innerHTML='';
+  var total=0;
+  if(!placements.length){list.innerHTML='<div class="empty-state">Aucun placement. Ajoute-en ou prends une photo de relevé !</div>';}
+  placements.forEach(function(p){
+    total+=p.valeur||0;
+    var chg=p.variation||0;
+    var el=document.createElement('div'); el.className='placement-card';
+    el.innerHTML='<div class="placement-left"><div class="placement-name">'+p.nom+'</div><div class="placement-type">'+p.type+'</div></div>'+
+      '<div class="placement-right"><div class="placement-value">'+fmt(p.valeur||0)+'</div><div class="placement-change '+(chg>=0?'up':'down')+'">'+(chg>=0?'&#9650;':'&#9660;')+' '+Math.abs(chg)+'%</div></div>';
+    el.onclick=function(){openEditPlacement(p);};
+    list.appendChild(el);
+  });
+  document.getElementById('total-placements').textContent=fmt(total);
+}
+
+// ── CRYPTO ──
+function renderCryptos(){
+  var list=document.getElementById('crypto-list'); list.innerHTML='';
+  var total=0;
+  if(!cryptos.length){list.innerHTML='<div class="empty-state">Aucune crypto. Ajoute BTC, ETH ou autres !</div>';document.getElementById('total-crypto').textContent='0 $';return;}
+  cryptos.forEach(function(cr){
+    var valeur=(cr.quantite||0)*(cr.prix||0);
+    total+=valeur;
+    var chg=cr.variation24h||0;
+    var el=document.createElement('div'); el.className='crypto-card';
+    el.innerHTML='<div class="crypto-header"><div class="crypto-name">'+cr.symbol+' <span style="font-size:.75rem;color:var(--muted);font-weight:400">'+cr.nom+'</span></div><div class="crypto-price '+(chg>=0?'up':'down')+'" style="color:'+(chg>=0?'#22c55e':'#ef4444')+'">'+(chg>=0?'+':'')+chg.toFixed(2)+'% 24h</div></div>'+
+      '<div class="crypto-row"><span class="crypto-label">Quantité</span><span class="crypto-val">'+cr.quantite+' '+cr.symbol+'</span></div>'+
+      '<div class="crypto-row" style="margin-top:.25rem"><span class="crypto-label">Prix unitaire</span><span class="crypto-val">'+fmt(cr.prix||0)+'</span></div>'+
+      '<div class="crypto-row" style="margin-top:.25rem"><span class="crypto-label">Valeur totale</span><span class="crypto-val" style="color:var(--orange)">'+fmt(valeur)+'</span></div>';
+    el.onclick=function(){openEditCrypto(cr);};
+    list.appendChild(el);
+  });
+  document.getElementById('total-crypto').textContent=fmt(total);
+}
+
+async function refreshCryptoPrices(){
+  if(!cryptos.length){alert('Ajoute des cryptos dabord !');return;}
+  var ids=cryptos.map(function(c){
+    var map={'BTC':'bitcoin','ETH':'ethereum','SOL':'solana','ADA':'cardano','AVAX':'avalanche-2','DOT':'polkadot','MATIC':'matic-network','XRP':'ripple','BNB':'binancecoin'};
+    return map[c.symbol]||c.symbol.toLowerCase();
+  }).join(',');
+  var loading=document.createElement('div');
+  loading.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center';
+  loading.innerHTML='<div style="background:var(--surface);border-radius:20px;padding:1.5rem 2rem;text-align:center"><div style="font-size:1.5rem">&#129689;</div><div style="color:var(--orange);font-family:Syne,sans-serif;font-weight:700;margin-top:.5rem">Mise a jour des prix...</div></div>';
+  document.body.appendChild(loading);
+  try{
+    var res=await fetch('https://api.coingecko.com/api/v3/simple/price?ids='+ids+'&vs_currencies=cad&include_24hr_change=true');
+    var data=await res.json();
+    var map2={'BTC':'bitcoin','ETH':'ethereum','SOL':'solana','ADA':'cardano','AVAX':'avalanche-2','DOT':'polkadot','MATIC':'matic-network','XRP':'ripple','BNB':'binancecoin'};
+    cryptos.forEach(function(cr){
+      var cgId=map2[cr.symbol]||cr.symbol.toLowerCase();
+      if(data[cgId]){cr.prix=data[cgId].cad||0;cr.variation24h=data[cgId].cad_24h_change||0;}
+    });
+    saveCryptos();renderCryptos();
+    if(loading.parentNode)document.body.removeChild(loading);
+    alert('Prix mis a jour !');
+  }catch(err){
+    if(loading.parentNode)document.body.removeChild(loading);
+    alert('Erreur de connexion. Verifie ta connexion internet.');
+  }
+}
+
+// ── OBJECTIFS ──
+function renderObjectifs(){
+  var list=document.getElementById('objectifs-list'); list.innerHTML='';
+  if(!objectifs.length){list.innerHTML='<div class="empty-state">Aucun objectif. Ajoute un objectif d epargne !</div>';return;}
+  objectifs.forEach(function(obj){
+    var pct=Math.min(100,Math.round((obj.actuel||0)/(obj.cible||1)*100));
+    var el=document.createElement('div'); el.className='objectif-card';
+    el.innerHTML='<div class="objectif-header"><div class="objectif-name">'+obj.nom+'</div><div class="objectif-pct">'+pct+'%</div></div>'+
+      '<div class="objectif-bar-track"><div class="objectif-bar-fill" style="width:'+pct+'%"></div></div>'+
+      '<div class="objectif-amounts"><span>'+fmt(obj.actuel||0)+'</span><span>'+fmt(obj.cible||0)+'</span></div>'+
+      (obj.note?'<div style="font-size:.72rem;color:var(--muted);margin-top:.4rem">'+obj.note+'</div>':'');
+    el.onclick=function(){openEditObjectif(obj);};
+    list.appendChild(el);
+  });
+}
+
+// ── CONSEILS IA ──
+function renderConseils(){
+  var list=document.getElementById('conseils-list'); list.innerHTML='';
+  if(!conseils.length){
+    list.innerHTML='<div class="empty-state">Appuie sur le bouton ci-dessus pour generer des conseils personnalises bases sur ton profil financier et tes donnees actuelles !</div>';
+    return;
+  }
+  conseils.forEach(function(conseil){
+    var el=document.createElement('div'); el.className='conseil-card'+(conseil.important?' important':'');
+    el.innerHTML='<div class="conseil-icon">'+conseil.emoji+'</div><div class="conseil-title">'+conseil.titre+'</div><div class="conseil-text">'+conseil.texte+'</div>';
+    list.appendChild(el);
+  });
+}
+
+async function genererConseils(){
+  if(!cfg.apiKey){alert('Configure ta cle API dans Parametres.');return;}
+  var loading=document.createElement('div');
+  loading.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:center;justify-content:center';
+  loading.innerHTML='<div style="background:var(--surface);border-radius:20px;padding:1.5rem 2rem;text-align:center"><div style="font-size:1.5rem">&#129302;</div><div style="color:var(--orange);font-family:Syne,sans-serif;font-weight:700;margin-top:.5rem">Analyse financiere en cours...</div></div>';
+  document.body.appendChild(loading);
+  var now=new Date();
+  var monthTx=transactions.filter(function(t){return txInPeriod(t,'mois');});
+  var revenus=monthTx.filter(function(t){return t.type==='credit';}).reduce(function(s,t){return s+t.montant;},0);
+  var depenses=monthTx.filter(function(t){return t.type==='debit';}).reduce(function(s,t){return s+t.montant;},0);
+  var totalCrypto=cryptos.reduce(function(s,c){return s+(c.quantite||0)*(c.prix||0);},0);
+  var totalPlacements=placements.reduce(function(s,p){return s+(p.valeur||0);},0);
+  var prompt='Profil: Eric Pilon, infirmier QC, salarié, famille 4 personnes (femme veterinaire), tolerance risque elevee, crypto Kraken en hold veut devenir actif, objectifs: epargne + faire fructifier argent.'+
+    ' Donnees ce mois: Revenus='+revenus+'$, Depenses='+depenses+'$, Solde='+(revenus-depenses)+'$.'+
+    ' Crypto total='+totalCrypto+'$. Placements total='+totalPlacements+'$.'+
+    ' Genere 4-5 conseils financiers personnalises. JSON: {"conseils":[{"emoji":"&#128176;","titre":"...","texte":"...","important":true}]}';
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:1500,
+        system:'Tu es un conseiller financier personnel. Reponds SEULEMENT en JSON valide sans markdown.',
+        messages:[{role:'user',content:prompt}]})
+    });
+    var data=await res.json();
+    if(loading.parentNode)document.body.removeChild(loading);
+    if(data.error){alert('Erreur API: '+data.error.message);return;}
+    var reply=data.content&&data.content.find(function(b){return b.type==='text';});
+    reply=reply?reply.text:'';
+    var s=reply.indexOf('{'),e=reply.lastIndexOf('}');
+    if(s!==-1&&e!==-1){
+      var json=JSON.parse(reply.slice(s,e+1));
+      if(json.conseils&&Array.isArray(json.conseils)){
+        conseils=json.conseils;saveConseils();renderConseils();
+        setBudgetTab('conseils');
+      }
+    }
+  }catch(err){
+    if(loading.parentNode)document.body.removeChild(loading);
+    alert('Erreur: '+err.message);
+  }
+}
+
+// ── AI PHOTO ANALYSE ──
+async function openBudgetAI(context){
+  if(!cfg.apiKey){alert('Configure ta cle API dans Parametres.');return;}
+  var input=document.createElement('input');
+  input.type='file';input.accept='image/*';
+  input.onchange=async function(e){
+    var file=e.target.files[0];if(!file)return;
+    var reader=new FileReader();
+    reader.onload=async function(ev){
+      var b64=ev.target.result.split(',')[1];
+      var loading=document.createElement('div');
+      loading.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:center;justify-content:center';
+      loading.innerHTML='<div style="background:var(--surface);border-radius:20px;padding:1.5rem 2rem;text-align:center"><div style="font-size:1.5rem">&#129302;</div><div style="color:var(--orange);font-family:Syne,sans-serif;font-weight:700;margin-top:.5rem">Analyse de la photo...</div></div>';
+      document.body.appendChild(loading);
+      var prompt='', systemP='';
+      if(context==='analyse'){
+        systemP='Tu analyses des releves bancaires. Reponds SEULEMENT en JSON valide sans markdown.';
+        prompt='Analyse ce releve bancaire et extrait toutes les transactions. Categories disponibles: alimentation,logement,transport,restaurants,loisirs,sante,vetements,abonnements,epargne,enfants,autres. JSON: {"transactions":[{"desc":"Epicerie IGA","montant":87.50,"type":"debit","cat":"alimentation","date":"2026-04-19"}],"message":"X transactions trouvees"}';
+      } else {
+        systemP='Tu analyses des releves de placements financiers. Reponds SEULEMENT en JSON valide sans markdown.';
+        prompt='Analyse ce releve de placements et extrait les informations. JSON: {"placements":[{"nom":"CELI Desjardins","type":"CELI","valeur":15000,"variation":2.5}],"message":"X placements trouves"}';
+      }
+      try{
+        var res=await fetch('https://api.anthropic.com/v1/messages',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','x-api-key':cfg.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+          body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:2000,system:systemP,
+            messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:file.type,data:b64}},{type:'text',text:prompt}]}]})
+        });
+        var data=await res.json();
+        if(loading.parentNode)document.body.removeChild(loading);
+        if(data.error){alert('Erreur: '+data.error.message);return;}
+        var reply=data.content&&data.content.find(function(b){return b.type==='text';});
+        reply=reply?reply.text:'';
+        var s=reply.indexOf('{'),e2=reply.lastIndexOf('}');
+        if(s!==-1&&e2!==-1){
+          var json=JSON.parse(reply.slice(s,e2+1));
+          if(json.transactions&&Array.isArray(json.transactions)){
+            var count=0;
+            json.transactions.forEach(function(tx){
+              if(tx.desc&&tx.montant){
+                transactions.push({id:uid(),desc:tx.desc,montant:Math.abs(tx.montant),type:tx.type||'debit',cat:tx.cat||'autres',date:tx.date||ds(new Date())});
+                count++;
+              }
+            });
+            saveTx();renderBudgetApercu();renderTxList();setBudgetTab('depenses');
+            alert(count+' transactions importees !');
+          } else if(json.placements&&Array.isArray(json.placements)){
+            json.placements.forEach(function(p){
+              var ex=placements.find(function(x){return x.nom.toLowerCase()===p.nom.toLowerCase();});
+              if(ex){ex.valeur=p.valeur;ex.variation=p.variation||0;}
+              else placements.push({id:uid(),nom:p.nom,type:p.type||'Autre',valeur:p.valeur||0,variation:p.variation||0});
+            });
+            savePlacements();renderPlacements();setBudgetTab('placements');
+            alert(json.placements.length+' placements mis a jour !');
+          }
+        }
+      }catch(err){
+        if(loading.parentNode)document.body.removeChild(loading);
+        alert('Erreur: '+err.message);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+}
+
+// ── ADD MODALS ──
+function openAddTransaction(){
+  var today3=ds(new Date());
+  createSimpleModal('Nouvelle transaction',
+    '<div class="form-group"><label class="form-label">Description *</label><input class="form-input" id="fm-desc" type="text" placeholder="Ex: Epicerie, Salaire..."/></div>'+
+    '<div class="form-group"><label class="form-label">Montant ($) *</label><input class="form-input" id="fm-montant" type="number" min="0" step="0.01" placeholder="0.00"/></div>'+
+    '<div class="form-group"><label class="form-label">Type</label><select class="form-input" id="fm-type"><option value="debit">Depense</option><option value="credit">Revenu</option></select></div>'+
+    '<div class="form-group"><label class="form-label">Categorie</label><select class="form-input" id="fm-catb">'+CAT_BUDGET.map(function(c){return '<option value="'+c.id+'">'+c.emoji+' '+c.label+'</option>';}).join('')+'</select></div>'+
+    '<div class="form-group"><label class="form-label">Date</label><input class="form-input" id="fm-date" type="date" value="'+today3+'"/></div>',
+    function(){
+      var desc=document.getElementById('fm-desc').value.trim();
+      var montant=parseFloat(document.getElementById('fm-montant').value);
+      if(!desc||!montant){alert('Description et montant requis');return false;}
+      transactions.push({id:uid(),desc:desc,montant:montant,type:document.getElementById('fm-type').value,cat:document.getElementById('fm-catb').value,date:document.getElementById('fm-date').value});
+      saveTx();renderBudgetApercu();renderTxList();return true;
+    }
+  );
+}
+
+function openAddPlacement(){
+  createSimpleModal('Nouveau placement',
+    '<div class="form-group"><label class="form-label">Nom *</label><input class="form-input" id="fm-nom" type="text" placeholder="Ex: CELI Desjardins..."/></div>'+
+    '<div class="form-group"><label class="form-label">Type</label><select class="form-input" id="fm-type">'+TYPE_PLACEMENTS.map(function(t){return '<option>'+t+'</option>';}).join('')+'</select></div>'+
+    '<div class="form-group"><label class="form-label">Valeur actuelle ($)</label><input class="form-input" id="fm-valeur" type="number" min="0" step="0.01" placeholder="0.00"/></div>'+
+    '<div class="form-group"><label class="form-label">Variation (%)</label><input class="form-input" id="fm-variation" type="number" step="0.1" placeholder="0.0"/></div>',
+    function(){
+      var nom=document.getElementById('fm-nom').value.trim();
+      if(!nom){alert('Nom requis');return false;}
+      placements.push({id:uid(),nom:nom,type:document.getElementById('fm-type').value,valeur:parseFloat(document.getElementById('fm-valeur').value)||0,variation:parseFloat(document.getElementById('fm-variation').value)||0});
+      savePlacements();renderPlacements();return true;
+    }
+  );
+}
+
+function openEditPlacement(p){
+  createSimpleModal('Modifier placement',
+    '<div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="fm-nom" type="text" value="'+p.nom+'"/></div>'+
+    '<div class="form-group"><label class="form-label">Type</label><select class="form-input" id="fm-type">'+TYPE_PLACEMENTS.map(function(t){return '<option'+(t===p.type?' selected':'')+'>'+t+'</option>';}).join('')+'</select></div>'+
+    '<div class="form-group"><label class="form-label">Valeur ($)</label><input class="form-input" id="fm-valeur" type="number" value="'+p.valeur+'"/></div>'+
+    '<div class="form-group"><label class="form-label">Variation (%)</label><input class="form-input" id="fm-variation" type="number" value="'+(p.variation||0)+'"/></div>',
+    function(){
+      p.nom=document.getElementById('fm-nom').value.trim();
+      p.type=document.getElementById('fm-type').value;
+      p.valeur=parseFloat(document.getElementById('fm-valeur').value)||0;
+      p.variation=parseFloat(document.getElementById('fm-variation').value)||0;
+      savePlacements();renderPlacements();return true;
+    }
+  );
+}
+
+function openAddCrypto(){
+  createSimpleModal('Ajouter crypto',
+    '<div class="form-group"><label class="form-label">Symbole *</label><input class="form-input" id="fm-sym" type="text" placeholder="BTC, ETH, SOL..." style="text-transform:uppercase"/></div>'+
+    '<div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="fm-nom" type="text" placeholder="Bitcoin, Ethereum..."/></div>'+
+    '<div class="form-group"><label class="form-label">Quantite</label><input class="form-input" id="fm-qte" type="number" min="0" step="any" placeholder="0.00"/></div>'+
+    '<div class="form-group"><label class="form-label">Prix unitaire ($CAD)</label><input class="form-input" id="fm-prix" type="number" min="0" step="0.01" placeholder="0.00"/></div>',
+    function(){
+      var sym=document.getElementById('fm-sym').value.trim().toUpperCase();
+      if(!sym){alert('Symbole requis');return false;}
+      cryptos.push({id:uid(),symbol:sym,nom:document.getElementById('fm-nom').value.trim()||sym,quantite:parseFloat(document.getElementById('fm-qte').value)||0,prix:parseFloat(document.getElementById('fm-prix').value)||0,variation24h:0});
+      saveCryptos();renderCryptos();return true;
+    }
+  );
+}
+
+function openEditCrypto(cr){
+  createSimpleModal('Modifier '+cr.symbol,
+    '<div class="form-group"><label class="form-label">Quantite</label><input class="form-input" id="fm-qte" type="number" step="any" value="'+cr.quantite+'"/></div>'+
+    '<div class="form-group"><label class="form-label">Prix unitaire ($CAD)</label><input class="form-input" id="fm-prix" type="number" step="0.01" value="'+cr.prix+'"/></div>',
+    function(){
+      cr.quantite=parseFloat(document.getElementById('fm-qte').value)||0;
+      cr.prix=parseFloat(document.getElementById('fm-prix').value)||0;
+      saveCryptos();renderCryptos();return true;
+    }
+  );
+}
+
+function openAddObjectif(){
+  createSimpleModal('Nouvel objectif',
+    '<div class="form-group"><label class="form-label">Nom *</label><input class="form-input" id="fm-nom" type="text" placeholder="Ex: Fonds urgence, Voyage..."/></div>'+
+    '<div class="form-group"><label class="form-label">Montant cible ($)</label><input class="form-input" id="fm-cible" type="number" min="0" placeholder="0.00"/></div>'+
+    '<div class="form-group"><label class="form-label">Montant actuel ($)</label><input class="form-input" id="fm-actuel" type="number" min="0" placeholder="0.00"/></div>'+
+    '<div class="form-group"><label class="form-label">Note</label><input class="form-input" id="fm-note" type="text" placeholder="Ex: CELI Desjardins..."/></div>',
+    function(){
+      var nom=document.getElementById('fm-nom').value.trim();
+      if(!nom){alert('Nom requis.');return false;}
+      objectifs.push({id:uid(),nom:nom,cible:parseFloat(document.getElementById('fm-cible').value)||0,actuel:parseFloat(document.getElementById('fm-actuel').value)||0,note:document.getElementById('fm-note').value.trim()});
+      saveObjectifs();renderObjectifs();return true;
+    }
+  );
+}
+
+function openEditObjectif(obj){
+  createSimpleModal('Modifier objectif',
+    '<div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="fm-nom" type="text" value="'+obj.nom+'"/></div>'+
+    '<div class="form-group"><label class="form-label">Montant cible ($)</label><input class="form-input" id="fm-cible" type="number" value="'+obj.cible+'"/></div>'+
+    '<div class="form-group"><label class="form-label">Montant actuel ($)</label><input class="form-input" id="fm-actuel" type="number" value="'+obj.actuel+'"/></div>'+
+    '<div class="form-group"><label class="form-label">Note</label><input class="form-input" id="fm-note" type="text" value="'+(obj.note||'')+'"/></div>',
+    function(){
+      obj.nom=document.getElementById('fm-nom').value.trim();
+      obj.cible=parseFloat(document.getElementById('fm-cible').value)||0;
+      obj.actuel=parseFloat(document.getElementById('fm-actuel').value)||0;
+      obj.note=document.getElementById('fm-note').value.trim();
+      saveObjectifs();renderObjectifs();return true;
+    }
+  );
+}
+
+// ── HELPERS ──
+function fmt(n){return n.toLocaleString('fr-CA',{minimumFractionDigits:0,maximumFractionDigits:0})+'$';}
 
 </script>
 
