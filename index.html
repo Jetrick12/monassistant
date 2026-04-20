@@ -499,9 +499,10 @@ select.form-input option{background:#1c1c1c;color:#f0ede8}
   <!-- APERCU -->
   <div id="bpane-apercu" class="budget-pane active">
     <div class="period-switcher">
-      <div class="period-btn active" id="pb-semaine" onclick="setBudgetPeriod('semaine')">Semaine</div>
-      <div class="period-btn" id="pb-mois" onclick="setBudgetPeriod('mois')">Mois</div>
+      <div class="period-btn" id="pb-semaine" onclick="setBudgetPeriod('semaine')">Semaine</div>
+      <div class="period-btn active" id="pb-mois" onclick="setBudgetPeriod('mois')">Mois</div>
       <div class="period-btn" id="pb-annee" onclick="setBudgetPeriod('annee')">Année</div>
+      <div class="period-btn" id="pb-tout" onclick="setBudgetPeriod('tout')">Tout</div>
     </div>
     <div class="budget-summary" id="budget-summary"></div>
     <div style="font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;margin-bottom:.6rem">Dépenses par catégorie</div>
@@ -514,9 +515,10 @@ select.form-input option{background:#1c1c1c;color:#f0ede8}
   <!-- DEPENSES -->
   <div id="bpane-depenses" class="budget-pane">
     <div class="period-switcher">
-      <div class="period-btn active" id="pb2-semaine" onclick="setBudgetPeriod2('semaine')">Semaine</div>
-      <div class="period-btn" id="pb2-mois" onclick="setBudgetPeriod2('mois')">Mois</div>
+      <div class="period-btn" id="pb2-semaine" onclick="setBudgetPeriod2('semaine')">Semaine</div>
+      <div class="period-btn active" id="pb2-mois" onclick="setBudgetPeriod2('mois')">Mois</div>
       <div class="period-btn" id="pb2-annee" onclick="setBudgetPeriod2('annee')">Année</div>
+      <div class="period-btn" id="pb2-tout" onclick="setBudgetPeriod2('tout')">Tout</div>
     </div>
     <div class="section-hdr">
       <div class="section-hdr-title">Transactions</div>
@@ -1701,12 +1703,12 @@ function setBudgetTab(t){
 
 function setBudgetPeriod(p){
   budgetPeriod=p;
-  ['semaine','mois','annee'].forEach(function(x){document.getElementById('pb-'+x).classList.toggle('active',x===p);});
+  ['semaine','mois','annee','tout'].forEach(function(x){var el=document.getElementById('pb-'+x);if(el)el.classList.toggle('active',x===p);});
   renderBudgetApercu();
 }
 function setBudgetPeriod2(p){
   budgetPeriod2=p;
-  ['semaine','mois','annee'].forEach(function(x){document.getElementById('pb2-'+x).classList.toggle('active',x===p);});
+  ['semaine','mois','annee','tout'].forEach(function(x){var el=document.getElementById('pb2-'+x);if(el)el.classList.toggle('active',x===p);});
   renderTxList();
 }
 
@@ -1715,7 +1717,8 @@ function getDateRange(period){
   var now=new Date(); var start=new Date();
   if(period==='semaine'){start.setDate(now.getDate()-7);}
   else if(period==='mois'){start=new Date(now.getFullYear(),now.getMonth(),1);}
-  else{start=new Date(now.getFullYear(),0,1);}
+  else if(period==='annee'){start=new Date(now.getFullYear(),0,1);}
+  else{start=new Date(2000,0,1);} // 'tout' = depuis toujours
   return {start:start,end:now};
 }
 function txInPeriod(tx,period){
@@ -2101,7 +2104,7 @@ var IMPORT_CONFIG = {
   transactions: {
     title: '&#128196; Importer des transactions',
     instructions: '1. Ouvre Claude.ai (projet MonAssistant - Budget)<br>2. Envoie une photo de ton releve bancaire<br>3. Copie le prompt ci-dessous et envoie-le<br>4. Claude genere le JSON<br>5. Copie et colle ici',
-    prompt: 'Analyse cette photo de releve bancaire et genere un JSON MonAssistant. Format: {"transactions":[{"desc":"Epicerie IGA","montant":87.50,"type":"debit","cat":"alimentation","date":"2026-04-19"}]}. Categories: alimentation,logement,transport,restaurants,loisirs,sante,vetements,abonnements,epargne,enfants,autres. Type: debit ou credit. Date: YYYY-MM-DD.'
+    prompt: 'Analyse cette photo de releve bancaire et genere un JSON MonAssistant. Utilise les vraies dates indiquees sur le releve (format YYYY-MM-DD). Format: {"transactions":[{"desc":"Epicerie IGA","montant":87.50,"type":"debit","cat":"alimentation","date":"2026-03-15"}]}. Categories: alimentation,logement,transport,restaurants,loisirs,sante,vetements,abonnements,epargne,enfants,autres. Type: debit ou credit.'
   },
   placements: {
     title: '&#128196; Importer des placements',
@@ -2220,10 +2223,10 @@ function importBudgetJSON() {
   closeModal('import-budget-modal');
   if(counts.length) {
     // Switch period to 'annee' so all imported transactions are visible
-    budgetPeriod = 'annee'; budgetPeriod2 = 'annee';
-    ['semaine','mois','annee'].forEach(function(x){
-      var e1=document.getElementById('pb-'+x); if(e1) e1.classList.toggle('active',x==='annee');
-      var e2=document.getElementById('pb2-'+x); if(e2) e2.classList.toggle('active',x==='annee');
+    budgetPeriod = 'tout'; budgetPeriod2 = 'tout';
+    ['semaine','mois','annee','tout'].forEach(function(x){
+      var e1=document.getElementById('pb-'+x); if(e1) e1.classList.toggle('active',x==='tout');
+      var e2=document.getElementById('pb2-'+x); if(e2) e2.classList.toggle('active',x==='tout');
     });
     renderBudgetApercu(); renderTxList();
     alert('Importe avec succes : ' + counts.join(', ') + ' !');
