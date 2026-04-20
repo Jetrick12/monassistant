@@ -2597,8 +2597,7 @@ function delTravail(id,e){e.stopPropagation();var i=travaux.findIndex(function(x
 function delGarantie(id,e){e.stopPropagation();var i=garanties.findIndex(function(x){return x.id===id;});if(i>=0)garanties.splice(i,1);saveGaranties();renderGaranties();}
 function delEntretien(id,e){e.stopPropagation();var i=entretien.findIndex(function(x){return x.id===id;});if(i>=0)entretien.splice(i,1);saveEntretien();renderEntretien();}
 function delDoc(id,e){e.stopPropagation();var i=docs.findIndex(function(x){return x.id===id;});if(i>=0)docs.splice(i,1);saveDocs();renderDocs();}
-function completerEntretien(id){var e=entretien.find(function(x){return x.id===id;});if(!e)return;e.dernierDate=ds(new Date());var next=new Date();var freqMap={'Mensuel':1,'Trimestriel':3,'Semestriel':6,'Annuel':12,'Aux 2 ans':24,'Aux 5 ans':60};next.setMonth(next.getMonth()+(freqMap[e.frequence]||12));e.prochainDate=ds(next);saveEntretien();renderEntretien();}
-function completerRappel(id){var r=rappelsMaison.find(function(x){return x.id===id;});if(!r)return;var freqMap={'Mensuel':1,'Trimestriel':3,'Semestriel':6,'Annuel':12,'Aux 2 ans':24,'Aux 5 ans':60};var next=new Date();next.setMonth(next.getMonth()+(freqMap[r.frequence]||12));r.prochainDate=ds(next);saveRappelsMaison();renderRappelsMaison();}
+function delRappelMaison(id,e){e.stopPropagation();var i=rappelsMaison.findIndex(function(x){return x.id===id;});if(i>=0)rappelsMaison.splice(i,1);saveRappelsMaison();renderRappelsMaison();}
 
 </script>
 
