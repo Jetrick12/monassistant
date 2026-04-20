@@ -2364,8 +2364,7 @@ function renderTravaux(){
     var dateStr=new Date(t.date).toLocaleDateString('fr-CA',{year:'numeric',month:'long',day:'numeric'});
     el.innerHTML='<div class="maison-card-header"><div><div class="maison-card-title">'+t.titre+'</div><div class="maison-card-sub">'+dateStr+(t.compagnie?' &middot; '+t.compagnie:'')+'</div></div>'+(t.cout?'<div class="travail-cost">'+t.cout+'$</div>':'')+'</div>'+
       (t.note?'<div class="maison-card-sub" style="margin-top:.3rem">'+t.note+'</div>':'')+
-      '<div class="maison-card-badges"><span style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:.65rem;padding:.15rem .5rem;border-radius:20px">'+t.cat+'</span></div>'+
-      '<button onclick="delTravail(\"'+t.id+'\",event)" style="position:absolute;top:.8rem;right:.8rem;background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer">x</button>';
+      '<div class="maison-card-badges"><span style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:.65rem;padding:.15rem .5rem;border-radius:20px">'+t.cat+'</span></div>';
     var bxT=document.createElement('button');bxT.textContent='x';bxT.style.cssText='position:absolute;top:.8rem;right:.8rem;background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer;z-index:5;padding:.4rem';
     bxT.onclick=(function(id){return function(ev){ev.stopPropagation();delTravail(id);};})(t.id);
     el.appendChild(bxT);
@@ -2388,8 +2387,7 @@ function renderGaranties(){
     var el=document.createElement('div');el.className='maison-card';
     el.innerHTML='<div class="maison-card-header"><div><div class="maison-card-title">'+g.appareil+'</div><div class="maison-card-sub">'+(g.marque?g.marque+' ':'')+' &middot; Achat: '+new Date(g.dateAchat).toLocaleDateString('fr-CA',{year:'numeric',month:'short'})+'</div></div></div>'+
       (g.note?'<div class="maison-card-sub">'+g.note+'</div>':'')+
-      '<div class="maison-card-badges"><span class="'+badgeClass+'">'+badge+'</span><span style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:.65rem;padding:.15rem .5rem;border-radius:20px">'+g.cat+'</span></div>'+
-      '<button onclick="delGarantie(\"'+g.id+'\",event)" style="position:absolute;top:.8rem;right:.8rem;background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer">x</button>';
+      '<div class="maison-card-badges"><span class="'+badgeClass+'">'+badge+'</span><span style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:.65rem;padding:.15rem .5rem;border-radius:20px">'+g.cat+'</span></div>';
     var bxG=document.createElement('button');bxG.textContent='x';bxG.style.cssText='position:absolute;top:.8rem;right:.8rem;background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer;z-index:5;padding:.4rem';
     bxG.onclick=(function(id){return function(ev){ev.stopPropagation();delGarantie(id);};})(g.id);
     el.appendChild(bxG);
@@ -2602,14 +2600,31 @@ function openAddDoc(){
     '<div class="form-group"><label class="form-label">Type</label><select class="form-input" id="fm-cat">'+CAT_DOC.map(function(c){return '<option>'+c+'</option>';}).join('')+'</select></div>'+
     '<div class="form-group"><label class="form-label">Appareil / Piece</label><input class="form-input" id="fm-app" type="text" placeholder="Ex: Chauffe-eau, Cuisine..."/></div>'+
     '<div class="form-group"><label class="form-label">Date</label><input class="form-input" id="fm-date" type="date" value="'+ds(new Date())+'"/></div>'+
-    '<div class="form-group"><label class="form-label">Note (numero, lien, emplacement...)</label><input class="form-input" id="fm-note" type="text" placeholder="Ex: Sous evier cuisine, No contrat 12345..."/></div>',
+    '<div class="form-group"><label class="form-label">Note (numero, lien, emplacement...)</label><input class="form-input" id="fm-note" type="text" placeholder="Ex: Sous evier cuisine, No contrat 12345..."/></div>'+
+    '<div class="form-group"><label class="form-label">Photo ou PDF (optionnel)</label>'+
+    '<div id="doc-file-preview" style="display:none;margin-bottom:.5rem;background:var(--surface2);border-radius:10px;padding:.6rem;font-size:.78rem;color:#22c55e"></div>'+
+    '<button type="button" onclick="triggerDocFile()" style="width:100%;background:var(--surface2);border:1px dashed var(--border);border-radius:12px;padding:.75rem;color:var(--muted);font-size:.85rem;cursor:pointer;text-align:center">&#128247; Choisir une photo ou PDF</button>'+
+    '<input type="file" id="doc-file-input" accept="image/*,application/pdf" style="display:none" onchange="previewDocFile(event)"/></div>',
     function(){
       var titre=document.getElementById('fm-titre').value.trim();
       if(!titre){alert('Titre requis');return false;}
-      docs.push({id:uid(),titre:titre,cat:document.getElementById('fm-cat').value,appareil:document.getElementById('fm-app').value.trim(),date:document.getElementById('fm-date').value,note:document.getElementById('fm-note').value.trim()});
+      var fileData=window._docFileData||null;
+      docs.push({id:uid(),titre:titre,cat:document.getElementById('fm-cat').value,appareil:document.getElementById('fm-app').value.trim(),date:document.getElementById('fm-date').value,note:document.getElementById('fm-note').value.trim(),fileData:fileData,fileName:window._docFileName||''});
+      window._docFileData=null;window._docFileName='';
       saveDocs();renderDocs();return true;
     }
   );
+}
+
+function previewDocFile(e){
+  var file=e.target.files[0];if(!file)return;
+  var preview=document.getElementById('doc-file-preview');
+  preview.style.display='block';
+  preview.textContent='Fichier: '+file.name+' ('+Math.round(file.size/1024)+'KB)';
+  window._docFileName=file.name;
+  var reader=new FileReader();
+  reader.onload=function(ev){window._docFileData=ev.target.result;};
+  reader.readAsDataURL(file);
 }
 
 
@@ -2618,6 +2633,9 @@ function delGarantie(id){var i=garanties.findIndex(function(x){return x.id===id;
 function delEntretien(id){var i=entretien.findIndex(function(x){return x.id===id;});if(i>=0)entretien.splice(i,1);saveEntretien();renderEntretien();}
 function delDoc(id,e){e.stopPropagation();var i=docs.findIndex(function(x){return x.id===id;});if(i>=0)docs.splice(i,1);saveDocs();renderDocs();}
 function delRappelMaison(id){var i=rappelsMaison.findIndex(function(x){return x.id===id;});if(i>=0)rappelsMaison.splice(i,1);saveRappelsMaison();renderRappelsMaison();}
+
+
+function triggerDocFile(){var el=document.getElementById('doc-file-input');if(el)el.click();}
 
 </script>
 
