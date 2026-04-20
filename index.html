@@ -1119,7 +1119,7 @@ function renderCatGrid() {
     btn.innerHTML='<span style="font-size:1.1rem">'+c.emoji+'</span><span>'+c.label+'</span>';
     if(c.custom){
       var del=document.createElement('button'); del.className='cat-del'; del.textContent='x';
-      del.onclick=function(e){e.stopPropagation();deleteCat(c.id);}; btn.appendChild(del);
+      del.onclick=function(e){if(e&&e.stopPropagation)e.stopPropagation();deleteCat(c.id);}; btn.appendChild(del);
     }
     btn.onclick=function(){
       selCat=c.id;
@@ -1285,8 +1285,8 @@ function makeTacheCard(t) {
   el.innerHTML='<button class="fam-check'+(t.done?' checked':'')+'" onclick="toggleTache(\''+t.id+'\',event)">'+(t.done?'v':'')+'</button><div class="fam-card-body"><div class="fam-card-title">'+t.titre+'</div>'+(t.note?'<div class="fam-card-sub">'+t.note+'</div>':'')+'<div class="fam-card-badges"><span class="badge" style="border:1px solid '+col+';color:'+col+'">'+t.personne+'</span><span class="badge badge-prio-'+t.priorite+'">'+(t.priorite==='plus-tard'?'Plus tard':t.priorite.charAt(0).toUpperCase()+t.priorite.slice(1))+'</span>'+(t.categorie?'<span class="badge badge-cat">'+t.categorie+'</span>':'')+'</div></div><button onclick="deleteTache(\''+t.id+'\',event)" style="background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:.2rem">x</button>';
   return el;
 }
-function toggleTache(id,e){e.stopPropagation();var t=taches.find(function(x){return x.id===id;});if(t){t.done=!t.done;saveTaches();renderTaches();}}
-function deleteTache(id,e){e.stopPropagation();/* skip confirm */taches=taches.filter(function(t){return t.id!==id;});saveTaches();renderTaches();}
+function toggleTache(id,e){if(e&&e.stopPropagation)e.stopPropagation();var t=taches.find(function(x){return x.id===id;});if(t){t.done=!t.done;saveTaches();renderTaches();}}
+function deleteTache(id,e){if(e&&e.stopPropagation)e.stopPropagation();/* skip confirm */taches=taches.filter(function(t){return t.id!==id;});saveTaches();renderTaches();}
 
 function renderActivites() {
   renderPersonFilter('activite-person-filter',activitePersonFilter,function(v){activitePersonFilter=v;},renderActivites);
@@ -1301,7 +1301,7 @@ function renderActivites() {
     list.appendChild(el);
   });
 }
-function deleteActivite(id,e){e.stopPropagation();/* skip confirm */activites=activites.filter(function(a){return a.id!==id;});saveActivites();renderActivites();}
+function deleteActivite(id,e){if(e&&e.stopPropagation)e.stopPropagation();/* skip confirm */activites=activites.filter(function(a){return a.id!==id;});saveActivites();renderActivites();}
 
 function renderRepas() {
   var g=document.getElementById('repas-grid');g.innerHTML='';
@@ -1334,8 +1334,8 @@ function renderEpicerie() {
     list.appendChild(sec);
   });
 }
-function toggleEpicerie(id,e){e.stopPropagation();var item=epicerie.find(function(x){return x.id===id;});if(item){item.checked=!item.checked;saveEpicerie();renderEpicerie();}}
-function deleteEpicerie(id,e){e.stopPropagation();epicerie=epicerie.filter(function(x){return x.id!==id;});saveEpicerie();renderEpicerie();}
+function toggleEpicerie(id,e){if(e&&e.stopPropagation)e.stopPropagation();var item=epicerie.find(function(x){return x.id===id;});if(item){item.checked=!item.checked;saveEpicerie();renderEpicerie();}}
+function deleteEpicerie(id,e){if(e&&e.stopPropagation)e.stopPropagation();epicerie=epicerie.filter(function(x){return x.id!==id;});saveEpicerie();renderEpicerie();}
 function clearCheckedEpicerie(){
   var checked = epicerie.filter(function(x){return x.checked;});
   if(checked.length===0){alert('Aucun item coche !');return;}
@@ -1853,7 +1853,7 @@ function renderTxList(){
     list.appendChild(el);
   });
 }
-function deleteTx(id,e){e.stopPropagation();transactions=transactions.filter(function(t){return t.id!==id;});saveTx();renderBudgetApercu();renderTxList();}
+function deleteTx(id,e){if(e&&e.stopPropagation)e.stopPropagation();transactions=transactions.filter(function(t){return t.id!==id;});saveTx();renderBudgetApercu();renderTxList();}
 
 // ── PLACEMENTS ──
 function renderPlacements(){
@@ -2537,7 +2537,7 @@ function getNextDate(months){
   var d=new Date();d.setMonth(d.getMonth()+months);return ds(d);
 }
 function deleteMaisonItem(arr,key,id,renderFn,e){
-  e.stopPropagation();
+  if(e&&e.stopPropagation)e.stopPropagation();
   var idx=arr.findIndex(function(x){return x.id===id;});
   if(idx>=0)arr.splice(idx,1);
   localStorage.setItem(key,JSON.stringify(arr));
@@ -2647,7 +2647,7 @@ function previewDocFile(e){
 function delTravail(id){var i=travaux.findIndex(function(x){return x.id===id;});if(i>=0)travaux.splice(i,1);saveTravaux();renderTravaux();}
 function delGarantie(id){var i=garanties.findIndex(function(x){return x.id===id;});if(i>=0)garanties.splice(i,1);saveGaranties();renderGaranties();}
 function delEntretien(id){var i=entretien.findIndex(function(x){return x.id===id;});if(i>=0)entretien.splice(i,1);saveEntretien();renderEntretien();}
-function delDoc(id,e){e.stopPropagation();var i=docs.findIndex(function(x){return x.id===id;});if(i>=0)docs.splice(i,1);saveDocs();renderDocs();}
+function delDoc(id){var i=docs.findIndex(function(x){return x.id===id;});if(i>=0)docs.splice(i,1);saveDocs();renderDocs();}
 function delRappelMaison(id){var i=rappelsMaison.findIndex(function(x){return x.id===id;});if(i>=0)rappelsMaison.splice(i,1);saveRappelsMaison();renderRappelsMaison();}
 
 
