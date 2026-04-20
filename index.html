@@ -311,6 +311,40 @@ select.form-input option{background:#1c1c1c;color:#f0ede8}
 .legend-item{display:flex;align-items:center;gap:.5rem;font-size:.75rem}
 .legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 
+
+/* ── MAISON MODULE ── */
+.maison-tabs{display:flex;gap:.5rem;padding:.75rem 1.5rem;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.maison-tabs::-webkit-scrollbar{display:none}
+.maison-tab{flex-shrink:0;padding:.45rem 1rem;background:var(--surface2);border:1px solid var(--border);border-radius:20px;color:var(--muted);font-size:.8rem;cursor:pointer;transition:.2s;white-space:nowrap}
+.maison-tab.active{background:var(--orange);border-color:var(--orange);color:#000;font-weight:600}
+.maison-pane{display:none;flex:1;overflow-y:auto;padding:0 1.2rem 6rem;flex-direction:column}
+.maison-pane.active{display:flex}
+.maison-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.9rem 1rem;margin-bottom:.6rem;cursor:pointer;transition:.15s;position:relative}
+.maison-card:active{transform:scale(.97)}
+.maison-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.3rem}
+.maison-card-title{font-size:.9rem;font-weight:600;line-height:1.3}
+.maison-card-sub{font-size:.72rem;color:var(--muted);margin-top:.15rem;line-height:1.4}
+.maison-card-badges{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.4rem}
+.garantie-ok{background:rgba(34,197,94,.15);color:#22c55e;font-size:.65rem;padding:.15rem .5rem;border-radius:20px;font-weight:600}
+.garantie-warn{background:rgba(249,115,22,.15);color:var(--orange);font-size:.65rem;padding:.15rem .5rem;border-radius:20px;font-weight:600}
+.garantie-expire{background:rgba(239,68,68,.15);color:#ef4444;font-size:.65rem;padding:.15rem .5rem;border-radius:20px;font-weight:600}
+.travail-cost{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;color:var(--orange);white-space:nowrap}
+.rappel-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.9rem 1rem;margin-bottom:.6rem;display:flex;align-items:center;gap:.85rem;cursor:pointer;transition:.15s}
+.rappel-card:active{transform:scale(.97)}
+.rappel-card.urgent{border-color:#ef4444}
+.rappel-card.soon{border-color:var(--orange)}
+.rappel-icon{font-size:1.6rem;flex-shrink:0}
+.rappel-body{flex:1}
+.rappel-title{font-size:.9rem;font-weight:600}
+.rappel-date{font-size:.72rem;color:var(--muted);margin-top:.15rem}
+.rappel-badge{font-size:.65rem;padding:.15rem .5rem;border-radius:20px;font-weight:600;white-space:nowrap}
+.doc-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.9rem 1rem;margin-bottom:.6rem;display:flex;align-items:center;gap:.85rem;cursor:pointer;transition:.15s}
+.doc-card:active{transform:scale(.97)}
+.doc-icon{font-size:1.6rem;flex-shrink:0}
+.doc-body{flex:1}
+.doc-title{font-size:.9rem;font-weight:600}
+.doc-sub{font-size:.72rem;color:var(--muted);margin-top:.1rem}
+
 </style>
 </head>
 <body>
@@ -357,20 +391,16 @@ select.form-input option{background:#1c1c1c;color:#f0ede8}
     <div class="tile" onclick="openBudget()">
       <div class="tile-icon">&#128176;</div><div><div class="tile-name">Budget</div><div class="tile-sub">Finances &amp; placements</div></div><div class="tile-active">Actif</div>
     </div>
-    <div class="tile" onclick="showSoon('Nouvelles','Actualit&#233;s filtr&#233;es.')">
-      <div class="tile-icon">&#128240;</div><div><div class="tile-name">Nouvelles</div><div class="tile-sub">Filtr&#233;es pour toi</div></div><div class="tile-soon">Bient&#244;t</div>
-    </div>
-    <div class="tile" onclick="showSoon('Objectifs','Remise en forme.')">
-      <div class="tile-icon">&#127919;</div><div><div class="tile-name">Objectifs</div><div class="tile-sub">Remise en forme</div></div><div class="tile-soon">Bient&#244;t</div>
-    </div>
+
+
     <div class="tile" onclick="showSoon('Emails','Priorisation IA.')">
       <div class="tile-icon">&#128231;</div><div><div class="tile-name">Emails</div><div class="tile-sub">Priorisation IA</div></div><div class="tile-soon">Bient&#244;t</div>
     </div>
     <div class="tile" onclick="showSoon('Sant&#233;','Garmin et sommeil.')">
       <div class="tile-icon">&#8987;</div><div><div class="tile-name">Sant&#233;</div><div class="tile-sub">Garmin &amp; sommeil</div></div><div class="tile-soon">Bient&#244;t</div>
     </div>
-    <div class="tile" onclick="showSoon('Maison','Entretien et garanties.')">
-      <div class="tile-icon">&#127968;</div><div><div class="tile-name">Maison</div><div class="tile-sub">Entretien &amp; garanties</div></div><div class="tile-soon">Bient&#244;t</div>
+    <div class="tile" onclick="openMaison()">
+      <div class="tile-icon">&#127968;</div><div><div class="tile-name">Maison</div><div class="tile-sub">Entretien &amp; garanties</div></div><div class="tile-active">Actif</div>
     </div>
     <div class="tile" onclick="openAIChat()" style="grid-column:span 2;min-height:100px">
       <div style="display:flex;align-items:center;gap:1rem">
@@ -577,6 +607,52 @@ select.form-input option{background:#1c1c1c;color:#f0ede8}
       <span>&#129302;</span><div style="flex:1"><div style="font-size:.82rem;color:var(--orange);font-weight:600">Générer des conseils personnalisés</div><div style="font-size:.72rem;color:var(--muted)">Basé sur ton profil financier et tes données actuelles</div></div><span style="color:var(--orange)">&#8250;</span>
     </div>
     <div id="conseils-list"></div>
+  </div>
+</div>
+
+
+<!-- MAISON -->
+<div id="view-maison" class="view">
+  <div class="app-header">
+    <div class="header-row"><button class="back-btn" onclick="showView('home')">&#8592; Accueil</button><div class="date-chip" id="maison-date"></div></div>
+    <div style="margin-top:.4rem;font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800">&#127968; <span style="color:var(--orange)">Maison</span> <span style="font-size:.9rem;color:var(--muted);font-weight:400">Sainte-Adele</span></div>
+  </div>
+  <div class="maison-tabs">
+    <div class="maison-tab active" id="mtab-travaux"  onclick="setMaisonTab('travaux')">&#128296; Travaux</div>
+    <div class="maison-tab"        id="mtab-garanties" onclick="setMaisonTab('garanties')">&#128220; Garanties</div>
+    <div class="maison-tab"        id="mtab-entretien" onclick="setMaisonTab('entretien')">&#128337; Entretien</div>
+    <div class="maison-tab"        id="mtab-rappels"   onclick="setMaisonTab('rappels')">&#128276; Rappels</div>
+    <div class="maison-tab"        id="mtab-docs"      onclick="setMaisonTab('docs')">&#128196; Documents</div>
+  </div>
+
+  <!-- TRAVAUX -->
+  <div id="mpane-travaux" class="maison-pane active">
+    <div class="section-hdr"><div class="section-hdr-title">Travaux effectues</div><button class="add-btn" onclick="openAddTravail()">+ Ajouter</button></div>
+    <div id="travaux-list"></div>
+  </div>
+
+  <!-- GARANTIES -->
+  <div id="mpane-garanties" class="maison-pane">
+    <div class="section-hdr"><div class="section-hdr-title">Garanties des appareils</div><button class="add-btn" onclick="openAddGarantie()">+ Ajouter</button></div>
+    <div id="garanties-list"></div>
+  </div>
+
+  <!-- ENTRETIEN -->
+  <div id="mpane-entretien" class="maison-pane">
+    <div class="section-hdr"><div class="section-hdr-title">Entretien preventif</div><button class="add-btn" onclick="openAddEntretien()">+ Ajouter</button></div>
+    <div id="entretien-list"></div>
+  </div>
+
+  <!-- RAPPELS -->
+  <div id="mpane-rappels" class="maison-pane">
+    <div class="section-hdr"><div class="section-hdr-title">Rappels automatiques</div><button class="add-btn" onclick="openAddRappelMaison()">+ Ajouter</button></div>
+    <div id="rappels-maison-list"></div>
+  </div>
+
+  <!-- DOCUMENTS -->
+  <div id="mpane-docs" class="maison-pane">
+    <div class="section-hdr"><div class="section-hdr-title">Documents importants</div><button class="add-btn" onclick="openAddDoc()">+ Ajouter</button></div>
+    <div id="docs-list"></div>
   </div>
 </div>
 
@@ -2237,6 +2313,292 @@ function importBudgetJSON() {
     alert('Aucune donnee reconnue. Verifie le format JSON.');
   }
 }
+
+
+// ============================================================
+//  MAISON MODULE
+// ============================================================
+var SK_TRAVAUX='ma_travaux', SK_GARANTIES='ma_garanties', SK_ENTRETIEN='ma_entretien';
+var SK_RAPPELS_MAISON='ma_rappels_maison', SK_DOCS='ma_docs';
+var travaux=[], garanties=[], entretien=[], rappelsMaison=[], docs=[];
+try{travaux=JSON.parse(localStorage.getItem(SK_TRAVAUX)||'[]');}catch(e){}
+try{garanties=JSON.parse(localStorage.getItem(SK_GARANTIES)||'[]');}catch(e){}
+try{entretien=JSON.parse(localStorage.getItem(SK_ENTRETIEN)||'[]');}catch(e){}
+try{rappelsMaison=JSON.parse(localStorage.getItem(SK_RAPPELS_MAISON)||'[]');}catch(e){}
+try{docs=JSON.parse(localStorage.getItem(SK_DOCS)||'[]');}catch(e){}
+
+function saveTravaux(){localStorage.setItem(SK_TRAVAUX,JSON.stringify(travaux));}
+function saveGaranties(){localStorage.setItem(SK_GARANTIES,JSON.stringify(garanties));}
+function saveEntretien(){localStorage.setItem(SK_ENTRETIEN,JSON.stringify(entretien));}
+function saveRappelsMaison(){localStorage.setItem(SK_RAPPELS_MAISON,JSON.stringify(rappelsMaison));}
+function saveDocs(){localStorage.setItem(SK_DOCS,JSON.stringify(docs));}
+
+var maisonTab = 'travaux';
+
+var CAT_TRAVAUX = ['Plomberie','Electricite','Chauffage','Toiture','Fondation','Cuisine','Salle de bain','Exterieur','Peinture','Autre'];
+var FREQ_ENTRETIEN = ['Mensuel','Trimestriel','Semestriel','Annuel','Aux 2 ans','Aux 5 ans'];
+var CAT_DOC = ['Manuel','Facture','Garantie','Contrat','Assurance','Plan','Autre'];
+var CAT_APPAREIL = ['Electromenager','Chauffage','Climatisation','Plomberie','Electrique','Exterieur','Autre'];
+
+function openMaison(){
+  showView('maison');
+  document.getElementById('maison-date').textContent=document.getElementById('home-date').textContent;
+  renderTravaux();renderGaranties();renderEntretien();renderRappelsMaison();renderDocs();
+  checkRappelsMaison();
+}
+
+function setMaisonTab(t){
+  maisonTab=t;
+  ['travaux','garanties','entretien','rappels','docs'].forEach(function(x){
+    document.getElementById('mtab-'+x).classList.toggle('active',x===t);
+    document.getElementById('mpane-'+x).classList.toggle('active',x===t);
+  });
+}
+
+// ── TRAVAUX ──
+function renderTravaux(){
+  var list=document.getElementById('travaux-list');list.innerHTML='';
+  if(!travaux.length){list.innerHTML='<div class="empty-state">Aucun travail enregistre. Appuie sur + pour en ajouter !</div>';return;}
+  travaux.sort(function(a,b){return new Date(b.date)-new Date(a.date);}).forEach(function(t){
+    var el=document.createElement('div');el.className='maison-card';
+    var dateStr=new Date(t.date).toLocaleDateString('fr-CA',{year:'numeric',month:'long',day:'numeric'});
+    el.innerHTML='<div class="maison-card-header"><div><div class="maison-card-title">'+t.titre+'</div><div class="maison-card-sub">'+dateStr+(t.compagnie?' &middot; '+t.compagnie:'')+'</div></div>'+(t.cout?'<div class="travail-cost">'+t.cout+'$</div>':'')+'</div>'+
+      (t.note?'<div class="maison-card-sub" style="margin-top:.3rem">'+t.note+'</div>':'')+
+      '<div class="maison-card-badges"><span style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:.65rem;padding:.15rem .5rem;border-radius:20px">'+t.cat+'</span></div>'+
+      '<button onclick="delTravail(\"'+t.id+'\",event)" style="position:absolute;top:.8rem;right:.8rem;background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer">x</button>';
+    list.appendChild(el);
+  });
+}
+
+// ── GARANTIES ──
+function renderGaranties(){
+  var list=document.getElementById('garanties-list');list.innerHTML='';
+  if(!garanties.length){list.innerHTML='<div class="empty-state">Aucune garantie enregistree. Ajoute tes appareils !</div>';return;}
+  var today=new Date();today.setHours(0,0,0,0);
+  garanties.sort(function(a,b){return new Date(a.dateExpiration)-new Date(b.dateExpiration);}).forEach(function(g){
+    var exp=new Date(g.dateExpiration);
+    var diff=Math.round((exp-today)/(1000*60*60*24));
+    var badge,badgeClass;
+    if(diff<0){badge='Expiree';badgeClass='garantie-expire';}
+    else if(diff<=90){badge='Expire dans '+diff+' jours';badgeClass='garantie-warn';}
+    else{badge='Valide jusqu au '+exp.toLocaleDateString('fr-CA',{year:'numeric',month:'short',day:'numeric'});badgeClass='garantie-ok';}
+    var el=document.createElement('div');el.className='maison-card';
+    el.innerHTML='<div class="maison-card-header"><div><div class="maison-card-title">'+g.appareil+'</div><div class="maison-card-sub">'+(g.marque?g.marque+' ':'')+' &middot; Achat: '+new Date(g.dateAchat).toLocaleDateString('fr-CA',{year:'numeric',month:'short'})+'</div></div></div>'+
+      (g.note?'<div class="maison-card-sub">'+g.note+'</div>':'')+
+      '<div class="maison-card-badges"><span class="'+badgeClass+'">'+badge+'</span><span style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:.65rem;padding:.15rem .5rem;border-radius:20px">'+g.cat+'</span></div>'+
+      '<button onclick="delGarantie(\"'+g.id+'\",event)" style="position:absolute;top:.8rem;right:.8rem;background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer">x</button>';
+    list.appendChild(el);
+  });
+}
+
+// ── ENTRETIEN ──
+function renderEntretien(){
+  var list=document.getElementById('entretien-list');list.innerHTML='';
+  if(!entretien.length){list.innerHTML='<div class="empty-state">Aucun entretien planifie. Ajoute des taches preventives !</div>';return;}
+  var today=new Date();today.setHours(0,0,0,0);
+  entretien.sort(function(a,b){return new Date(a.prochainDate)-new Date(b.prochainDate);}).forEach(function(e){
+    var next=new Date(e.prochainDate);
+    var diff=Math.round((next-today)/(1000*60*60*24));
+    var badge,badgeClass;
+    if(diff<0){badge='En retard';badgeClass='garantie-expire';}
+    else if(diff<=30){badge='Dans '+diff+' jours';badgeClass='garantie-warn';}
+    else{badge='Dans '+diff+' jours';badgeClass='garantie-ok';}
+    var el=document.createElement('div');el.className='maison-card';
+    el.innerHTML='<div class="maison-card-header"><div><div class="maison-card-title">'+e.titre+'</div><div class="maison-card-sub">'+e.frequence+(e.dernierDate?' &middot; Dernier: '+new Date(e.dernierDate).toLocaleDateString('fr-CA',{month:'short',year:'numeric'}):'')+'</div></div></div>'+
+      (e.note?'<div class="maison-card-sub">'+e.note+'</div>':'')+
+      '<div class="maison-card-badges"><span class="'+badgeClass+'">'+badge+'</span></div>'+
+      '<button onclick="completerEntretien(\"'+e.id+'\")" style="background:var(--orange);border:none;border-radius:8px;color:#000;font-size:.7rem;font-weight:700;padding:.25rem .6rem;cursor:pointer;margin-top:.5rem">Fait</button>'+
+      '<button onclick="delEntretien(\"'+e.id+'\",event)" style="position:absolute;top:.8rem;right:.8rem;background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer">x</button>';
+    list.appendChild(el);
+  });
+}
+
+function completerEntretien(id){
+  var e=entretien.find(function(x){return x.id===id;});
+  if(!e)return;
+  e.dernierDate=ds(new Date());
+  // Calculate next date based on frequency
+  var next=new Date();
+  var freqMap={'Mensuel':1,'Trimestriel':3,'Semestriel':6,'Annuel':12,'Aux 2 ans':24,'Aux 5 ans':60};
+  var months=freqMap[e.frequence]||12;
+  next.setMonth(next.getMonth()+months);
+  e.prochainDate=ds(next);
+  saveEntretien();renderEntretien();
+}
+
+// ── RAPPELS ──
+function renderRappelsMaison(){
+  var list=document.getElementById('rappels-maison-list');list.innerHTML='';
+  if(!rappelsMaison.length){
+    // Add default rappels
+    var defauts=[
+      {id:uid(),titre:'Changer filtre fournaise',frequence:'Mensuel',prochainDate:getNextDate(1),emoji:'&#129470;'},
+      {id:uid(),titre:'Nettoyer gouttières',frequence:'Semestriel',prochainDate:getNextDate(6),emoji:'&#127801;'},
+      {id:uid(),titre:'Inspection chauffage',frequence:'Annuel',prochainDate:getNextDate(12),emoji:'&#128293;'},
+      {id:uid(),titre:'Test détecteur fumée',frequence:'Mensuel',prochainDate:getNextDate(1),emoji:'&#128680;'},
+      {id:uid(),titre:'Vidange fosse septique',frequence:'Aux 2 ans',prochainDate:getNextDate(24),emoji:'&#128507;'},
+    ];
+    rappelsMaison=defauts;saveRappelsMaison();
+  }
+  var today=new Date();today.setHours(0,0,0,0);
+  rappelsMaison.sort(function(a,b){return new Date(a.prochainDate)-new Date(b.prochainDate);}).forEach(function(r){
+    var next=new Date(r.prochainDate);
+    var diff=Math.round((next-today)/(1000*60*60*24));
+    var urgency='';
+    if(diff<0)urgency='urgent';
+    else if(diff<=30)urgency='soon';
+    var badgeColor=diff<0?'#ef4444':diff<=30?'var(--orange)':'#22c55e';
+    var badgeText=diff<0?'En retard':diff===0?'Aujourd hui':diff<=30?'Dans '+diff+' jours':'Dans '+diff+' jours';
+    var el=document.createElement('div');el.className='rappel-card '+urgency;
+    el.innerHTML='<div class="rappel-icon">'+r.emoji+'</div>'+
+      '<div class="rappel-body"><div class="rappel-title">'+r.titre+'</div><div class="rappel-date">'+r.frequence+' &middot; '+next.toLocaleDateString('fr-CA',{year:'numeric',month:'long',day:'numeric'})+'</div></div>'+
+      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:.4rem">'+
+      '<span class="rappel-badge" style="background:rgba(0,0,0,.2);color:'+badgeColor+';border:1px solid '+badgeColor+'">'+badgeText+'</span>'+
+      '<button onclick="completerRappel(\"'+r.id+'\")" style="background:var(--orange);border:none;border-radius:8px;color:#000;font-size:.7rem;font-weight:700;padding:.25rem .6rem;cursor:pointer">Fait</button>'+
+      '</div>';
+    list.appendChild(el);
+  });
+}
+
+function completerRappel(id){
+  var r=rappelsMaison.find(function(x){return x.id===id;});
+  if(!r)return;
+  var freqMap={'Mensuel':1,'Trimestriel':3,'Semestriel':6,'Annuel':12,'Aux 2 ans':24,'Aux 5 ans':60};
+  var months=freqMap[r.frequence]||12;
+  var next=new Date();next.setMonth(next.getMonth()+months);
+  r.prochainDate=ds(next);
+  saveRappelsMaison();renderRappelsMaison();
+}
+
+function checkRappelsMaison(){
+  if(Notification.permission!=='granted')return;
+  var today=new Date();today.setHours(0,0,0,0);
+  rappelsMaison.forEach(function(r){
+    var next=new Date(r.prochainDate);
+    var diff=Math.round((next-today)/(1000*60*60*24));
+    if(diff===0){
+      setTimeout(function(){
+        new Notification('Rappel Maison : '+r.titre,{body:'A faire aujourd hui',tag:'maison-'+r.id});
+      },5000);
+    }
+  });
+}
+
+// ── DOCUMENTS ──
+function renderDocs(){
+  var list=document.getElementById('docs-list');list.innerHTML='';
+  if(!docs.length){list.innerHTML='<div class="empty-state">Aucun document. Ajoute manuels, factures et contrats !</div>';return;}
+  var emojiMap={Manuel:'&#128214;',Facture:'&#128176;',Garantie:'&#128220;',Contrat:'&#128203;',Assurance:'&#128737;',Plan:'&#128395;',Autre:'&#128196;'};
+  docs.forEach(function(d){
+    var el=document.createElement('div');el.className='doc-card';
+    el.innerHTML='<div class="doc-icon">'+(emojiMap[d.cat]||'&#128196;')+'</div>'+
+      '<div class="doc-body"><div class="doc-title">'+d.titre+'</div><div class="doc-sub">'+d.cat+(d.appareil?' &middot; '+d.appareil:'')+(d.date?' &middot; '+new Date(d.date).toLocaleDateString('fr-CA',{month:'short',year:'numeric'}):'')+'</div>'+(d.note?'<div class="doc-sub" style="margin-top:.1rem">'+d.note+'</div>':'')+'</div>'+
+      '<button onclick="delDoc(\"'+d.id+'\",event)" style="background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer;padding:.2rem .4rem">x</button>';
+    list.appendChild(el);
+  });
+}
+
+// ── HELPERS ──
+function getNextDate(months){
+  var d=new Date();d.setMonth(d.getMonth()+months);return ds(d);
+}
+function deleteMaisonItem(arr,key,id,renderFn,e){
+  e.stopPropagation();
+  var idx=arr.findIndex(function(x){return x.id===id;});
+  if(idx>=0)arr.splice(idx,1);
+  localStorage.setItem(key,JSON.stringify(arr));
+  renderFn();
+}
+
+// ── ADD MODALS ──
+function openAddTravail(){
+  createSimpleModal('Nouveau travail',
+    '<div class="form-group"><label class="form-label">Titre *</label><input class="form-input" id="fm-titre" type="text" placeholder="Ex: Remplacement chauffe-eau..."/></div>'+
+    '<div class="form-group"><label class="form-label">Date</label><input class="form-input" id="fm-date" type="date" value="'+ds(new Date())+'"/></div>'+
+    '<div class="form-group"><label class="form-label">Categorie</label><select class="form-input" id="fm-cat">'+CAT_TRAVAUX.map(function(c){return '<option>'+c+'</option>';}).join('')+'</select></div>'+
+    '<div class="form-group"><label class="form-label">Compagnie / Contacteur</label><input class="form-input" id="fm-co" type="text" placeholder="Ex: Plomberie Gagnon..."/></div>'+
+    '<div class="form-group"><label class="form-label">Cout ($)</label><input class="form-input" id="fm-cout" type="number" min="0" placeholder="0"/></div>'+
+    '<div class="form-group"><label class="form-label">Note</label><input class="form-input" id="fm-note" type="text" placeholder="Details du travail..."/></div>',
+    function(){
+      var titre=document.getElementById('fm-titre').value.trim();
+      if(!titre){alert('Titre requis');return false;}
+      travaux.push({id:uid(),titre:titre,date:document.getElementById('fm-date').value,cat:document.getElementById('fm-cat').value,compagnie:document.getElementById('fm-co').value.trim(),cout:document.getElementById('fm-cout').value,note:document.getElementById('fm-note').value.trim()});
+      saveTravaux();renderTravaux();return true;
+    }
+  );
+}
+
+function openAddGarantie(){
+  createSimpleModal('Nouvelle garantie',
+    '<div class="form-group"><label class="form-label">Appareil *</label><input class="form-input" id="fm-app" type="text" placeholder="Ex: Refrigerateur, Thermopompe..."/></div>'+
+    '<div class="form-group"><label class="form-label">Marque / Modele</label><input class="form-input" id="fm-marque" type="text" placeholder="Ex: LG, Lennox..."/></div>'+
+    '<div class="form-group"><label class="form-label">Categorie</label><select class="form-input" id="fm-cat">'+CAT_APPAREIL.map(function(c){return '<option>'+c+'</option>';}).join('')+'</select></div>'+
+    '<div class="form-group"><label class="form-label">Date achat</label><input class="form-input" id="fm-achat" type="date" value="'+ds(new Date())+'"/></div>'+
+    '<div class="form-group"><label class="form-label">Date expiration garantie *</label><input class="form-input" id="fm-exp" type="date"/></div>'+
+    '<div class="form-group"><label class="form-label">Note (numero serie, contrat...)</label><input class="form-input" id="fm-note" type="text" placeholder="No serie: XYZ123..."/></div>',
+    function(){
+      var app=document.getElementById('fm-app').value.trim();
+      var exp=document.getElementById('fm-exp').value;
+      if(!app||!exp){alert('Appareil et date expiration requis');return false;}
+      garanties.push({id:uid(),appareil:app,marque:document.getElementById('fm-marque').value.trim(),cat:document.getElementById('fm-cat').value,dateAchat:document.getElementById('fm-achat').value,dateExpiration:exp,note:document.getElementById('fm-note').value.trim()});
+      saveGaranties();renderGaranties();return true;
+    }
+  );
+}
+
+function openAddEntretien(){
+  createSimpleModal('Nouvel entretien',
+    '<div class="form-group"><label class="form-label">Tache *</label><input class="form-input" id="fm-titre" type="text" placeholder="Ex: Vidange fosse septique..."/></div>'+
+    '<div class="form-group"><label class="form-label">Frequence</label><select class="form-input" id="fm-freq">'+FREQ_ENTRETIEN.map(function(f){return '<option>'+f+'</option>';}).join('')+'</select></div>'+
+    '<div class="form-group"><label class="form-label">Prochain entretien</label><input class="form-input" id="fm-next" type="date" value="'+getNextDate(12)+'"/></div>'+
+    '<div class="form-group"><label class="form-label">Note</label><input class="form-input" id="fm-note" type="text" placeholder="Compagnie, details..."/></div>',
+    function(){
+      var titre=document.getElementById('fm-titre').value.trim();
+      if(!titre){alert('Titre requis');return false;}
+      entretien.push({id:uid(),titre:titre,frequence:document.getElementById('fm-freq').value,prochainDate:document.getElementById('fm-next').value,dernierDate:'',note:document.getElementById('fm-note').value.trim()});
+      saveEntretien();renderEntretien();return true;
+    }
+  );
+}
+
+function openAddRappelMaison(){
+  var EMOJIS_MAISON=['&#129470;','&#128293;','&#127801;','&#128680;','&#128507;','&#128295;','&#128138;','&#128269;','&#127774;','&#128170;'];
+  createSimpleModal('Nouveau rappel',
+    '<div class="form-group"><label class="form-label">Rappel *</label><input class="form-input" id="fm-titre" type="text" placeholder="Ex: Changer filtre fournaise..."/></div>'+
+    '<div class="form-group"><label class="form-label">Frequence</label><select class="form-input" id="fm-freq">'+FREQ_ENTRETIEN.map(function(f){return '<option>'+f+'</option>';}).join('')+'</select></div>'+
+    '<div class="form-group"><label class="form-label">Prochain rappel</label><input class="form-input" id="fm-next" type="date" value="'+getNextDate(1)+'"/></div>',
+    function(){
+      var titre=document.getElementById('fm-titre').value.trim();
+      if(!titre){alert('Titre requis');return false;}
+      rappelsMaison.push({id:uid(),titre:titre,frequence:document.getElementById('fm-freq').value,prochainDate:document.getElementById('fm-next').value,emoji:'&#127968;'});
+      saveRappelsMaison();renderRappelsMaison();return true;
+    }
+  );
+}
+
+function openAddDoc(){
+  createSimpleModal('Nouveau document',
+    '<div class="form-group"><label class="form-label">Titre *</label><input class="form-input" id="fm-titre" type="text" placeholder="Ex: Manuel chauffe-eau Rheem..."/></div>'+
+    '<div class="form-group"><label class="form-label">Type</label><select class="form-input" id="fm-cat">'+CAT_DOC.map(function(c){return '<option>'+c+'</option>';}).join('')+'</select></div>'+
+    '<div class="form-group"><label class="form-label">Appareil / Piece</label><input class="form-input" id="fm-app" type="text" placeholder="Ex: Chauffe-eau, Cuisine..."/></div>'+
+    '<div class="form-group"><label class="form-label">Date</label><input class="form-input" id="fm-date" type="date" value="'+ds(new Date())+'"/></div>'+
+    '<div class="form-group"><label class="form-label">Note (numero, lien, emplacement...)</label><input class="form-input" id="fm-note" type="text" placeholder="Ex: Sous evier cuisine, No contrat 12345..."/></div>',
+    function(){
+      var titre=document.getElementById('fm-titre').value.trim();
+      if(!titre){alert('Titre requis');return false;}
+      docs.push({id:uid(),titre:titre,cat:document.getElementById('fm-cat').value,appareil:document.getElementById('fm-app').value.trim(),date:document.getElementById('fm-date').value,note:document.getElementById('fm-note').value.trim()});
+      saveDocs();renderDocs();return true;
+    }
+  );
+}
+
+
+function delTravail(id,e){e.stopPropagation();var i=travaux.findIndex(function(x){return x.id===id;});if(i>=0)travaux.splice(i,1);saveTravaux();renderTravaux();}
+function delGarantie(id,e){e.stopPropagation();var i=garanties.findIndex(function(x){return x.id===id;});if(i>=0)garanties.splice(i,1);saveGaranties();renderGaranties();}
+function delEntretien(id,e){e.stopPropagation();var i=entretien.findIndex(function(x){return x.id===id;});if(i>=0)entretien.splice(i,1);saveEntretien();renderEntretien();}
+function delDoc(id,e){e.stopPropagation();var i=docs.findIndex(function(x){return x.id===id;});if(i>=0)docs.splice(i,1);saveDocs();renderDocs();}
+function completerEntretien(id){var e=entretien.find(function(x){return x.id===id;});if(!e)return;e.dernierDate=ds(new Date());var next=new Date();var freqMap={'Mensuel':1,'Trimestriel':3,'Semestriel':6,'Annuel':12,'Aux 2 ans':24,'Aux 5 ans':60};next.setMonth(next.getMonth()+(freqMap[e.frequence]||12));e.prochainDate=ds(next);saveEntretien();renderEntretien();}
+function completerRappel(id){var r=rappelsMaison.find(function(x){return x.id===id;});if(!r)return;var freqMap={'Mensuel':1,'Trimestriel':3,'Semestriel':6,'Annuel':12,'Aux 2 ans':24,'Aux 5 ans':60};var next=new Date();next.setMonth(next.getMonth()+(freqMap[r.frequence]||12));r.prochainDate=ds(next);saveRappelsMaison();renderRappelsMaison();}
 
 </script>
 
