@@ -1684,6 +1684,10 @@ function getCatBudget(id){return CAT_BUDGET.find(function(c){return c.id===id;})
 function openBudget(){
   showView('budget');
   document.getElementById('budget-date').textContent=document.getElementById('home-date').textContent;
+  // If transactions exist from other periods, default to 'annee'
+  if(transactions.length > 0) {
+    budgetPeriod = 'mois'; budgetPeriod2 = 'mois';
+  }
   renderBudgetApercu();renderTxList();renderPlacements();renderCryptos();renderObjectifs();renderConseils();
 }
 
@@ -2215,8 +2219,14 @@ function importBudgetJSON() {
 
   closeModal('import-budget-modal');
   if(counts.length) {
+    // Switch period to 'annee' so all imported transactions are visible
+    budgetPeriod = 'annee'; budgetPeriod2 = 'annee';
+    ['semaine','mois','annee'].forEach(function(x){
+      var e1=document.getElementById('pb-'+x); if(e1) e1.classList.toggle('active',x==='annee');
+      var e2=document.getElementById('pb2-'+x); if(e2) e2.classList.toggle('active',x==='annee');
+    });
+    renderBudgetApercu(); renderTxList();
     alert('Importe avec succes : ' + counts.join(', ') + ' !');
-    // Navigate to right tab
     if(importBudgetContext==='transactions') setBudgetTab('depenses');
     else if(importBudgetContext==='placements') setBudgetTab('placements');
     else if(importBudgetContext==='crypto') setBudgetTab('crypto');
