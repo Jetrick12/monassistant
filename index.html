@@ -2366,7 +2366,7 @@ function renderTravaux(){
       (t.note?'<div class="maison-card-sub" style="margin-top:.3rem">'+t.note+'</div>':'')+
       '<div class="maison-card-badges"><span style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:.65rem;padding:.15rem .5rem;border-radius:20px">'+t.cat+'</span></div>';
     var bxT=document.createElement('button');bxT.textContent='x';bxT.style.cssText='position:absolute;top:.8rem;right:.8rem;background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer;z-index:5;padding:.4rem';
-    bxT.onclick=(function(id){return function(ev){ev.stopPropagation();delTravail(id);};})(t.id);
+    bxT.onclick=(function(id){return function(ev){if(ev)ev.stopPropagation();delTravail(id);};})(t.id);
     el.appendChild(bxT);
     list.appendChild(el);
   });
@@ -2389,7 +2389,7 @@ function renderGaranties(){
       (g.note?'<div class="maison-card-sub">'+g.note+'</div>':'')+
       '<div class="maison-card-badges"><span class="'+badgeClass+'">'+badge+'</span><span style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:.65rem;padding:.15rem .5rem;border-radius:20px">'+g.cat+'</span></div>';
     var bxG=document.createElement('button');bxG.textContent='x';bxG.style.cssText='position:absolute;top:.8rem;right:.8rem;background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer;z-index:5;padding:.4rem';
-    bxG.onclick=(function(id){return function(ev){ev.stopPropagation();delGarantie(id);};})(g.id);
+    bxG.onclick=(function(id){return function(ev){if(ev)ev.stopPropagation();delGarantie(id);};})(g.id);
     el.appendChild(bxG);
     list.appendChild(el);
   });
@@ -2421,7 +2421,7 @@ function renderEntretien(){
     var btnX=document.createElement('button');
     btnX.textContent='x';
     btnX.style.cssText='position:absolute;top:.8rem;right:.8rem;background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer;z-index:5;padding:.4rem;-webkit-tap-highlight-color:transparent';
-    btnX.onclick=(function(id){return function(ev){ev.stopPropagation();delEntretien(id);};})(item.id);
+    btnX.onclick=(function(id){return function(ev){if(ev)ev.stopPropagation();delEntretien(id);};})(item.id);
     el.appendChild(btnX);
     list.appendChild(el);
   });
@@ -2471,7 +2471,7 @@ function renderRappelsMaison(){
     var bf=document.createElement('button');bf.textContent='Fait';bf.style.cssText='background:var(--orange);border:none;border-radius:8px;color:#000;font-size:.7rem;font-weight:700;padding:.25rem .6rem;cursor:pointer';
     var bx=document.createElement('button');bx.textContent='x';bx.style.cssText='background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:.7rem;padding:.25rem .5rem;cursor:pointer';
     bf.onclick=(function(id){return function(){completerRappel(id);};})(r.id);
-    bx.onclick=(function(id){return function(ev){ev.stopPropagation();delRappelMaison(id);};})(r.id);
+    bx.onclick=(function(id){return function(ev){if(ev)ev.stopPropagation();delRappelMaison(id);};})(r.id);
     rd.appendChild(sp);rd.appendChild(bf);rd.appendChild(bx);
     el.appendChild(rd);
     list.appendChild(el);
@@ -2526,7 +2526,7 @@ function renderDocs(){
     var btnX=document.createElement('button');
     btnX.textContent='x';
     btnX.style.cssText='background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer;padding:.3rem .5rem;flex-shrink:0';
-    btnX.onclick=(function(id){return function(ev){ev.stopPropagation();delDoc(id);};})(d.id);
+    btnX.onclick=(function(id){return function(ev){if(ev)ev.stopPropagation();delDoc(id);};})(d.id);
     el.appendChild(btnX);
     list.appendChild(el);
   });
