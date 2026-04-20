@@ -2510,8 +2510,24 @@ function renderDocs(){
   docs.forEach(function(d){
     var el=document.createElement('div');el.className='doc-card';
     el.innerHTML='<div class="doc-icon">'+(emojiMap[d.cat]||'&#128196;')+'</div>'+
-      '<div class="doc-body"><div class="doc-title">'+d.titre+'</div><div class="doc-sub">'+d.cat+(d.appareil?' &middot; '+d.appareil:'')+(d.date?' &middot; '+new Date(d.date).toLocaleDateString('fr-CA',{month:'short',year:'numeric'}):'')+'</div>'+(d.note?'<div class="doc-sub" style="margin-top:.1rem">'+d.note+'</div>':'')+'</div>'+
-      '<button onclick="delDoc(\"'+d.id+'\",event)" style="background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer;padding:.2rem .4rem">x</button>';
+      '<div class="doc-body"><div class="doc-title">'+d.titre+'</div>'+
+      '<div class="doc-sub">'+d.cat+(d.appareil?' &middot; '+d.appareil:'')+(d.date?' &middot; '+new Date(d.date).toLocaleDateString('fr-CA',{month:'short',year:'numeric'}):'')+'</div>'+
+      (d.note?'<div class="doc-sub" style="margin-top:.1rem">'+d.note+'</div>':'')+
+      (d.fileData?'<div style="font-size:.68rem;color:#22c55e;margin-top:.2rem">&#128206; '+d.fileName+'</div>':'')+'</div>';
+    if(d.fileData){
+      var btnV=document.createElement('button');
+      btnV.textContent='Voir';
+      btnV.style.cssText='background:var(--orange);border:none;border-radius:8px;color:#000;font-size:.7rem;font-weight:700;padding:.25rem .6rem;cursor:pointer;flex-shrink:0;margin-right:.3rem';
+      btnV.onclick=(function(data,name){return function(){
+        var a=document.createElement('a');a.href=data;a.download=name;document.body.appendChild(a);a.click();document.body.removeChild(a);
+      };})(d.fileData, d.fileName||d.titre);
+      el.appendChild(btnV);
+    }
+    var btnX=document.createElement('button');
+    btnX.textContent='x';
+    btnX.style.cssText='background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer;padding:.3rem .5rem;flex-shrink:0';
+    btnX.onclick=(function(id){return function(ev){ev.stopPropagation();delDoc(id);};})(d.id);
+    el.appendChild(btnX);
     list.appendChild(el);
   });
 }
