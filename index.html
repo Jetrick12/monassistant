@@ -2396,22 +2396,33 @@ function renderEntretien(){
   var list=document.getElementById('entretien-list');list.innerHTML='';
   if(!entretien.length){list.innerHTML='<div class="empty-state">Aucun entretien planifie. Ajoute des taches preventives !</div>';return;}
   var today=new Date();today.setHours(0,0,0,0);
-  entretien.sort(function(a,b){return new Date(a.prochainDate)-new Date(b.prochainDate);}).forEach(function(e){
-    var next=new Date(e.prochainDate);
+  entretien.sort(function(a,b){return new Date(a.prochainDate)-new Date(b.prochainDate);}).forEach(function(item){
+    var next=new Date(item.prochainDate);
     var diff=Math.round((next-today)/(1000*60*60*24));
     var badge,badgeClass;
     if(diff<0){badge='En retard';badgeClass='garantie-expire';}
     else if(diff<=30){badge='Dans '+diff+' jours';badgeClass='garantie-warn';}
     else{badge='Dans '+diff+' jours';badgeClass='garantie-ok';}
     var el=document.createElement('div');el.className='maison-card';
-    el.innerHTML='<div class="maison-card-header"><div><div class="maison-card-title">'+e.titre+'</div><div class="maison-card-sub">'+e.frequence+(e.dernierDate?' &middot; Dernier: '+new Date(e.dernierDate).toLocaleDateString('fr-CA',{month:'short',year:'numeric'}):'')+'</div></div></div>'+
-      (e.note?'<div class="maison-card-sub">'+e.note+'</div>':'')+
-      '<div class="maison-card-badges"><span class="'+badgeClass+'">'+badge+'</span></div>'+
-      '<button onclick="completerEntretien(\"'+e.id+'\")" style="background:var(--orange);border:none;border-radius:8px;color:#000;font-size:.7rem;font-weight:700;padding:.25rem .6rem;cursor:pointer;margin-top:.5rem">Fait</button>'+
-      '<button onclick="delEntretien(\"'+e.id+'\",event)" style="position:absolute;top:.8rem;right:.8rem;background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer">x</button>';
+    var inner='<div class="maison-card-header"><div><div class="maison-card-title">'+item.titre+'</div>'+
+      '<div class="maison-card-sub">'+item.frequence+(item.dernierDate?' &middot; Dernier: '+new Date(item.dernierDate).toLocaleDateString('fr-CA',{month:'short',year:'numeric'}):'')+'</div></div></div>'+
+      (item.note?'<div class="maison-card-sub">'+item.note+'</div>':'')+
+      '<div class="maison-card-badges"><span class="'+badgeClass+'">'+badge+'</span></div>';
+    el.innerHTML=inner;
+    var btnF=document.createElement('button');
+    btnF.textContent='Fait';
+    btnF.style.cssText='background:var(--orange);border:none;border-radius:8px;color:#000;font-size:.7rem;font-weight:700;padding:.25rem .6rem;cursor:pointer;margin-top:.5rem;display:block';
+    btnF.onclick=(function(id){return function(){completerEntretien(id);};})(item.id);
+    el.appendChild(btnF);
+    var btnX=document.createElement('button');
+    btnX.textContent='x';
+    btnX.style.cssText='position:absolute;top:.8rem;right:.8rem;background:none;border:none;color:var(--muted);font-size:.9rem;cursor:pointer';
+    btnX.onclick=(function(id){return function(ev){ev.stopPropagation();delEntretien(id);};})(item.id);
+    el.appendChild(btnX);
     list.appendChild(el);
   });
 }
+
 
 function completerEntretien(id){
   var e=entretien.find(function(x){return x.id===id;});
@@ -2450,12 +2461,15 @@ function renderRappelsMaison(){
     var badgeColor=diff<0?'#ef4444':diff<=30?'var(--orange)':'#22c55e';
     var badgeText=diff<0?'En retard':diff===0?'Aujourd hui':diff<=30?'Dans '+diff+' jours':'Dans '+diff+' jours';
     var el=document.createElement('div');el.className='rappel-card '+urgency;
-    el.innerHTML='<div class="rappel-icon">'+r.emoji+'</div>'+
-      '<div class="rappel-body"><div class="rappel-title">'+r.titre+'</div><div class="rappel-date">'+r.frequence+' &middot; '+next.toLocaleDateString('fr-CA',{year:'numeric',month:'long',day:'numeric'})+'</div></div>'+
-      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:.4rem">'+
-      '<span class="rappel-badge" style="background:rgba(0,0,0,.2);color:'+badgeColor+';border:1px solid '+badgeColor+'">'+badgeText+'</span>'+
-      '<button onclick="completerRappel(\"'+r.id+'\")" style="background:var(--orange);border:none;border-radius:8px;color:#000;font-size:.7rem;font-weight:700;padding:.25rem .6rem;cursor:pointer">Fait</button>'+
-      '</div>';
+    el.innerHTML='<div class="rappel-icon">'+r.emoji+'</div><div class="rappel-body"><div class="rappel-title">'+r.titre+'</div><div class="rappel-date">'+r.frequence+' &middot; '+next.toLocaleDateString('fr-CA',{year:'numeric',month:'long',day:'numeric'})+'</div></div>';
+    var rd=document.createElement('div');rd.style.cssText='display:flex;flex-direction:column;align-items:flex-end;gap:.4rem;flex-shrink:0';
+    var sp=document.createElement('span');sp.className='rappel-badge';sp.style.cssText='background:rgba(0,0,0,.2);color:'+badgeColor+';border:1px solid '+badgeColor;sp.textContent=badgeText;
+    var bf=document.createElement('button');bf.textContent='Fait';bf.style.cssText='background:var(--orange);border:none;border-radius:8px;color:#000;font-size:.7rem;font-weight:700;padding:.25rem .6rem;cursor:pointer';
+    var bx=document.createElement('button');bx.textContent='x';bx.style.cssText='background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:.7rem;padding:.25rem .5rem;cursor:pointer';
+    bf.onclick=(function(id){return function(){completerRappel(id);};})(r.id);
+    bx.onclick=(function(id){return function(ev){ev.stopPropagation();delRappelMaison(id);};})(r.id);
+    rd.appendChild(sp);rd.appendChild(bf);rd.appendChild(bx);
+    el.appendChild(rd);
     list.appendChild(el);
   });
 }
@@ -2595,9 +2609,9 @@ function openAddDoc(){
 
 function delTravail(id,e){e.stopPropagation();var i=travaux.findIndex(function(x){return x.id===id;});if(i>=0)travaux.splice(i,1);saveTravaux();renderTravaux();}
 function delGarantie(id,e){e.stopPropagation();var i=garanties.findIndex(function(x){return x.id===id;});if(i>=0)garanties.splice(i,1);saveGaranties();renderGaranties();}
-function delEntretien(id,e){e.stopPropagation();var i=entretien.findIndex(function(x){return x.id===id;});if(i>=0)entretien.splice(i,1);saveEntretien();renderEntretien();}
+function delEntretien(id){var i=entretien.findIndex(function(x){return x.id===id;});if(i>=0)entretien.splice(i,1);saveEntretien();renderEntretien();}
 function delDoc(id,e){e.stopPropagation();var i=docs.findIndex(function(x){return x.id===id;});if(i>=0)docs.splice(i,1);saveDocs();renderDocs();}
-function delRappelMaison(id,e){e.stopPropagation();var i=rappelsMaison.findIndex(function(x){return x.id===id;});if(i>=0)rappelsMaison.splice(i,1);saveRappelsMaison();renderRappelsMaison();}
+function delRappelMaison(id){var i=rappelsMaison.findIndex(function(x){return x.id===id;});if(i>=0)rappelsMaison.splice(i,1);saveRappelsMaison();renderRappelsMaison();}
 
 </script>
 
